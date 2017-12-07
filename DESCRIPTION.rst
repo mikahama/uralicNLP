@@ -1,26 +1,34 @@
-=====================
-Korp API for Python
-=====================
+============
+Uralic NLP
+============
 
-This library provides an easy way to query `Korp <https://spraakbanken.gu.se/swe/forskning/infrastruktur/korp/>`_ systems for language corpora. This library is brought to you by `Mika Hämäläinen <https://mikakalevi.com>`_.
+Uralic NLP is a Python library for processing small Uralic languages. The languages that are currently supported are Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish.
 
-*****
+Currently, this tool provides uralicApi functionality which uses the API of sanat.csc.fi. Over this API, it's possible to do **morphological analysis**, **morphological generation**, **lemmatization** and **dictionary search** for these languages.
+
+This library provides **Omorfi as a service for Finnish**.
+
+***************
 Usage
-*****
-You can initialise Korp with either service_name (`språkbanken <https://spraakbanken.gu.se/korp/#?lang=sv>`_, `kielipankki <https://korp.csc.fi/>`_ or `GT <http://gtweb.uit.no/korp/>`_) or url to your Korp's API interface such as https://korp.csc.fi/cgi-bin/korp.cgi .
+***************
+    ``from uralicNLP import uralicApi``
 
-An example for getting all concordances for North Sami corpora in Giellatekno Korp for query *[pos="A"] "go" [pos="N"]*.
+    ``print uralicApi.analyze("voita", "fin") #Morphological analysis for the Finnish word form voita``
 
-    ``from korp import Korp``
+    ``print uralicApi.generate("käsi+N+Sg+Par", "fin") #Generates the singular partitive form of the Finnish word käsi``
 
-    ``korppi = Korp(service_name="GT") #uses Giellatekno``
+    ``print uralicApi.dictionary_search("car", "sms") #Does a dictionary search for the word car in the Skolt Sami dictionary``
 
-    ``corpora = korppi.list_corpora("SME") #lists corpora returns the ones starting with the North Sami language code``
+    ``print uralicApi.lemmatize("voita", "fin") #Lists possible lemmas for the Finnish word form voita``
 
-    ``number_of_results, concordances = korppi.all_concordances('[pos="A"] "go" [pos="N"]', corpora)``
+********************
+Further information
+********************
 
-****************
-More information
-****************
+A proper documentation is available in the `Uralic NLP GitHub <https://github.com/mikahama/uralicNLP>`_
+.
 
-For more information, see `the GitHub page <https://github.com/mikahama/python-korp>`_ and `Wiki for tutorials <https://github.com/mikahama/python-korp/wiki>`_.
+You might also be interested in `using Korp on Python <https://mikalikes.men/korp-and-python-access-corpora-from-your-python-code/>`_ to access corpora of Uralic languages.
+
+This library will have more functionality in the future as my PhD studies progress. This library and the API was created by `Mika Hämäläinen <https://mikakalevi.com>`_
+.

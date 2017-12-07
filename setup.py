@@ -18,18 +18,18 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='korp',
+    name='uralicNLP',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.0.2',
+    version='1.0.0',
 
-    description='Korp API library for Python',
+    description='An NLP library for small Uralic languages such as Skolt Sami, Moksha and such',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://mikakalevi.com/nlp/python-korp/',
+    url='https://mikakalevi.com/nlp/uralicnlp/',
 
     # Author details
     author='Mika Hämäläinen, Dept. of  Modern Languages, University of Helsinki',
@@ -60,12 +60,12 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='Korp API',
+    keywords='Uralic languages, NLP, morphology, hfst, omorfi, dictionary, lexicography',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=["korp"],
-    package_dir={'korp': 'korp'},
+    packages=["uralicNLP"],
+    package_dir={'uralicNLP': 'uralicNLP'},
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
@@ -82,9 +82,7 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={
-        'korp': ['*.json'],
-    },
+    package_data={},
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
