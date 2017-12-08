@@ -1,7 +1,7 @@
 # Uralic NLP
 Uralic NLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by sanat.csc.fi API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
-Uralic NLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. 
+Uralic NLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. This information originates from FST tools and dictionaries developed in the [Giellatekno infrastructure](http://giellatekno.uit.no/).
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
