@@ -1,6 +1,6 @@
 import requests
 
-api_url = "http://sanat.csc.fi:8000/smsxml/"
+api_url = "https://sanat.csc.fi/smsxml/"
 
 def supported_languages():
 	return __send_request("listLanguages/", {"user": "uralicApi"})
