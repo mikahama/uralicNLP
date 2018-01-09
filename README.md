@@ -57,3 +57,12 @@ For example, "sms" selects the Skolt Sami dictionary. However, the word used to 
     {'lemmatized': [], 'query': 'car', 'exact_match': {}, 'other_languages': {'eng': [{'lemma': 'autt', ...}]}, 'language': 'sms'}
   
 An example of querying the Skolt Sami dictionary with *car*.
+
+# Cite
+
+If you use uralicNLP in an academic publication, please cite it as follows:
+
+Mika Hämäläinen. (2018, January 9). UralicNLP (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.1143638
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
+
