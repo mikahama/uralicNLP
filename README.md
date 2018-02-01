@@ -7,6 +7,8 @@ Uralic NLP can produce **morphological analysis**, **generate morphological form
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
     pip install uralicNLP
+   
+In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html). 
 
 ## Usage
 
@@ -44,6 +46,28 @@ From a lemma and a morphological analysis, it's possible to generate the desired
     [['kättä', 0.0]]
   
 An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*.
+
+### Download the models to speed things up
+
+If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily.
+
+    >>from uralicNLP import uralicApi
+    >>uralicApi.download("fin")
+
+When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
+
+### Syntax - Constraint Grammar disambiguation
+
+**Note** this requires the models to be installed (see above) and [VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html). The disambiguation process is easy.
+
+    >>from uralicNLP.cg3 import Cg3
+    >>sentence = "Kissa voi nauraa"
+    >>tokens = sentence.split(" ") #Do a simple tokenization for the sentence
+    >>cg = Cg3("fin")
+    >>print cg.disambiguate(tokens)
+    [(u'Kissa', [<Kissa - N, Prop, Sg, Nom, <W:0.000000>>, <kissa - N, Sg, Nom, <W:0.000000>>]), (u'voi', [<voida - V, Act, Ind, Prs, Sg3, <W:0.000000>>]), (u'nauraa', [<nauraa - V, Act, InfA, Sg, Lat, <W:0.000000>>])]
+    
+The return object is a list of tuples. The first item in each tuple is the word form used in the sentence, the second item is a list of *Cg3Word* objects. In the case of a full disambiguation, these lists have only one Cg3Word object, but some times the result of the disambiguation still has some ambiguity. Each Cg3Word object has three variables *lemma*, *form* and *morphology*.
 
 ### Lexical information
 Uralic NLP makes it possible to obtain the information available in sanat.csc.fi entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
