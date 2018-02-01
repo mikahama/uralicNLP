@@ -1,11 +1,28 @@
 #encoding: utf-8
 from uralicNLP import uralicApi
-print uralicApi.supported_languages()
+from uralicNLP.cg3 import Cg3
 
-print uralicApi.analyze("voita", "fin")
 
-print uralicApi.generate("käsi+N+Sg+Par", "fin")
+print(uralicApi.supported_languages())
 
-print uralicApi.dictionary_search("car", "sms")
+#uralicApi.download("fin")
 
-print uralicApi.lemmatize("voita", "fin")
+print(uralicApi.analyze("voita", "fin"))
+
+print(uralicApi.generate("käsi+N+Sg+Par", "fin"))
+
+print(uralicApi.dictionary_search("car", "sms"))
+
+print(uralicApi.lemmatize("voita", "fin"))
+
+"""
+
+uralicApi.download("kpv")
+
+cg = Cg3("fin")
+print(cg.disambiguate(["Kissa","voi","nauraa"]))
+
+
+cg = Cg3("kpv")
+print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
+"""
