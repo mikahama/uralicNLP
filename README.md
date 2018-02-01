@@ -22,7 +22,7 @@ A word form can be lemmatized with Uralic NLP. This does not do any disambiguati
 
     >>from uralicNLP import uralicApi
     >>uralicApi.lemmatize("вирев", "myv")
-    {'results': ['вирев', 'вирь']}
+    ['вирев', 'вирь']
   
   An example of lemmatizing the word *вирев* in Erzya (myv).
 
@@ -31,7 +31,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
 
     >>from uralicNLP import uralicApi
     >>uralicApi.analyze("voita", "fin")
-    {'query': 'voita', 'language': 'fin', 'analysis': [['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]}
+    [['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]
   
 An example of analyzing the word *voita* in Finnish (fin).
 
@@ -41,7 +41,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
 
     >>from uralicNLP import uralicApi
     >>uralicApi.generate("käsi+N+Sg+Par", "fin")
-    {'query': 'käsi+N+Sg+Par', 'language': 'fin', 'analysis': [['kättä', 0.0]]}
+    [['kättä', 0.0]]
   
 An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*.
 
