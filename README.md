@@ -69,6 +69,16 @@ When models are installed, *generate()*, *analyze()* and *lemmatize()* methods w
     
 The return object is a list of tuples. The first item in each tuple is the word form used in the sentence, the second item is a list of *Cg3Word* objects. In the case of a full disambiguation, these lists have only one Cg3Word object, but some times the result of the disambiguation still has some ambiguity. Each Cg3Word object has three variables *lemma*, *form* and *morphology*.
 
+    >>disambiguations = cg.disambiguate(tokens)
+    >> for disambiguation in disambiguations:
+    ...     possible_words = disambiguation[1]
+    ...     for possible_word in possible_words:
+    ...         print possible_word.lemma, possible_word.morphology
+    Kissa [u'N', u'Prop', u'Sg', u'Nom', u'<W:0.000000>']
+    kissa [u'N', u'Sg', u'Nom', u'<W:0.000000>']
+    voida [u'V', u'Act', u'Ind', u'Prs', u'Sg3', u'<W:0.000000>']
+    nauraa [u'V', u'Act', u'InfA', u'Sg', u'Lat', u'<W:0.000000>']
+
 ### Lexical information
 Uralic NLP makes it possible to obtain the information available in sanat.csc.fi entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
 
