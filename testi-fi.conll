@@ -1,0 +1,16 @@
+# text = Toinen palkinto annettiin tamperelaiselle Eino Kotolalle ja kolmas palkinto Juha Sirolle Kangasalta.
+# sent_id =  h1007.16
+1	Toinen	toinen	ADJ	Num	Case=Nom|Derivation=Inen|Number=Sing|NumType=Ord	2	nummod	_	_
+2	palkinto	palkinto	NOUN	N	Case=Nom|Number=Sing	3	obj	_	_
+3	annettiin	antaa	VERB	V	Mood=Ind|Tense=Past|VerbForm=Fin|Voice=Pass	0	root	_	_
+4	tamperelaiselle	tamperelainen	ADJ	A	Case=All|Degree=Pos|Derivation=Lainen|Number=Sing	5	amod	_	_
+5	Eino	Eino	PROPN	N	Case=Nom|Number=Sing	3	obl	_	_
+6	Kotolalle	Kotola	PROPN	N	Case=All|Number=Sing	5	flat:name	_	_
+7	ja	ja	CCONJ	C	_	9	cc	9.1:cc	_
+8	kolmas	kolmas	ADJ	Num	Case=Nom|Number=Sing|NumType=Ord	9	nummod	_	_
+9	palkinto	palkinto	NOUN	N	Case=Nom|Number=Sing	3	conj	9.1:obj	_
+9.1	annettiin	antaa	VERB	_	Mood=Ind|Tense=Past|VerbForm=Fin|Voice=Pass	_	_	3:conj	_
+10	Juha	Juha	PROPN	N	Case=Nom|Number=Sing	9	orphan	9.1:obl	_
+11	Sirolle	Siro	PROPN	N	Case=All|Number=Sing	10	flat:name	_	_
+12	Kangasalta	Kangasala	PROPN	N	Case=Abl|Number=Sing	9	orphan	9.1:obl	SpaceAfter=No
+13	.	.	PUNCT	Punct	_	3	punct	_	_

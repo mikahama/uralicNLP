@@ -6,6 +6,7 @@ import codecs
 class UD_collection():
 	"""docstring for UD_collection"""
 	def __init__(self, file_handle):
+		self.__iter_index = 0
 		sentence = []
 		self.sentences = []
 		for line in file_handle:
@@ -24,6 +25,36 @@ class UD_collection():
 			else:
 				results.extend(r)
 		return results
+    
+	def get_unique_feats(self, delimiter="|"):
+		feats = []
+		for sentence in self:
+			fs = sentence.get_unique_feats(delimiter)
+			for f in fs:
+				if f not in feats:
+					feats.append(f)
+		return feats
+
+	def __getitem__(self, i):
+		return self.sentences[i]
+
+	def __iter__(self):
+		return self
+
+	def __len__(self):
+		return len(self.sentences)
+
+	def next(self):
+		if self.__iter_index >= len(self.sentences):
+			self.__iter_index = 0
+			raise StopIteration
+		else:
+			self.__iter_index += 1
+			return self.sentences[self.__iter_index-1]
+
+	def __next__(self):
+		#python 3
+		return self.next()
 		
 class UD_sentence():
 	def __init__(self):
@@ -35,6 +66,16 @@ class UD_sentence():
 	def set_root(self, root):
 		self.root =root
 		self.find = root.find
+
+	def get_unique_feats(self, delimiter="|"):
+		children = self.find()
+		feats = []
+		for child in children:
+			fs = child.get_feats(delimiter)
+			for f in fs:
+				if f not in feats:
+					feats.append(f)
+		return feats
 
 	def __repr__(self):
 		children = self.find()
@@ -66,6 +107,14 @@ class UD_relation():
 		return repr(self) == repr(other)
 
 	def __lt__(self, other):
+		if "." in self.node.id:
+			main_index, second_index = self.node.id.split(".")
+			if "." in other.node.id:
+				main_index_o, second_index_o = other.node.id.split(".")
+				if main_index_o == main_index:
+					return int(second_index) < int(second_index_o)
+			elif main_index == other.node.id:
+				return False
 		s_dash = False
 		if "-" in self.node.id:
 			s_dash = True
@@ -100,6 +149,9 @@ class UD_node():
 		self.children = []
 		self.heads = []
 		self.secondary_children = []
+
+	def get_feats(self, delimiter="|"):
+		return self.feats.split(delimiter)
 
 	def find(self, query={}, head_query={}, match_range_tokens = False, match_empty_nodes = False, enhanced_dependencies=False):
 		results = []
@@ -231,6 +283,8 @@ def parse_sentence(conll_u_sentence):
 		head_id = relation[0]
 		if head_id == "0":
 			root = nodes[id]
+		if "." in id and head_id == "_":
+			head_id = id.split(".")[0]
 		head_relation = UD_relation(nodes[id], relation[1], nodes[head_id])
 		o_rel = relation[2]
 		if o_rel == u"_":
@@ -246,11 +300,12 @@ def parse_sentence(conll_u_sentence):
 	ud_sentence.set_root(root)
 	return ud_sentence
 
-
+"""
 root = parse_sentence(codecs.open("/Users/mikahama/Desktop/fi_test.conllu", "r", encoding="utf-8").read())
 #print unicode(root)
 
 nodes = root.find({"upostag":"NOUN", "deprel": "obl"})
 for node in nodes:
 	print unicode(node)
+"""
 
