@@ -7,6 +7,8 @@ Uralic NLP can produce **morphological analysis**, **generate morphological form
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
     pip install uralicNLP
+   
+In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html). 
 
 ## Usage
 
@@ -22,7 +24,7 @@ A word form can be lemmatized with Uralic NLP. This does not do any disambiguati
 
     >>from uralicNLP import uralicApi
     >>uralicApi.lemmatize("вирев", "myv")
-    {'results': ['вирев', 'вирь']}
+    ['вирев', 'вирь']
   
   An example of lemmatizing the word *вирев* in Erzya (myv).
 
@@ -31,7 +33,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
 
     >>from uralicNLP import uralicApi
     >>uralicApi.analyze("voita", "fin")
-    {'query': 'voita', 'language': 'fin', 'analysis': [['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]}
+    [['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]
   
 An example of analyzing the word *voita* in Finnish (fin).
 
@@ -41,9 +43,41 @@ From a lemma and a morphological analysis, it's possible to generate the desired
 
     >>from uralicNLP import uralicApi
     >>uralicApi.generate("käsi+N+Sg+Par", "fin")
-    {'query': 'käsi+N+Sg+Par', 'language': 'fin', 'analysis': [['kättä', 0.0]]}
+    [['kättä', 0.0]]
   
 An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*.
+
+### Download the models to speed things up
+
+If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily.
+
+    >>from uralicNLP import uralicApi
+    >>uralicApi.download("fin")
+
+When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
+
+### Syntax - Constraint Grammar disambiguation
+
+**Note** this requires the models to be installed (see above) and [VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html). The disambiguation process is easy.
+
+    >>from uralicNLP.cg3 import Cg3
+    >>sentence = "Kissa voi nauraa"
+    >>tokens = sentence.split(" ") #Do a simple tokenization for the sentence
+    >>cg = Cg3("fin")
+    >>print cg.disambiguate(tokens)
+    [(u'Kissa', [<Kissa - N, Prop, Sg, Nom, <W:0.000000>>, <kissa - N, Sg, Nom, <W:0.000000>>]), (u'voi', [<voida - V, Act, Ind, Prs, Sg3, <W:0.000000>>]), (u'nauraa', [<nauraa - V, Act, InfA, Sg, Lat, <W:0.000000>>])]
+    
+The return object is a list of tuples. The first item in each tuple is the word form used in the sentence, the second item is a list of *Cg3Word* objects. In the case of a full disambiguation, these lists have only one Cg3Word object, but some times the result of the disambiguation still has some ambiguity. Each Cg3Word object has three variables *lemma*, *form* and *morphology*.
+
+    >>disambiguations = cg.disambiguate(tokens)
+    >> for disambiguation in disambiguations:
+    ...     possible_words = disambiguation[1]
+    ...     for possible_word in possible_words:
+    ...         print possible_word.lemma, possible_word.morphology
+    Kissa [u'N', u'Prop', u'Sg', u'Nom', u'<W:0.000000>']
+    kissa [u'N', u'Sg', u'Nom', u'<W:0.000000>']
+    voida [u'V', u'Act', u'Ind', u'Prs', u'Sg3', u'<W:0.000000>']
+    nauraa [u'V', u'Act', u'InfA', u'Sg', u'Lat', u'<W:0.000000>']
 
 ### Lexical information
 Uralic NLP makes it possible to obtain the information available in sanat.csc.fi entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
