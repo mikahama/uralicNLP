@@ -35,6 +35,15 @@ class UD_collection():
 					feats.append(f)
 		return feats
 
+	def get_unique_attributes(self, attribute):
+		feats = []
+		for sentence in self:
+			fs = sentence.get_unique_attributes(attribute)
+			for f in fs:
+				if f not in feats:
+					feats.append(f)
+		return feats
+
 	def __getitem__(self, i):
 		return self.sentences[i]
 
@@ -74,6 +83,15 @@ class UD_sentence():
 			fs = child.get_feats(delimiter)
 			for f in fs:
 				if f not in feats:
+					feats.append(f)
+		return feats
+
+	def get_unique_attributes(self, attribute):
+		children = self.find()
+		feats = []
+		for child in children:
+			f = child.get_attribute(attribute)
+			if f not in feats:
 					feats.append(f)
 		return feats
 
@@ -152,6 +170,25 @@ class UD_node():
 
 	def get_feats(self, delimiter="|"):
 		return self.feats.split(delimiter)
+
+	def get_attribute(self, attribute):
+		if attribute == "id":
+			return self.id
+		elif attribute == "form":
+			return self.form
+		elif attribute == "lemma":
+			return self.lemma
+		elif attribute == "upostag" or attribute == "pos":
+			return self.upostag
+		elif attribute == "xpostag":
+			return self.xpostag
+		elif attribute == "feats":
+			return self.feats
+		elif attribute == "misc":
+			return self.misc
+		elif attribute == "deprel":
+			return self.head.relation
+
 
 	def find(self, query={}, head_query={}, match_range_tokens = False, match_empty_nodes = False, enhanced_dependencies=False):
 		results = []
