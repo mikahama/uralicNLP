@@ -1,7 +1,7 @@
-# Uralic NLP
-Uralic NLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by sanat.csc.fi API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
+# UralicNLP
+UralicNLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by sanat.csc.fi API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
-Uralic NLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. This information originates from FST tools and dictionaries developed in the [Giellatekno infrastructure](http://giellatekno.uit.no/).
+UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. This information originates from FST tools and dictionaries developed in the [Giellatekno infrastructure](http://giellatekno.uit.no/).
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
@@ -13,14 +13,14 @@ In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 imp
 ## Usage
 
 ### List supported languages
-The API is under constant development and new languages will be added to the Sanat infrastructure. That's why Uralic NLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
+The API is under constant development and new languages will be added to the Sanat infrastructure. That's why UralicNLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
 
     >>from uralicNLP import uralicApi
     >>uralicApi.supported_languages()
     {'languages': ['sms', 'izh', 'mhr', 'vot', 'olo', 'myv', 'mdf', 'mrj', 'udm', 'yrk', 'koi', 'fin']}
   
 ### Lemmatize words
-A word form can be lemmatized with Uralic NLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
+A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
 
     >>from uralicNLP import uralicApi
     >>uralicApi.lemmatize("вирев", "myv")
@@ -80,7 +80,7 @@ The return object is a list of tuples. The first item in each tuple is the word 
     nauraa [u'V', u'Act', u'InfA', u'Sg', u'Lat', u'<W:0.000000>']
 
 ### Lexical information
-Uralic NLP makes it possible to obtain the information available in sanat.csc.fi entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
+UralicNLP makes it possible to obtain the information available in sanat.csc.fi entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
 
 For example, "sms" selects the Skolt Sami dictionary. However, the word used to query can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages" under the language code of that language. I.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": "eng": [Skolt Sami lexical items that translate to cat]}
 
@@ -94,7 +94,7 @@ An example of querying the Skolt Sami dictionary with *car*.
 
 # Cite
 
-If you use uralicNLP in an academic publication, please cite it as follows:
+If you use UralicNLP in an academic publication, please cite it as follows:
 
 Mika Hämäläinen. (2018, January 9). UralicNLP (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.1143638
 
