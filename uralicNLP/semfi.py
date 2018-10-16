@@ -3,6 +3,7 @@ import mikatools
 import os
 from uralicApi import __find_writable_folder, __model_base_folders, ModelNotFound
 import sqlite3
+from collections import defaultdict
 
 semfi_urls = "https://mikakalevi.com/semfi/static/whereis.json"
 
@@ -16,7 +17,11 @@ def download(lang):
 	urls = mikatools.download_json(semfi_urls)
 	if lang not in urls:
 		raise "Language not supported. Currently supported languages " + ", ".join(urls.keys())
-	save_to = os.path.join(os.path.join(__find_writable_folder(__model_base_folders()), lang), "sem.db")
+	download_to = os.path.join(__find_writable_folder(__model_base_folders()), lang)
+	if not os.path.exists(download_to):
+		os.makedirs(download_to)
+	save_to = os.path.join(download_to, "sem.db")
+	print("Downloading: "+ lang)
 	mikatools.download_file(urls[lang], save_to, True)
 
 def __where_semfi(lang):
@@ -76,13 +81,21 @@ def get_word(lemma, pos, lang):
 	c = __get_connection(lang)
 	c.execute('SELECT * FROM words WHERE word="'+lemma+'" and pos="' + pos +'"')
 	all_rows = c.fetchall()
-	return __add_titles(all_rows, lang, "words")[0]
+	rows = __add_titles(all_rows, lang, "words")
+	if len(rows) > 0:
+		return rows[0]
+	else:
+		return None
 
 def get_word_by_id(id, lang):
 	c = __get_connection(lang)
 	c.execute('SELECT * FROM words WHERE id="'+id+'"')
 	all_rows = c.fetchall()
-	return __add_titles(all_rows, lang, "words")[0]
+	rows = __add_titles(all_rows, lang, "words")
+	if len(rows) > 0:
+		return rows[0]
+	else:
+		return None
 
 def get_words(lemma, lang):
 	c = __get_connection(lang)
@@ -90,35 +103,69 @@ def get_words(lemma, lang):
 	all_rows = c.fetchall()
 	return __add_titles(all_rows, lang, "words")
 
-def get_all_relations(word_object, lang):
+def get_all_relations(word_object, lang, sort=False):
+	sorting = ""
+	if sort:
+		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'"')
+	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object, None, all_rows, lang)
 	return rows
 
-def get_by_relation(word_object, relation, lang):
+def get_by_relation(word_object, relation, lang, sort=False):
+	sorting = ""
+	if sort:
+		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and relation_name="' + relation +'"')
+	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and relation_name="' + relation +'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object, None, all_rows, lang)
 	return rows
 
-def get_by_word(word_object1, word_object2, lang):
+def get_by_word(word_object1, word_object2, lang, sort=False):
+	sorting = ""
+	if sort:
+		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and word2="' + word_object2["id"] +'"')
+	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and word2="' + word_object2["id"] +'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object1, word_object2, all_rows, lang)
 	return rows
 
-def get_by_word_and_relation(word_object1, word_object2, relation, lang):
+def get_by_word_and_relation(word_object1, word_object2, relation, lang, sort=False):
+	sorting = ""
+	if sort:
+		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and word2="' + word_object2["id"] +'" and relation_name="' + relation +'"')
+	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and word2="' + word_object2["id"] +'" and relation_name="' + relation +'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object1, word_object2, all_rows, lang)
 	return rows
+
+def realtion_frequency(relations):
+	rels = defaultdict(int)
+	for relation in relations:
+		rels[relation["relation"]] += relation["frequency"]
+	return rels
+
+
+def sort_by_frequency(lang, ascending=True, number=None, format=True):
+	sort = "DESC"
+	if ascending:
+		sort = "ASC"
+	c = __get_connection(lang)
+	c.execute("SELECT * FROM words ORDER BY frequency " + sort)
+	if number == None:
+		all_rows = c.fetchall()
+	else:
+		all_rows = c.fetchmany(number)
+	if format:
+		return __add_titles(all_rows, lang, "words")
+	else:
+		return all_rows
 
