@@ -10,7 +10,7 @@ class UD_collection():
 		sentence = []
 		self.sentences = []
 		for line in file_handle:
-			if line == "\n":
+			if line == u"\n":
 				self.sentences.append(parse_sentence(sentence))
 				sentence = []
 			else:
@@ -309,6 +309,9 @@ def parse_sentence(conll_u_sentence):
 			comments = comments + annotation + "\n"
 			continue
 		parts = annotation.split("\t")
+		if "-" in parts[0]:
+			#multi-part annotation --> skip for now
+			continue
 		node = UD_node(parts[0],parts[1],parts[2],parts[3],parts[4],parts[5],parts[9])
 		nodes[parts[0]] = node
 		relations[parts[0]] = [parts[6],parts[7],parts[8]]
