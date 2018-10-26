@@ -138,13 +138,13 @@ class UD_relation():
 			s_dash = True
 			s_id = (int(self.node.id.split("-")[0]))
 		else:
-			s_id = int(self.node.id)
+			s_id = float(self.node.id)
 		o_dash = False
 		if "-" in other.node.id:
 			o_dash = True
 			o_id = (int(other.node.id.split("-")[0]))
 		else:
-			o_id = int(other.node.id)
+			o_id = float(other.node.id)
 		if o_id == s_id:
 			if s_dash:
 				return True
@@ -281,13 +281,13 @@ class UD_node():
 			s_dash = True
 			s_id = (int(self.id.split("-")[0]))
 		else:
-			s_id = int(self.id)
+			s_id = float(self.id)
 		o_dash = False
 		if "-" in other.id:
 			o_dash = True
 			o_id = (int(other.id.split("-")[0]))
 		else:
-			o_id = int(other.id)
+			o_id = float(other.id)
 		if o_id == s_id:
 			if s_dash:
 				return True
