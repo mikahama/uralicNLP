@@ -80,6 +80,8 @@ The return object is a list of tuples. The first item in each tuple is the word 
     kissa [u'N', u'Sg', u'Nom', u'<W:0.000000>']
     voida [u'V', u'Act', u'Ind', u'Prs', u'Sg3', u'<W:0.000000>']
     nauraa [u'V', u'Act', u'InfA', u'Sg', u'Lat', u'<W:0.000000>']
+    
+The *cg.disambiguate* takes in *morphology_ignore_after* as an optional argument. Its default value is *@* which means that it removes the annotation from the FST output after *@* before feeding it to the CG disambiguator. If the value is set to *None*, the FST morphology is fed in to the CG unmodified. 
 
 ### Lexical information
 UralicNLP makes it possible to obtain the information available in sanat.csc.fi entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
