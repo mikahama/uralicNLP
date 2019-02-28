@@ -10,8 +10,9 @@ class UD_collection():
 		sentence = []
 		self.sentences = []
 		for line in file_handle:
-			if line == u"\n":
-				self.sentences.append(parse_sentence(sentence))
+			if len(line.replace("\n", "")) == 0:
+				if len(sentence) > 0:
+					self.sentences.append(parse_sentence(sentence))
 				sentence = []
 			else:
 				sentence.append(line.replace("\n", ""))
@@ -64,6 +65,12 @@ class UD_collection():
 	def __next__(self):
 		#python 3
 		return self.next()
+
+	def __repr__(self):
+		representation = ""
+		for sentence in self.sentences:
+			representation += unicode(sentence) + "\n"
+		return representation
 		
 class UD_sentence():
 	def __init__(self):
