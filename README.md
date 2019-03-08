@@ -98,7 +98,7 @@ An example of querying the Skolt Sami dictionary with *car*.
 
 ### Parsing UD CoNLL-U annotated TreeBank data
 
-UralicNLP comes with tools for parsing and searching CoNLL-U formatted data. Please refer to [the Wiki for the UD parser documentation](https://github.com/mikahama/uralicNLP/wiki/UD-parser-(experimental)).
+UralicNLP comes with tools for parsing and searching CoNLL-U formatted data. Please refer to [the Wiki for the UD parser documentation](https://github.com/mikahama/uralicNLP/wiki/UD-parser).
 
 # Cite
 
