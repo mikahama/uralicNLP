@@ -1,5 +1,12 @@
 from uralicNLP.ud_tools import UD_collection
 import urllib, requests
+import sys
+
+if (sys.version_info > (3, 0)):
+	#python 3
+	python_version = 3
+else:
+	python_version = 2
 
 class LanguageNotSupported(Exception):
     pass
@@ -14,9 +21,11 @@ def parse_text(sentence, language, **kwargs):
 
 
 def _turku_dependencies(text, url="http://localhost:9876"):
-	#r_url = url + "/?text=" + urllib.quote(text.encode('utf8'))
-	#r = requests.get(r_url)
-	r = requests.post(url, data=text, headers={'content-type':'text/plain'})
+	if python_version ==2 and type(text) is str:
+		pass
+	else:
+		text = text.encode('utf-8')
+	r = requests.post(url, data=text, headers={'content-type':'text/plain; charset=utf8'})
 	if r.status_code != 200:
 		raise BackendNotOnline("Couldn't connect to the docker server (code "+ str(r.status_code) +") at " + url + "\n Download the docker container on https://hub.docker.com/r/kazhar/finnish-dep-parser/ and make sure it is running.")
 	conl = r.text

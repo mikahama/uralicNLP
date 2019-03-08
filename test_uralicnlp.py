@@ -37,4 +37,4 @@ translator = ApertiumStableTranslator()
 print(translator.translate("el gato corre rápido", "spa","cat"))
 """
 
-print unicode(dependency.parse_text("kissa nauroi kovaa\nLehmä lauloi", "fin", url="http://localhost:9876"))
+print(unicode(dependency.parse_text("kissa nauroi kovaa\nLehmä lauloi", "fin",url="http://localhost:9877")))

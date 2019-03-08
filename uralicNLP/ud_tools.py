@@ -1,7 +1,11 @@
 #encoding: utf-8
-import re
+import re, sys
 from copy import copy
 import codecs
+
+if (sys.version_info > (3, 0)):
+	#python 3
+	unicode = str
 
 class UD_collection():
 	"""docstring for UD_collection"""
@@ -10,12 +14,15 @@ class UD_collection():
 		sentence = []
 		self.sentences = []
 		for line in file_handle:
-			if len(line.replace("\n", "")) == 0:
+			if len(line.replace(u"\n", "")) == 0:
 				if len(sentence) > 0:
 					self.sentences.append(parse_sentence(sentence))
 				sentence = []
 			else:
 				sentence.append(line.replace("\n", ""))
+		if len(sentence) > 0:
+			#add last sentence
+			self.sentences.append(parse_sentence(sentence))
 
 	def find_sentences(self, query={}, head_query={}, match_range_tokens = False, match_empty_nodes = False, enhanced_dependencies=False, return_root= False):
 		results = []
@@ -210,7 +217,7 @@ class UD_node():
 					else:
 						attr = self.head.relation
 				else:
-					attr = getattr(self, key)
+					attr = self.get_attribute(key)
 				v = query[key]
 				if isinstance(v, re._pattern_type):
 					if v.match(attr) is None:

@@ -24,14 +24,22 @@ def download(lang):
 	print("Downloading: "+ lang)
 	mikatools.download_file(urls[lang], save_to, True)
 
-def __where_semfi(lang):
+def __where_semfi(lang, safe=False):
 	folders = __model_base_folders()
 	for folder in folders:
 		try_file = os.path.join(os.path.join(folder, lang), "sem.db")
 		e = os.path.exists(try_file)
 		if e:
 			return try_file
+	if safe:
+		return None
 	raise ModelNotFound()
+
+def is_language_installed(language):
+	path = __where_semfi(language, True)
+	if path is None:
+		return False
+	return True
 
 def __get_connection(lang):
 	if lang in __connections:
@@ -130,7 +138,7 @@ def get_by_word(word_object1, word_object2, lang, sort=False):
 	if sort:
 		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and word2="' + word_object2["id"] +'"'+sorting)
+	c.execute('SELECT * FROM relations WHERE word1="'+word_object1["id"]+'" and word2="' + word_object2["id"] +'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object1, word_object2, all_rows, lang)

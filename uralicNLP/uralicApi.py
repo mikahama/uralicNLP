@@ -5,9 +5,11 @@ import ssl
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
+    new_python = True
 except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
+    new_python = False
 import hfst
 
 api_url = "https://sanat.csc.fi/smsxml/"
@@ -33,6 +35,12 @@ def __find_writable_folder(folders):
 
 def _Cg3__where_models(language, safe=False):
 	return __where_models(language, safe)
+
+def is_language_installed(language):
+	path = __where_models(language, True)
+	if path is None:
+		return False
+	return True
 
 def __where_models(language, safe=False):
 	paths = __model_base_folders()
@@ -85,15 +93,20 @@ def __analyze_locally(query, language, cache=True):
 	r = generator.lookup(query)
 	return r
 
+def __encode_query(query):
+	if not new_python and type(query) is unicode:
+		query = query.encode('utf-8')
+	return query
+
 def generate(query, language, force_local=False):
 	if force_local or __where_models(language, safe=True):
-		return __generate_locally(query, language)
+		return __generate_locally(__encode_query(query), language)
 	else:
 		return __api_generate(query, language)
 
 def analyze(query, language, force_local=False):
 	if force_local or __where_models(language, safe=True):
-		return __analyze_locally(query, language)
+		return __analyze_locally(__encode_query(query), language)
 	else:
 		return __api_analyze(query, language)
 
