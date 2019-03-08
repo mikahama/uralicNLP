@@ -12,10 +12,13 @@ except ImportError:
     new_python = False
 import hfst
 
-api_url = "https://sanat.csc.fi/smsxml/"
+api_url = "https://akusanat.com/smsxml/"
 
 class ModelNotFound(Exception):
     pass
+
+class UnsupportedModel(Exception):
+	pass
 
 def __model_base_folders():
 	a = os.path.join(os.path.dirname(__file__), "models")
@@ -54,7 +57,7 @@ def __where_models(language, safe=False):
 	raise ModelNotFound("Models for " + language + " were not in " + " or ".join(paths) + ". Use uralicApi.download(\""+ language+"\") to download models.")
 
 def download(language):
-	model_types = ["analyser", "generator", "cg"]
+	model_types = ["analyser","analyser-norm","generator-desc","generator-norm", "generator", "cg"]
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
@@ -71,25 +74,39 @@ def download(language):
 generator_cache = {}
 analyzer_cache = {}
 
-def __generate_locally(query, language, cache=True):
-	if cache and language in generator_cache:
-		generator = generator_cache[language]
+def __generator_model_name(descrpitive, dictionary_forms):
+	if not descrpitive and dictionary_forms:
+		return "generator"
+	elif descrpitive:
+		return "generator-desc"
 	else:
-		filename = os.path.join(__where_models(language), "generator")
+		return "generator-norm"
+
+def __generate_locally(query, language, cache=True, descrpitive=False, dictionary_forms=True):
+	if cache and language + str(descrpitive) + str(dictionary_forms) in generator_cache:
+		generator = generator_cache[language + str(descrpitive) + str(dictionary_forms)]
+	else:
+		filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
 		input_stream = hfst.HfstInputStream(filename)
 		generator = input_stream.read()
-		generator_cache[language] = generator
+		generator_cache[language+ str(descrpitive) + str(dictionary_forms)] = generator
 	r = generator.lookup(query)
 	return r
 
-def __analyze_locally(query, language, cache=True):
-	if cache and language in analyzer_cache:
-		generator = analyzer_cache[language]
+def __analyzer_model_name(descrpitive):
+	if descrpitive:
+		return "analyser"
 	else:
-		filename = os.path.join(__where_models(language), "analyser")
+		return "analyser-norm"
+
+def __analyze_locally(query, language, cache=True, descrpitive=True):
+	if cache and language + str(descrpitive) in analyzer_cache:
+		generator = analyzer_cache[language+ str(descrpitive)]
+	else:
+		filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
 		input_stream = hfst.HfstInputStream(filename)
 		generator = input_stream.read()
-		analyzer_cache[language] = generator
+		analyzer_cache[language+ str(descrpitive)] = generator
 	r = generator.lookup(query)
 	return r
 
@@ -98,20 +115,20 @@ def __encode_query(query):
 		query = query.encode('utf-8')
 	return query
 
-def generate(query, language, force_local=False):
+def generate(query, language, force_local=False, descrpitive=False, dictionary_forms=True):
 	if force_local or __where_models(language, safe=True):
-		return __generate_locally(__encode_query(query), language)
+		return __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	else:
-		return __api_generate(query, language)
+		return __api_generate(query, language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 
-def analyze(query, language, force_local=False):
+def analyze(query, language, force_local=False, descrpitive=True):
 	if force_local or __where_models(language, safe=True):
-		return __analyze_locally(__encode_query(query), language)
+		return __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
 	else:
-		return __api_analyze(query, language)
+		return __api_analyze(query, language,descrpitive=descrpitive)
 
-def lemmatize(word, language, force_local=False):
-    analysis = analyze(word, language, force_local)
+def lemmatize(word, language, force_local=False, descrpitive=True):
+    analysis = analyze(word, language, force_local, descrpitive=descrpitive)
     lemmas = []
     for tupla in analysis:
         an = tupla[0]
@@ -127,10 +144,14 @@ def lemmatize(word, language, force_local=False):
 def supported_languages():
 	return __send_request("listLanguages/", {"user": "uralicApi"})
 
-def __api_analyze(word, language):
+def __api_analyze(word, language,descrpitive=True):
+	if not descrpitive:
+		raise UnsupportedModel("Server only supports descrpitive analysis. Please download the models and analyze locally")
 	return __send_request("analyze/", {"word": word, "language": language})["analysis"]
 
-def __api_generate(query, language):
+def __api_generate(query, language, descrpitive=False, dictionary_forms=True):
+	if descrpitive or not dictionary_forms:
+		raise UnsupportedModel("Server only supports normative dictionary forms. Please download the models and generate locally")
 	return __send_request("generate/", {"query": query, "language": language})["analysis"]
 
 def dictionary_search(word, language):

@@ -4,16 +4,16 @@ from .uralicApi import __where_models as where_models
 import os, sys
 from subprocess import Popen, PIPE
 
-def _Cg3__parse_sentence(words, language, morphology_ignore_after=None):
+def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True):
 	sentence = []
 	for word in words:
-		analysis = __hfst_format(word, language, morphology_ignore_after)
+		analysis = __hfst_format(word, language, morphology_ignore_after,descrpitive=descrpitive)
 		sentence.extend(analysis)
 	hfst_result_string = "\n".join(sentence)
 	return hfst_result_string
 
-def __hfst_format(word, language, morphology_ignore_after=None):
-	analysis = uralic_api_analyze(word, language)
+def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True):
+	analysis = uralic_api_analyze(word, language,descrpitive=descrpitive)
 	hfsts = []
 	if len(analysis) == 0:
 		hfsts.append(word + "\t" +word + "+?\tinf")
@@ -33,8 +33,8 @@ class Cg3():
 		self.cg_path = cg_path
 		self.language = language
 
-	def disambiguate(self, words, morphology_ignore_after="@"):
-		hfst_output = __parse_sentence(words + [""], self.language, morphology_ignore_after)
+	def disambiguate(self, words, morphology_ignore_after="@",descrpitive=True):
+		hfst_output = __parse_sentence(words + [""], self.language, morphology_ignore_after, descrpitive=descrpitive)
 		p1 = Popen(["echo", hfst_output], stdout=PIPE)
 		cg_conv = Popen(["cg-conv" ,"-f"], stdout=PIPE, stdin=p1.stdout)
 		vislcg3 = Popen(['vislcg3', '--grammar', self.cg_path], stdout=PIPE, stdin=cg_conv.stdout)
