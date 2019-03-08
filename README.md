@@ -100,6 +100,10 @@ An example of querying the Skolt Sami dictionary with *car*.
 
 UralicNLP comes with tools for parsing and searching CoNLL-U formatted data. Please refer to [the Wiki for the UD parser documentation](https://github.com/mikahama/uralicNLP/wiki/UD-parser).
 
+### Semantics
+
+UralicNLP provides semantic models for Finnish (SemFi) and other Uralic languages (SemUr) for Komi-Zyrian, Erzya, Moksha and Skolt Sami. [Find out how to use semantic models](https://github.com/mikahama/uralicNLP/wiki/Semantics-(SemFi,-SemUr))
+
 # Cite
 
 If you use UralicNLP in an academic publication, please cite it as follows:
