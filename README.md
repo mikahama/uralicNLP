@@ -31,7 +31,7 @@ A word form can be lemmatized with UralicNLP. This does not do any disambiguatio
     uralicApi.lemmatize("вирев", "myv")
     >>['вирев', 'вирь']
   
-An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use **uralicApi.lemmatize("вирев", "myv", descrpitive=False)**.
+An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descrpitive=False)*.
 
 ### Morphological analysis
 Apart from just getting the lemmas, it's also possible to perform a complete morphological analysis.
@@ -40,7 +40,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
     uralicApi.analyze("voita", "fin")
     >>[['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]
   
-An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use **uralicApi.analyze("voita", "fin", descrpitive=False)**
+An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descrpitive=False)*
 
 ### Morphological generation
 From a lemma and a morphological analysis, it's possible to generate the desired word form. 
@@ -49,7 +49,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
     uralicApi.generate("käsi+N+Sg+Par", "fin")
     >>[['kättä', 0.0]]
   
-An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a *normative dictionary* generator. **uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=False)** uses a regular normative generator and **uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)** a descriptive generator.
+An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **normative dictionary** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=False)* uses a regular normative generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator.
 
 ### Download the models to speed things up
 
@@ -106,6 +106,11 @@ UralicNLP comes with tools for parsing and searching CoNLL-U formatted data. Ple
 ### Semantics
 
 UralicNLP provides semantic models for Finnish (SemFi) and other Uralic languages (SemUr) for Komi-Zyrian, Erzya, Moksha and Skolt Sami. [Find out how to use semantic models](https://github.com/mikahama/uralicNLP/wiki/Semantics-(SemFi,-SemUr))
+
+### Other functionalities
+
+- [Machine Translation](https://github.com/mikahama/uralicNLP/wiki/Machine-Translation)
+- [Finnish Dependency Parsing](https://github.com/mikahama/uralicNLP/wiki/Dependency-parsing)
 
 # Cite
 
