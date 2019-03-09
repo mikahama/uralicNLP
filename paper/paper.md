@@ -1,5 +1,5 @@
 ---
-title: 'UralicNLP: An NLP library for Uralic Languages'
+title: 'UralicNLP: An NLP Library for Uralic Languages'
 tags:
   - Python
   - morphology
