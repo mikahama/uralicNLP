@@ -81,6 +81,7 @@ class UD_collection():
 		
 class UD_sentence():
 	def __init__(self):
+		self.__iter_index = 0
 		self.comments = ""
 		self.id = "0"
 		self.children = []
@@ -116,6 +117,31 @@ class UD_sentence():
 		for child in children:
 			representation = representation + unicode(child) + u"\n"
 		return representation
+	
+	def __getitem__(self, i):
+		c = self.find()
+		c.sort()
+		return c[i]
+
+	def __iter__(self):
+		self.__iter_children = self.find()
+		self.__iter_children.sort()
+		return self
+
+	def __len__(self):
+		return len(self.find())
+
+	def next(self):
+		if self.__iter_index >= len(self.__iter_children):
+			self.__iter_index = 0
+			raise StopIteration
+		else:
+			self.__iter_index += 1
+			return self.__iter_children[self.__iter_index-1]
+
+	def __next__(self):
+		#python 3
+		return self.next()
 
 class UD_relation():
 	"""docstring for UD_relation"""
@@ -174,6 +200,7 @@ class UD_node():
 		self.form = form 
 		self.lemma = lemma
 		self.upostag = upostag
+		self.pos = upostag
 		self.xpostag = xpostag
 		self.feats = feats
 		self.misc = misc
