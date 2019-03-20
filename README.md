@@ -62,7 +62,7 @@ When models are installed, *generate()*, *analyze()* and *lemmatize()* methods w
 
 ### Syntax - Constraint Grammar disambiguation
 
-**Note** this requires the models to be installed (see above) and [VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html). The disambiguation process is easy.
+**Note** this requires the models to be installed (see above) and [VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/). The disambiguation process is easy.
 
     from uralicNLP.cg3 import Cg3
     sentence = "Kissa voi nauraa"
