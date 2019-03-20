@@ -11,7 +11,7 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
 
     pip install uralicNLP
    
-In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html).
+In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
 If you are using Linux and you run into problems with installing hfst dependency, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
 
