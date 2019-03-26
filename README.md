@@ -22,7 +22,9 @@ The API is under constant development and new languages will be added to the San
 
     from uralicNLP import uralicApi
     uralicApi.supported_languages()
-    >>{'languages': ['sms', 'izh', 'mhr', 'vot', 'olo', 'myv', 'mdf', 'mrj', 'udm', 'yrk', 'koi', 'fin']}
+    >>{u'languages': [u'sms', u'izh', u'mhr', u'vot', u'olo', u'myv', u'mdf', u'mrj', u'udm', u'yrk', u'koi', u'kpv', u'fin'], u'morph': [u'mdf', u'mhr', u'sma', u'olo', u'rus', u'mrj', u'nob', u'fin', u'sms', u'cor', u'deu', u'kpv', u'lav', u'liv', u'kal', u'udm', u'nds', u'est', u'fao', u'izh', u'vot', u'smj', u'smn', u'sme', u'lut', u'vro', u'yrk', u'myv', u'gle', u'crk', u'koi']}
+
+The *languages* key lists the languages that are supported by the lexical lookup, whereas *morph* lists the languages that have morphological FSTs and optionally CGs.
   
 ### Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
