@@ -13,7 +13,7 @@ def supported_languages():
 	urls = mikatools.download_json(semfi_urls)
 	return urls.keys()
 
-def download(lang):
+def download(lang,show_progress=True):
 	urls = mikatools.download_json(semfi_urls)
 	if lang not in urls:
 		raise "Language not supported. Currently supported languages " + ", ".join(urls.keys())
@@ -22,7 +22,7 @@ def download(lang):
 		os.makedirs(download_to)
 	save_to = os.path.join(download_to, "sem.db")
 	print("Downloading: "+ lang)
-	mikatools.download_file(urls[lang], save_to, True)
+	mikatools.download_file(urls[lang], save_to, show_progress)
 
 def __where_semfi(lang, safe=False):
 	folders = __model_base_folders()

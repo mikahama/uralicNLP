@@ -64,7 +64,7 @@ def model_info(language):
 	d = mikatools.json_load(filename)
 	mikatools.print_json_help(d)
 
-def download(language):
+def download(language, show_progress=True):
 	model_types = ["analyser","analyser-norm","generator-desc","generator-norm", "generator", "cg", "metadata.json"]
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
@@ -75,7 +75,7 @@ def download(language):
 			print("Downloading " + model_type + " for " + language)
 			url = api_url + "downloadModel/?language=" + language + "&type=" + model_type
 			save_to = os.path.join(download_to, model_type)
-			mikatools.download_file(url, save_to, True)
+			mikatools.download_file(url, save_to, show_progress)
 			print("Model " + model_type + " for " + language + " was downloaded")
 		except:
 			print("Couldn't download " + model_type + " for " + language + ". It might be that the model for the language is not supported yet.")

@@ -10,7 +10,7 @@ class TestFSTS(unittest.TestCase):
         model_installed = uralicApi.is_language_installed("fin")
         if not model_installed:
             #download the model, if it is not installed
-            uralicApi.download("fin")
+            uralicApi.download("fin",False)
 
     def test_analysis_unicode(self):
         result = uralicApi.analyze(u"äkkipikainen", "fin",force_local=True)
@@ -64,7 +64,7 @@ class TestSemfi(unittest.TestCase):
     def setUp(self):
         model_installed = semfi.is_language_installed("kpv")
         if not model_installed:
-            semfi.download("kpv")
+            semfi.download("kpv",False)
 
     def test_model_downloaded(self):
         installed = semfi.is_language_installed("kpv")
