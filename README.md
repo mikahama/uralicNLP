@@ -4,14 +4,14 @@
 
 UralicNLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
-UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. This information originates from FST tools and dictionaries developed in the [Giellatekno infrastructure](http://giellatekno.uit.no/).
+UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. This information originates from FST tools and dictionaries developed in the [Giellatekno infrastructure](https://victorio.uit.no/langtech/trunk/). Currently, UralicNLP uses the nightly builds for languages supported by Apertium and less frequently updated FSTs and CGs for the other languages.
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
     pip install uralicNLP
    
-In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html).
+In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
 If you are using Linux and you run into problems with installing hfst dependency, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
 
@@ -22,7 +22,9 @@ The API is under constant development and new languages will be added to the San
 
     from uralicNLP import uralicApi
     uralicApi.supported_languages()
-    >>{'languages': ['sms', 'izh', 'mhr', 'vot', 'olo', 'myv', 'mdf', 'mrj', 'udm', 'yrk', 'koi', 'fin']}
+    >>{u'languages': [u'sms', u'izh', u'mhr', u'vot', u'olo', u'myv', u'mdf', u'mrj', u'udm', u'yrk', u'koi', u'kpv', u'fin'], u'morph': [u'mdf', u'mhr', u'sma', u'olo', u'rus', u'mrj', u'nob', u'fin', u'sms', u'cor', u'deu', u'kpv', u'lav', u'liv', u'kal', u'udm', u'nds', u'est', u'fao', u'izh', u'vot', u'smj', u'smn', u'sme', u'lut', u'vro', u'yrk', u'myv', u'gle', u'crk', u'koi']}
+
+The *languages* key lists the languages that are supported by the lexical lookup, whereas *morph* lists the languages that have morphological FSTs and optionally CGs.
 
 ### Download the models 
 
@@ -37,6 +39,7 @@ Use **uralicApi.model_info(language)** to see information about the FSTs and CGs
 
     from uralicNLP import uralicApi
     uralicApi.model_info("fin")
+
 
 ### Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
@@ -78,7 +81,7 @@ The same parameters can be used here as for *generate()* and *analyze()* to spec
 
 ### Syntax - Constraint Grammar disambiguation
 
-**Note** this requires the models to be installed (see above) and [VISL CG-3](http://visl.sdu.dk/cg3/chunked/installation.html). The disambiguation process is easy.
+**Note** this requires the models to be installed (see above) and [VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/). The disambiguation process is easy.
 
     from uralicNLP.cg3 import Cg3
     sentence = "Kissa voi nauraa"
