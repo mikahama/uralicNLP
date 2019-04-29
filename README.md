@@ -1,6 +1,6 @@
 # UralicNLP
 
-[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP)
+[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/)
 
 UralicNLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
@@ -23,7 +23,21 @@ The API is under constant development and new languages will be added to the San
     from uralicNLP import uralicApi
     uralicApi.supported_languages()
     >>{'languages': ['sms', 'izh', 'mhr', 'vot', 'olo', 'myv', 'mdf', 'mrj', 'udm', 'yrk', 'koi', 'fin']}
-  
+
+### Download the models 
+
+If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily.
+
+    from uralicNLP import uralicApi
+    uralicApi.download("fin")
+
+When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
+
+Use **uralicApi.model_info(language)** to see information about the FSTs and CGs such as license and authors. If you know how to make this information more accurate, please don't hesitate to open an issue on GitHub
+
+    from uralicNLP import uralicApi
+    uralicApi.model_info("fin")
+
 ### Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
 
@@ -51,14 +65,16 @@ From a lemma and a morphological analysis, it's possible to generate the desired
   
 An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **normative dictionary** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=False)* uses a regular normative generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator.
 
-### Download the models to speed things up
 
-If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily.
+### Access the HFST transducer
+
+If you need to get a lower level access to [the HFST transducer object](https://hfst.github.io/python/3.12.1/classhfst_1_1HfstTransducer.html), you can use th following code
 
     from uralicNLP import uralicApi
-    uralicApi.download("fin")
+    sms_generator = uralicApi.get_transducer("sms", analyzer=False) #generator
+    sms_analyzer = uralicApi.get_transducer("sms", analyzer=True) #analyzer
 
-When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
+The same parameters can be used here as for *generate()* and *analyze()* to specify whether you want to use the normative or descriptive analyzers and so on. The defaults are *get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictionary_forms=True)*.
 
 ### Syntax - Constraint Grammar disambiguation
 
@@ -83,7 +99,7 @@ The return object is a list of tuples. The first item in each tuple is the word 
     >>voida [u'V', u'Act', u'Ind', u'Prs', u'Sg3', u'<W:0.000000>']
     >>nauraa [u'V', u'Act', u'InfA', u'Sg', u'Lat', u'<W:0.000000>']
     
-The *cg.disambiguate* takes in *morphology_ignore_after* as an optional argument. Its default value is *@* which means that it removes the annotation from the FST output after *@* before feeding it to the CG disambiguator. If the value is set to *None*, the FST morphology is fed in to the CG unmodified.
+The *cg.disambiguate* takes in *remove_symbols* as an optional argument. Its default value is *True* which means that it removes the symbols (segments surrounded by @) from the FST output before feeding it to the CG disambiguator. If the value is set to *False*, the FST morphology is fed in to the CG unmodified.
 
 The **default FST analyzer is a descriptive one**, to use a normative analyzer, set the *descriptive* parameter to False *cg.disambiguate(tokens,descrpitive=False)*.
 
@@ -119,4 +135,6 @@ If you use UralicNLP in an academic publication, please cite it as follows:
 Mika Hämäläinen. (2018, January 9). UralicNLP (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.1143638
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
+
+For the FSTs and CGs, refer to the Giellatekno repository or use **uralicApi.model_info(language)**.
 
