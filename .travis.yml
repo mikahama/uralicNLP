@@ -4,7 +4,10 @@ python:
   - "3.6"
 # command to install dependencies
 install:
+  - pip install python-coveralls
   - python setup.py install
 # command to run tests
 script:
-  - python travis_test.py
+  - coverage run travis_test.py
+after_success:
+  - coveralls

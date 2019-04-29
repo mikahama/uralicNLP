@@ -1,6 +1,6 @@
 #encoding: utf-8
 import unittest
-from uralicNLP import uralicApi
+from uralicNLP import uralicApi, semfi
 from uralicNLP.ud_tools import UD_collection
 import codecs
 
@@ -59,6 +59,25 @@ class TestUD(unittest.TestCase):
     def test_find_non_existing_word(self):
         words = self.ud.find_sentences()[0].find(query={"form": u"hattua"})
         self.assertEqual(0, len(words))
+
+class TestSemfi(unittest.TestCase):
+    def setUp(self):
+        model_installed = semfi.is_language_installed("kpv")
+        if not model_installed:
+            semfi.download("kpv")
+
+    def test_model_downloaded(self):
+        installed = semfi.is_language_installed("kpv")
+        self.assertEqual(installed, True)
+
+    def test_get_word(self):
+        w = semfi.get_word("кань", "N", "kpv")
+        self.assertIsNotNone(w)
+
+    def tes_non_word(self):
+        w = semfi.get_word("kisseli", "N", "kpv")
+        self.assertIsNone(w)
+
 
 if __name__ == '__main__':
     unittest.main()

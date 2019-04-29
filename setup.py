@@ -29,10 +29,10 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://mikakalevi.com/nlp/uralicnlp/',
+    url='https://github.com/mikahama/uralicNLP',
 
     # Author details
-    author='Mika Hämäläinen, Dept. of  Modern Languages, University of Helsinki',
+    author='Mika Hämäläinen, Dept. of  Digital Humanities, University of Helsinki',
     author_email='mika.hamalainen@helsinki.fi',
 
     # Choose your license
@@ -71,7 +71,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["requests", "hfst", "mikatools"],
+    install_requires=["requests", "hfst", "mikatools>=0.0.6"],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
@@ -94,4 +94,9 @@ setup(
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={},
+    project_urls={  # Optional
+        'Bug Reports': 'https://github.com/mikahama/uralicNLP/issues',
+        'Wiki': 'https://github.com/mikahama/uralicNLP/wiki',
+        'Developer': 'https://mikakalevi.com/',
+    },
 )

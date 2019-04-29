@@ -1,5 +1,8 @@
 import requests, os
 import ssl
+import copy
+import re
+import mikatools
 
 
 try:
@@ -56,17 +59,23 @@ def __where_models(language, safe=False):
 		return None
 	raise ModelNotFound("Models for " + language + " were not in " + " or ".join(paths) + ". Use uralicApi.download(\""+ language+"\") to download models.")
 
+def model_info(language):
+	filename = os.path.join(__where_models(language), "metadata.json")
+	d = mikatools.json_load(filename)
+	mikatools.print_json_help(d)
+
 def download(language):
-	model_types = ["analyser","analyser-norm","generator-desc","generator-norm", "generator", "cg"]
+	model_types = ["analyser","analyser-norm","generator-desc","generator-norm", "generator", "cg", "metadata.json"]
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
 		os.makedirs(download_to)
 	for model_type in model_types:
 		try:
-			model_file = urlopen(api_url + "downloadModel/?language=" + language + "&type=" + model_type)
-			with open(os.path.join(download_to, model_type) ,'wb') as output:
-				output.write(model_file.read())
+			print("Downloading " + model_type + " for " + language)
+			url = api_url + "downloadModel/?language=" + language + "&type=" + model_type
+			save_to = os.path.join(download_to, model_type)
+			mikatools.download_file(url, save_to, True)
 			print("Model " + model_type + " for " + language + " was downloaded")
 		except:
 			print("Couldn't download " + model_type + " for " + language + ". It might be that the model for the language is not supported yet.")
@@ -83,15 +92,35 @@ def __generator_model_name(descrpitive, dictionary_forms):
 		return "generator-norm"
 
 def __generate_locally(query, language, cache=True, descrpitive=False, dictionary_forms=True):
-	if cache and language + str(descrpitive) + str(dictionary_forms) in generator_cache:
-		generator = generator_cache[language + str(descrpitive) + str(dictionary_forms)]
-	else:
-		filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
-		input_stream = hfst.HfstInputStream(filename)
-		generator = input_stream.read()
-		generator_cache[language+ str(descrpitive) + str(dictionary_forms)] = generator
+	generator = get_transducer(language,cache=cache, analyzer=False, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	r = generator.lookup(query)
 	return r
+
+def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictionary_forms=True, convert_to_openfst=False):
+	conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
+	if not analyzer:
+		#generator
+		if cache and language + str(descrpitive) + str(dictionary_forms) + str(convert_to_openfst) in generator_cache:
+			generator = generator_cache[language + str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)]
+		else:
+			filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
+			input_stream = hfst.HfstInputStream(filename)
+			generator = input_stream.read()
+			if convert_to_openfst:
+				generator.convert(conversion_type)
+			generator_cache[language+ str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)] = generator
+	else:
+		if cache and language + str(descrpitive)+ str(convert_to_openfst) in analyzer_cache:
+			generator = analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)]
+		else:
+			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
+			input_stream = hfst.HfstInputStream(filename)
+			generator = input_stream.read()
+			if convert_to_openfst:
+				generator.convert(conversion_type)
+			analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)] = generator
+	return generator
+
 
 def __analyzer_model_name(descrpitive):
 	if descrpitive:
@@ -100,13 +129,7 @@ def __analyzer_model_name(descrpitive):
 		return "analyser-norm"
 
 def __analyze_locally(query, language, cache=True, descrpitive=True):
-	if cache and language + str(descrpitive) in analyzer_cache:
-		generator = analyzer_cache[language+ str(descrpitive)]
-	else:
-		filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
-		input_stream = hfst.HfstInputStream(filename)
-		generator = input_stream.read()
-		analyzer_cache[language+ str(descrpitive)] = generator
+	generator = get_transducer(language,cache=cache, analyzer=True, descrpitive=descrpitive)
 	r = generator.lookup(query)
 	return r
 
@@ -115,17 +138,64 @@ def __encode_query(query):
 		query = query.encode('utf-8')
 	return query
 
+def __regex_escape(word):
+	escape = ["#", "/","+","~","\\","&","-","$", "*", "|", "?", "{","}","\"",":",";","!", "."]
+	for e in escape:
+		word = word.replace(e, "%" +e)
+	return word
+
+def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
+	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True)
+	abcs = analyzer.get_alphabet()
+	f = []
+	flags = []
+	for abc in abcs:
+		for fi in filter_out:
+			if abc.startswith(fi):
+				f.append(__regex_escape(abc))
+				break
+		if "@" in abc and "@_"  not in abc:
+			flags.append( "\"" + abc + "\"")
+	flag_string = ""
+	flag_end = ""
+	start_flag_end = ""
+	flag_string_start = ""
+	if len(flags) > 0:
+		flag_string_start =  " [ "+ " | ".join(flags)
+		flag_string =  flag_string_start +" | "
+		flag_string_start = "" +flag_string_start
+		flag_end = "]"
+		start_flag_end = "]* "
+	reg_text = flag_string_start + start_flag_end + "{"+word+"} %+"+pos+ flag_string + " [ ? -  [ "+ " | ".join(f) +" ]]"+flag_end+"*"
+	reg = hfst.regex(reg_text)
+	analyzer2 = copy.copy(analyzer)
+	analyzer2.compose(reg)
+	output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
+	output = filter(lambda x: x, output)
+	output = list(map(lambda x: x.split('\t'), output))
+	return list(map(lambda x: (x[0], float(x[1]),), output))
+
 def generate(query, language, force_local=False, descrpitive=False, dictionary_forms=True):
 	if force_local or __where_models(language, safe=True):
 		return __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	else:
 		return __api_generate(query, language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 
-def analyze(query, language, force_local=False, descrpitive=True):
+def __remove_symbols(string):
+	return re.sub('@[^@]*@', '', string)
+
+def analyze(query, language, force_local=False, descrpitive=True, remove_symbols=True):
 	if force_local or __where_models(language, safe=True):
-		return __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
+		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
 	else:
-		return __api_analyze(query, language,descrpitive=descrpitive)
+		r = __api_analyze(query, language,descrpitive=descrpitive)
+	if remove_symbols:
+		r = list(r)
+		for i in range(len(r)):
+			item = r[i]
+			r[i] = (__remove_symbols(item[0]),item[1])
+
+	return r
 
 def lemmatize(word, language, force_local=False, descrpitive=True):
     analysis = analyze(word, language, force_local, descrpitive=descrpitive)

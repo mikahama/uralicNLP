@@ -1,7 +1,7 @@
 #encoding: utf-8
 import mikatools
 import os
-from uralicApi import __find_writable_folder, __model_base_folders, ModelNotFound
+from .uralicApi import __find_writable_folder, __model_base_folders, ModelNotFound
 import sqlite3
 from collections import defaultdict
 
@@ -111,23 +111,29 @@ def get_words(lemma, lang):
 	all_rows = c.fetchall()
 	return __add_titles(all_rows, lang, "words")
 
-def get_all_relations(word_object, lang, sort=False):
+def get_all_relations(word_object, lang, sort=False, search_by_word2=False):
 	sorting = ""
 	if sort:
 		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'"'+sorting)
+	n = "1"
+	if search_by_word2:
+		n = "2"
+	c.execute('SELECT * FROM relations WHERE word'+n+'="'+word_object["id"]+'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object, None, all_rows, lang)
 	return rows
 
-def get_by_relation(word_object, relation, lang, sort=False):
+def get_by_relation(word_object, relation, lang, sort=False, search_by_word2=False):
 	sorting = ""
 	if sort:
 		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and relation_name="' + relation +'"'+sorting)
+	n = "1"
+	if search_by_word2:
+		n = "2"
+	c.execute('SELECT * FROM relations WHERE word'+n+'="'+word_object["id"]+'" and relation_name="' + relation +'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object, None, all_rows, lang)
