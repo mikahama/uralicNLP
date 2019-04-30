@@ -139,5 +139,5 @@ Mika Hämäläinen. (2018, January 9). UralicNLP (Version v1.0). Zenodo. http://
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
 
-For the FSTs and CGs, refer to the Giellatekno repository or use **uralicApi.model_info(language)**.
+For citing the FSTs and CGs, see *uralicApi.model_info(language)*.
 
