@@ -4,7 +4,7 @@
 
 Before you report a bug, make sure you are using the latest version of
 - UralicNLP *pip install -U uralicNLP*
-- [VISL CG](https://mikalikes.men/using-hfst-on-python/)
+- [VISL CG](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/)
 - Language models *uralicApi.download(language)*
 
 Open up an issue on GitHub
