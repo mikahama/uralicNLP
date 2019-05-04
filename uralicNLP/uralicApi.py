@@ -200,14 +200,17 @@ def analyze(query, language, force_local=False, descrpitive=True, remove_symbols
 def lemmatize(word, language, force_local=False, descrpitive=True):
     analysis = analyze(word, language, force_local, descrpitive=descrpitive)
     lemmas = []
+    split_by = "+"
+    if language == "swe":
+    	split_by = "<"
     for tupla in analysis:
         an = tupla[0]
         if "@" in an:
             lemma = an.split("@")[0]
         else:
             lemma = an
-        if "+" in lemma:
-            lemmas.append(lemma.split("+")[0])
+        if split_by in lemma:
+            lemmas.append(lemma.split(split_by)[0])
     lemmas = list(set(lemmas))
     return lemmas
 
