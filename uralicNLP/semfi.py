@@ -155,7 +155,7 @@ def get_by_word_and_relation(word_object1, word_object2, relation, lang, sort=Fa
 	if sort:
 		sorting = " ORDER BY frequency DESC"
 	c = __get_connection(lang)
-	c.execute('SELECT * FROM relations WHERE word1="'+word_object["id"]+'" and word2="' + word_object2["id"] +'" and relation_name="' + relation +'"'+sorting)
+	c.execute('SELECT * FROM relations WHERE word1="'+word_object1["id"]+'" and word2="' + word_object2["id"] +'" and relation_name="' + relation +'"'+sorting)
 	all_rows = c.fetchall()
 	all_rows = __add_titles(all_rows, lang, "relations")
 	rows = __replace_by_word_object(word_object1, word_object2, all_rows, lang)
