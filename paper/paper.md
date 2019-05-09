@@ -67,10 +67,9 @@ UralicNLP comes with functionality to parse Treebanks. The parsed Treebanks can 
 
 # Distribution
 
-UralicNLP is distributed as an installable package through PyPi with the name uralicNLP[^1]. The source code is released under the Apache open source license on GitHub[^2].
+UralicNLP is distributed as an installable package through PyPi with the name uralicNLP[^1]. The source code is released under the Apache open source license on GitHub.
 
 # References
 
 [^1]: pip install uralicNLP
-[^2]: [https://github.com/mikahama/uralicNLP](https://github.com/mikahama/uralicNLP)
 
