@@ -1,6 +1,6 @@
 # UralicNLP
 
-[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/)
+[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
 
 UralicNLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
@@ -135,9 +135,7 @@ UralicNLP provides semantic models for Finnish (SemFi) and other Uralic language
 
 If you use UralicNLP in an academic publication, please cite it as follows:
 
-Mika Hämäläinen. (2018, January 9). UralicNLP (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.1143638
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
+Hämäläinen, Mika. (2019). UralicNLP: An NLP Library for Uralic Languages. Journal of open source software, 4(37), [1345]. https://doi.org/10.21105/joss.01345
 
 For citing the FSTs and CGs, see *uralicApi.model_info(language)*.
 
