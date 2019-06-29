@@ -3,6 +3,7 @@ from .uralicApi import analyze as uralic_api_analyze
 from .uralicApi import __where_models as where_models
 import os, sys
 from subprocess import Popen, PIPE
+from mikatools import open_write
 
 def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True):
 	sentence = []
@@ -33,12 +34,17 @@ class Cg3():
 		self.cg_path = cg_path
 		self.language = language
 
-	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True):
+	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True, temp_file=None):
 		hfst_output = __parse_sentence(words + [""], self.language, morphology_ignore_after, descrpitive=descrpitive,remove_symbols=remove_symbols)
-		p1 = Popen(["echo", hfst_output], stdout=PIPE)
+		if temp_file is None:
+			p1 = Popen(["echo", hfst_output], stdout=PIPE)
+		else:
+			f = open_write(temp_file)
+			f.write(hfst_output)
+			f.close()
+			p1 = Popen(["cat", temp_file], stdout=PIPE)
 		cg_conv = Popen(["cg-conv" ,"-f"], stdout=PIPE, stdin=p1.stdout)
 		vislcg3 = Popen(['vislcg3', '--grammar', self.cg_path], stdout=PIPE, stdin=cg_conv.stdout)
-		
 		cg_results, error = vislcg3.communicate()
 		return self.__parse_cg_results(cg_results)
 
