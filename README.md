@@ -13,7 +13,9 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
    
 In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
-If you are using Linux and you run into problems with installing hfst dependency, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
+If you are using Linux and you run into problems with installing HFST dependency, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
+
+On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](https://go.microsoft.com/fwlink/?LinkId=746571).
 
 ## Usage
 
