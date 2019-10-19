@@ -168,7 +168,7 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 		start_flag_end = "]* "
 	reg_text = flag_string_start + start_flag_end + "{"+word+"} %+"+pos+ flag_string + " [ ? -  [ "+ " | ".join(f) +" ]]"+flag_end+"*"
 	reg = hfst.regex(reg_text)
-	analyzer2 = copy.copy(analyzer)
+	analyzer2 = copy.deepcopy(analyzer)
 	analyzer2.compose(reg)
 	output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
 	output = filter(lambda x: x, output)
