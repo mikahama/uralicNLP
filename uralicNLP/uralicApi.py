@@ -145,7 +145,7 @@ def __regex_escape(word):
 	return word
 
 def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
-	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True)
+	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=False)
 	abcs = analyzer.get_alphabet()
 	f = []
 	flags = []
