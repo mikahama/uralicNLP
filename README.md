@@ -15,7 +15,7 @@ In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 imp
 
 If you are using Linux and you run into problems with installing HFST dependency, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
 
-On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](https://go.microsoft.com/fwlink/?LinkId=746571).
+On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](https://go.microsoft.com/fwlink/?LinkId=746571). Although, I would recommend using [Windows subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 ## Usage
 
