@@ -49,11 +49,11 @@ class TestFSTS(unittest.TestCase):
         self.assertEqual(result[0], 'auto|saha')
 
     def test_lemmatize_swe(self):
-        result = uralicApi.lemmatize("livsmedel", "fin",force_local=True)
+        result = uralicApi.lemmatize("livsmedel", "swe",force_local=True)
         self.assertEqual(result[0], 'livsmedel')
 
     def test_lemmatize_swe_bound(self):
-        result = uralicApi.lemmatize("livsmedel", "fin",force_local=True, word_boundaries=True)
+        result = uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True)
         self.assertTrue('livs|medel' in result[0])
 
 class TestUD(unittest.TestCase):
