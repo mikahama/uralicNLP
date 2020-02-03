@@ -204,20 +204,23 @@ def _remove_analysis_symbols(r):
 		r[i] = (__remove_symbols(item[0]),item[1])
 	return r
 
-def lemmatize(word, language, force_local=False, descrpitive=True):
+def lemmatize(word, language, force_local=False, descrpitive=True, word_boundaries=False):
     analysis = analyze(word, language, force_local, descrpitive=descrpitive)
     lemmas = []
-    split_by = "+"
-    if language == "swe":
-    	split_by = "<"
+    if word_boundaries:
+    	bound = "|"
+    else:
+    	bound = ""
     for tupla in analysis:
         an = tupla[0]
-        if "@" in an:
-            lemma = an.split("@")[0]
+        if language == "swe":
+            lemma = re.sub("[\<].*?[\>]", bound, an).strip(bound)
+            lemmas.append(lemma)
         else:
-            lemma = an
-        if split_by in lemma:
-            lemmas.append(lemma.split(split_by)[0])
+            res = an.split("+Cmp#")
+            lemma = [x.split("+")[0] for x in res]
+            lemmas.append(bound.join(lemma))
+
     lemmas = list(set(lemmas))
     return lemmas
 
