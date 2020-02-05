@@ -175,7 +175,7 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 	output = list(map(lambda x: x.split('\t'), output))
 	return list(map(lambda x: (x[0], float(x[1]),), output))
 
-def generate(query, language, force_local=False, descrpitive=False, dictionary_forms=True, remove_symbols=True):
+def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=True, remove_symbols=True):
 	if force_local or __where_models(language, safe=True):
 		r = __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	else:
@@ -187,7 +187,7 @@ def generate(query, language, force_local=False, descrpitive=False, dictionary_f
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=False, descrpitive=True, remove_symbols=True):
+def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True):
 	if force_local or __where_models(language, safe=True):
 		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
 	else:
@@ -204,7 +204,7 @@ def _remove_analysis_symbols(r):
 		r[i] = (__remove_symbols(item[0]),item[1])
 	return r
 
-def lemmatize(word, language, force_local=False, descrpitive=True, word_boundaries=False):
+def lemmatize(word, language, force_local=True, descrpitive=True, word_boundaries=False):
     analysis = analyze(word, language, force_local, descrpitive=descrpitive)
     lemmas = []
     if word_boundaries:
