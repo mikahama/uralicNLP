@@ -54,7 +54,7 @@ class TestFSTS(unittest.TestCase):
 
     def test_lemmatize_swe_bound(self):
         result = uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True)
-        self.assertTrue('livs|medel' in result[0])
+        self.assertTrue('livs|medel' in result)
 
 class TestUD(unittest.TestCase):
     def setUp(self):

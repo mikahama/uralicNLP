@@ -32,12 +32,16 @@ print(uralicApi.lemmatize("voita", "fin", descrpitive=True))
 #uralicApi.download("kpv")
 
 """
+"""
 cg = Cg3("fin")
 print(cg.disambiguate(["Kissa","voi","nauraa", "."], descrpitive=True))
 
 
 cg = Cg3("kpv")
 print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
+"""
+
+print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
 
 """
 
