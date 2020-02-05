@@ -1,2 +1,4 @@
 .coverage
 .pyc
+uralicNLP/__pycache__/*
+uralicNLP/models/*

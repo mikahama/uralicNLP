@@ -68,7 +68,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["requests", "hfst", "mikatools>=0.0.6"],
+    install_requires=["requests", "hfst", "mikatools>=0.0.6", "argparse"],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
