@@ -1,3 +1,4 @@
+#encoding: utf-8
 import requests, os
 import ssl
 import copy
@@ -227,6 +228,8 @@ def lemmatize(word, language, force_local=True, descrpitive=True, word_boundarie
         if language == "swe":
             lemma = re.sub("[\<].*?[\>]", bound, an).strip(bound)
             lemmas.append(lemma)
+        elif language == "ara":
+        	lemmas.append(bound.join(re.findall(r"[ء-ي]+", an)))
         else:
             res = an.split("+Cmp#")
             lemma = [x.split("+")[0] for x in res]

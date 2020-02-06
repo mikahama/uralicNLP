@@ -3,6 +3,7 @@ from uralicNLP import uralicApi
 from uralicNLP.cg3 import Cg3
 from uralicNLP.translate import *
 from uralicNLP import dependency
+import re
 
 #print(uralicApi.supported_languages())
 
@@ -42,10 +43,15 @@ print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
 """
 
 #print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
+print("كتاب")
 
 print(uralicApi.analyze("كتاب","ara"))
 print(uralicApi.generate("+noun+humanكاتب+masc+pl@","ara"))
 
+print(uralicApi.lemmatize("كتاب","ara"))
+
+str = "+noun+humanكاتب+masc+pl@"
+print(re.findall(r"[ء-ي]+", str))
 """
 
 translator = ApertiumGiellateknoTranslator()
