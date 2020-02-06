@@ -43,6 +43,8 @@ print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
 """
 
 #print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
+
+"""
 print("كتاب")
 
 print(uralicApi.analyze("كتاب","ara"))
@@ -52,6 +54,13 @@ print(uralicApi.lemmatize("كتاب","ara"))
 
 str = "+noun+humanكاتب+masc+pl@"
 print(re.findall(r"[ء-ي]+", str))
+
+"""
+
+print(uralicApi.analyze("cats", "eng"))
+print(uralicApi.generate("cat[N]+N+PL", "eng"))
+print(uralicApi.lemmatize("cats", "eng"))
+
 """
 
 translator = ApertiumGiellateknoTranslator()

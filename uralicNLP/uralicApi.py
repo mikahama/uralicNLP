@@ -233,6 +233,8 @@ def lemmatize(word, language, force_local=True, descrpitive=True, word_boundarie
         else:
             res = an.split("+Cmp#")
             lemma = [x.split("+")[0] for x in res]
+            if language == "eng":
+            	lemma = [re.sub("[\[].*?[\]]", "", x) for x in lemma]
             lemmas.append(bound.join(lemma))
 
     lemmas = list(set(lemmas))
