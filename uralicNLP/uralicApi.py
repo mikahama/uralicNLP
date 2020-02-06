@@ -3,6 +3,7 @@ import ssl
 import copy
 import re
 import mikatools
+from .foma import FomaFSTWrapper
 
 
 try:
@@ -78,6 +79,8 @@ def download(language, show_progress=True):
 			mikatools.download_file(url, save_to, show_progress)
 			print("Model " + model_type + " for " + language + " was downloaded")
 		except:
+			if model_type == "metadata.json":
+				mikatools.json_dump({"info":"no metadata provided"}, save_to)
 			print("Couldn't download " + model_type + " for " + language + ". It might be that the model for the language is not supported yet.")
 
 generator_cache = {}
@@ -104,8 +107,7 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 			generator = generator_cache[language + str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)]
 		else:
 			filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
-			input_stream = hfst.HfstInputStream(filename)
-			generator = input_stream.read()
+			generator = _load_transducer(filename, True)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
 			generator_cache[language+ str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)] = generator
@@ -114,12 +116,21 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 			generator = analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)]
 		else:
 			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
-			input_stream = hfst.HfstInputStream(filename)
-			generator = input_stream.read()
+			generator =  _load_transducer(filename, False)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
 			analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)] = generator
 	return generator
+
+def _load_transducer(filename, invert):
+	metadata_filename =  os.path.join(os.path.dirname(filename), "metadata.json")
+	metadata = mikatools.json_load(metadata_filename)
+	if "fst_type" in metadata and metadata["fst_type"] == "foma":
+		return FomaFSTWrapper(filename, invert)
+	else:
+		input_stream = hfst.HfstInputStream(filename)
+		return input_stream.read()
+
 
 
 def __analyzer_model_name(descrpitive):

@@ -41,7 +41,10 @@ cg = Cg3("kpv")
 print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
 """
 
-print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
+#print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
+
+print(uralicApi.analyze("كتاب","ara"))
+print(uralicApi.generate("+noun+humanكاتب+masc+pl@","ara"))
 
 """
 
