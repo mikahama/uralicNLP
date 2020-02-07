@@ -1,7 +1,7 @@
-#try:
-from . import foma
-#except:
-#	foma = None
+try:
+	from . import foma
+except:
+	foma = None
 import warnings
 
 
