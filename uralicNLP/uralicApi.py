@@ -5,7 +5,7 @@ import copy
 import re
 import mikatools
 from .foma import FomaFSTWrapper
-
+from .string_processing import filter_arabic
 
 try:
     # For Python 3.0 and later
@@ -229,7 +229,7 @@ def lemmatize(word, language, force_local=True, descrpitive=True, word_boundarie
             lemma = re.sub("[\<].*?[\>]", bound, an).strip(bound)
             lemmas.append(lemma)
         elif language == "ara":
-        	lemmas.append(bound.join(re.findall(r"[ء-ي]+", an)))
+        	lemmas.append(filter_arabic(an,combine_by=bound))
         else:
             res = an.split("+Cmp#")
             lemma = [x.split("+")[0] for x in res]

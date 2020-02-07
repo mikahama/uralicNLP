@@ -8,3 +8,9 @@ def char_split(word):
 	word = unicodedata.normalize('NFKC',word)
 	_result = pattern.findall(word)
 	return list(_result)
+
+def filter_arabic(text, keep_vowels=True, combine_by=""):
+	if keep_vowels:
+		return combine_by.join(re.findall(r"[ء-ي'ًٌٍَُِّْـ']+", text))
+	else:
+		return combine_by.join(re.findall(r"[ء-ي]+", text))
