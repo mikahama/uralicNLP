@@ -1,2 +1,6 @@
 .coverage
 hfst_trials.py
+.pyc
+uralicNLP/__pycache__/*
+uralicNLP/models/*
+__pycache__/

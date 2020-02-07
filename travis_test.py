@@ -8,9 +8,13 @@ class TestFSTS(unittest.TestCase):
 
     def setUp(self):
         model_installed = uralicApi.is_language_installed("fin")
+        model_installed2 = uralicApi.is_language_installed("swe")
         if not model_installed:
             #download the model, if it is not installed
             uralicApi.download("fin",False)
+        if not model_installed2:
+            #download the model, if it is not installed
+            uralicApi.download("swe",False)
 
     def test_analysis_unicode(self):
         result = uralicApi.analyze(u"äkkipikainen", "fin",force_local=True)
@@ -35,6 +39,22 @@ class TestFSTS(unittest.TestCase):
     def test_lemmatize(self):
         result = uralicApi.lemmatize("lehmäni", "fin",force_local=True)
         self.assertEqual(result[0], 'lehmä')
+
+    def test_lemmatize_fin(self):
+        result = uralicApi.lemmatize("autosaha", "fin",force_local=True)
+        self.assertEqual(result[0], 'autosaha')
+
+    def test_lemmatize_fin_bound(self):
+        result = uralicApi.lemmatize("autosaha", "fin",force_local=True, word_boundaries=True)
+        self.assertEqual(result[0], 'auto|saha')
+
+    def test_lemmatize_swe(self):
+        result = uralicApi.lemmatize("livsmedel", "swe",force_local=True)
+        self.assertEqual(result[0], 'livsmedel')
+
+    def test_lemmatize_swe_bound(self):
+        result = uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True)
+        self.assertTrue('livs|medel' in result)
 
 class TestUD(unittest.TestCase):
     def setUp(self):

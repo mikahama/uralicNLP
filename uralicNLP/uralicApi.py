@@ -1,9 +1,11 @@
+#encoding: utf-8
 import requests, os
 import ssl
 import copy
 import re
 import mikatools
-
+from .foma import FomaFSTWrapper
+from .string_processing import filter_arabic
 
 try:
     # For Python 3.0 and later
@@ -78,6 +80,8 @@ def download(language, show_progress=True):
 			mikatools.download_file(url, save_to, show_progress)
 			print("Model " + model_type + " for " + language + " was downloaded")
 		except:
+			if model_type == "metadata.json":
+				mikatools.json_dump({"info":"no metadata provided"}, save_to)
 			print("Couldn't download " + model_type + " for " + language + ". It might be that the model for the language is not supported yet.")
 
 generator_cache = {}
@@ -104,8 +108,7 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 			generator = generator_cache[language + str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)]
 		else:
 			filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
-			input_stream = hfst.HfstInputStream(filename)
-			generator = input_stream.read()
+			generator = _load_transducer(filename, True)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
 			generator_cache[language+ str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)] = generator
@@ -114,12 +117,21 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 			generator = analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)]
 		else:
 			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
-			input_stream = hfst.HfstInputStream(filename)
-			generator = input_stream.read()
+			generator =  _load_transducer(filename, False)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
 			analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)] = generator
 	return generator
+
+def _load_transducer(filename, invert):
+	metadata_filename =  os.path.join(os.path.dirname(filename), "metadata.json")
+	metadata = mikatools.json_load(metadata_filename)
+	if "fst_type" in metadata and metadata["fst_type"] == "foma":
+		return FomaFSTWrapper(filename, invert)
+	else:
+		input_stream = hfst.HfstInputStream(filename)
+		return input_stream.read()
+
 
 
 def __analyzer_model_name(descrpitive):
@@ -145,7 +157,7 @@ def __regex_escape(word):
 	return word
 
 def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
-	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True)
+	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=False)
 	abcs = analyzer.get_alphabet()
 	f = []
 	flags = []
@@ -168,14 +180,14 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 		start_flag_end = "]* "
 	reg_text = flag_string_start + start_flag_end + "{"+word+"} %+"+pos+ flag_string + " [ ? -  [ "+ " | ".join(f) +" ]]"+flag_end+"*"
 	reg = hfst.regex(reg_text)
-	analyzer2 = copy.copy(analyzer)
+	analyzer2 = analyzer
 	analyzer2.compose(reg)
 	output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
 	output = filter(lambda x: x, output)
 	output = list(map(lambda x: x.split('\t'), output))
 	return list(map(lambda x: (x[0], float(x[1]),), output))
 
-def generate(query, language, force_local=False, descrpitive=False, dictionary_forms=True, remove_symbols=True):
+def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=True, remove_symbols=True):
 	if force_local or __where_models(language, safe=True):
 		r = __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	else:
@@ -187,7 +199,7 @@ def generate(query, language, force_local=False, descrpitive=False, dictionary_f
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=False, descrpitive=True, remove_symbols=True):
+def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True):
 	if force_local or __where_models(language, safe=True):
 		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
 	else:
@@ -204,20 +216,27 @@ def _remove_analysis_symbols(r):
 		r[i] = (__remove_symbols(item[0]),item[1])
 	return r
 
-def lemmatize(word, language, force_local=False, descrpitive=True):
+def lemmatize(word, language, force_local=True, descrpitive=True, word_boundaries=False):
     analysis = analyze(word, language, force_local, descrpitive=descrpitive)
     lemmas = []
-    split_by = "+"
-    if language == "swe":
-    	split_by = "<"
+    if word_boundaries:
+    	bound = "|"
+    else:
+    	bound = ""
     for tupla in analysis:
         an = tupla[0]
-        if "@" in an:
-            lemma = an.split("@")[0]
+        if language == "swe":
+            lemma = re.sub("[\<].*?[\>]", bound, an).strip(bound)
+            lemmas.append(lemma)
+        elif language == "ara":
+        	lemmas.append(filter_arabic(an,combine_by=bound))
         else:
-            lemma = an
-        if split_by in lemma:
-            lemmas.append(lemma.split(split_by)[0])
+            res = an.split("+Cmp#")
+            lemma = [x.split("+")[0] for x in res]
+            if language == "eng":
+            	lemma = [re.sub("[\[].*?[\]]", "", x) for x in lemma]
+            lemmas.append(bound.join(lemma))
+
     lemmas = list(set(lemmas))
     return lemmas
 

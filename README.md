@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
 
-UralicNLP is a natural language processing library for small Uralic languages. Currently its functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
+UralicNLP is a natural language processing library targeted mainly for Uralic languages. Its lexicographic functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
-UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic languages. At the time of writing, the following languages are supported: Skolt Sami, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak and Finnish. This information originates from FST tools and dictionaries developed in the [Giellatekno infrastructure](https://victorio.uit.no/langtech/trunk/). Currently, UralicNLP uses the nightly builds for languages supported by Apertium and less frequently updated FSTs and CGs for the other languages.
+UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. At the time of writing, at least the following languages are supported: Finnish, Russian, German, Eglish, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. This information originates mainly from FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses the nightly builds for languages supported by Apertium and less frequently updated FSTs and CGs for the other languages.
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
@@ -13,9 +13,11 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
    
 In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
-If you are using Linux and you run into problems with installing HFST dependency, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
+If you are using Linux and you run into problems with installing HFST, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
 
-On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](https://go.microsoft.com/fwlink/?LinkId=746571).
+On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](https://go.microsoft.com/fwlink/?LinkId=746571). Although, I would recommend using [Windows subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+Arabic and English FSTs require [Foma](https://fomafst.github.io/).
 
 ## Usage
 
@@ -30,14 +32,20 @@ The *languages* key lists the languages that are supported by the lexical lookup
 
 ### Download the models 
 
-If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily.
+If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily. Although, it is possible to use the transducers over Akusanat API.
+
+On command line:
+
+    python -m uralicNLP.download --languages fin eng
+
+From python code:
 
     from uralicNLP import uralicApi
     uralicApi.download("fin")
 
 When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
 
-Use **uralicApi.model_info(language)** to see information about the FSTs and CGs such as license and authors. If you know how to make this information more accurate, please don't hesitate to open an issue on GitHub
+Use **uralicApi.model_info(language)** to see information about the FSTs and CGs such as license and authors. If you know how to make this information more accurate, please don't hesitate to open an issue on GitHub.
 
     from uralicNLP import uralicApi
     uralicApi.model_info("fin")
@@ -49,8 +57,10 @@ A word form can be lemmatized with UralicNLP. This does not do any disambiguatio
     from uralicNLP import uralicApi
     uralicApi.lemmatize("вирев", "myv")
     >>['вирев', 'вирь']
+    uralicApi.lemmatize("luutapiiri", "fin", word_boundaries=True)
+    >>['luuta|piiri', 'luu|tapiiri']
   
-An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descrpitive=False)*.
+An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descrpitive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |.
 
 ### Morphological analysis
 Apart from just getting the lemmas, it's also possible to perform a complete morphological analysis.
@@ -73,7 +83,7 @@ An example of generating the singular partitive form for the Finnish noun *käsi
 
 ### Access the HFST transducer
 
-If you need to get a lower level access to [the HFST transducer object](https://hfst.github.io/python/3.12.1/classhfst_1_1HfstTransducer.html), you can use th following code
+If you need to get a lower level access to [the HFST transducer object](https://hfst.github.io/python/3.12.1/classhfst_1_1HfstTransducer.html), you can use the following code
 
     from uralicNLP import uralicApi
     sms_generator = uralicApi.get_transducer("sms", analyzer=False) #generator

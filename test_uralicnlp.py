@@ -3,6 +3,7 @@ from uralicNLP import uralicApi
 from uralicNLP.cg3 import Cg3
 from uralicNLP.translate import *
 from uralicNLP import dependency
+import re
 
 #print(uralicApi.supported_languages())
 
@@ -32,12 +33,38 @@ print(uralicApi.lemmatize("voita", "fin", descrpitive=True))
 #uralicApi.download("kpv")
 
 """
+"""
 cg = Cg3("fin")
 print(cg.disambiguate(["Kissa","voi","nauraa", "."], descrpitive=True))
 
 
 cg = Cg3("kpv")
 print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
+"""
+
+#print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
+
+
+
+
+for w in ["الكتاب", "الكاتب", "الميكا", "المكتوب", "كلب", "كلبين", "كلاب", "كلبتي", "كلبي", "قلب", "قلبين"]:
+	print("\n\n" +w)
+	print(uralicApi.analyze(w,"ara"))
+	print(uralicApi.lemmatize(w,"ara"))
+print(uralicApi.generate("+noun+humanكاتب+masc+pl@","ara"))
+
+
+
+str = "+adj{كَلْبِيّ}+masc+sg@"
+print(re.findall(r"[ء-ي]+", str))
+
+
+"""
+print(uralicApi.analyze("cats", "eng"))
+print(uralicApi.generate("cat[N]+N+PL", "eng"))
+print(uralicApi.lemmatize("cats", "eng"))
+
+"""
 
 """
 
