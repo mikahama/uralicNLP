@@ -23,6 +23,7 @@ from ctypes import *
 from ctypes.util import find_library
 
 from . import six_1_11_0 as six
+import warnings
 
 fomalibpath = find_library('foma')
 foma = cdll.LoadLibrary(fomalibpath)
@@ -107,8 +108,12 @@ foma_fsm_read_binary_file.restype = POINTER(FSTstruct)
 """Define functions."""
 foma_add_defined = foma.add_defined
 foma_add_defined.restype = c_int
-foma_add_defined_function = foma.add_defined_function
-foma_add_defined_function.restype = c_int
+try:
+    #These seem to cause a crash on some systems...
+    foma_add_defined_function = foma.add_defined_function
+    foma_add_defined_function.restype = c_int
+except:
+    warnings.warn("Foma. AttributeError: /usr/lib/x86_64-linux-gnu/libfoma.so.0: undefined symbol: add_defined_function")
 defined_networks_init = foma.defined_networks_init
 defined_networks_init.restype = c_void_p
 defined_functions_init = foma.defined_functions_init

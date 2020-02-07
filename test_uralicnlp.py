@@ -44,22 +44,27 @@ print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
 
 #print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
 
-"""
-print("كتاب")
 
-print(uralicApi.analyze("كتاب","ara"))
+
+
+for w in ["الكتاب", "الكاتب", "الميكا", "المكتوب", "كلب", "كلبين", "كلاب", "كلبتي", "كلبي", "قلب", "قلبين"]:
+	print("\n\n" +w)
+	print(uralicApi.analyze(w,"ara"))
+	print(uralicApi.lemmatize(w,"ara"))
 print(uralicApi.generate("+noun+humanكاتب+masc+pl@","ara"))
 
-print(uralicApi.lemmatize("كتاب","ara"))
 
-str = "+noun+humanكاتب+masc+pl@"
+
+str = "+adj{كَلْبِيّ}+masc+sg@"
 print(re.findall(r"[ء-ي]+", str))
 
-"""
 
+"""
 print(uralicApi.analyze("cats", "eng"))
 print(uralicApi.generate("cat[N]+N+PL", "eng"))
 print(uralicApi.lemmatize("cats", "eng"))
+
+"""
 
 """
 

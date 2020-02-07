@@ -1,7 +1,7 @@
-try:
-	from . import foma
-except:
-	foma = None
+#try:
+from . import foma
+#except:
+#	foma = None
 import warnings
 
 
@@ -10,7 +10,7 @@ class FomaFSTWrapper(object):
 	"""docstring for FomaFSTWrapper"""
 	def __init__(self, filename, invert):
 		if foma is None:
-			raise Exception("Foma (libfoma) is not installed, please refer to https://fomafst.github.io/")
+			raise Exception("Foma (libfoma) is not installed or the version is too old, please refer to https://fomafst.github.io/")
 		self.foma = foma.FST.load(filename)
 		if invert:
 			self.lookup = self.generate
