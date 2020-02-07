@@ -62,7 +62,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=["uralicNLP"],
+    packages=find_packages(),
     package_dir={'uralicNLP': 'uralicNLP'},
 
     # List run-time dependencies here.  These will be installed by pip when
