@@ -6,6 +6,7 @@ import re
 import mikatools
 from .foma import FomaFSTWrapper
 from .string_processing import filter_arabic
+from collections.abc import Iterable 
 
 try:
     # For Python 3.0 and later
@@ -180,7 +181,7 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 		start_flag_end = "]* "
 	reg_text = flag_string_start + start_flag_end + "{"+word+"} %+"+pos+ flag_string + " [ ? -  [ "+ " | ".join(f) +" ]]"+flag_end+"*"
 	reg = hfst.regex(reg_text)
-	analyzer2 = analyzer
+	analyzer2 = analyzer.copy()
 	analyzer2.compose(reg)
 	output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
 	output = filter(lambda x: x, output)
@@ -199,7 +200,14 @@ def generate(query, language, force_local=True, descrpitive=False, dictionary_fo
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True):
+def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True,language_flags=False):
+	if not isinstance(language, str) and isinstance(language, Iterable):
+		#Treat as a list
+		r = []
+		for l in language:
+			r.extend(analyze(query,l, force_local=force_local, descrpitive=descrpitive, remove_symbols=remove_symbols,language_flags=language_flags))
+		return r
+
 	if force_local or __where_models(language, safe=True):
 		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
 	else:
@@ -207,6 +215,15 @@ def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=
 	if remove_symbols:
 		r = _remove_analysis_symbols(r)
 
+	if language_flags:
+		return _add_language_flag(r, language)
+	else:
+		return r
+
+def _add_language_flag(analysis, language):
+	r = []
+	for a in analysis:
+		r.append((a[0] + "+" +language, a[1]))
 	return r
 
 def _remove_analysis_symbols(r):

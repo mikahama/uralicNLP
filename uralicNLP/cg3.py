@@ -5,16 +5,16 @@ import os, sys
 from subprocess import Popen, PIPE
 from mikatools import open_write
 
-def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True):
+def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False):
 	sentence = []
 	for word in words:
-		analysis = __hfst_format(word, language, morphology_ignore_after,descrpitive=descrpitive, remove_symbols=remove_symbols)
+		analysis = __hfst_format(word, language, morphology_ignore_after,descrpitive=descrpitive, remove_symbols=remove_symbols, language_flags=language_flags)
 		sentence.extend(analysis)
 	hfst_result_string = "\n".join(sentence)
 	return hfst_result_string
 
-def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True):
-	analysis = uralic_api_analyze(word, language,descrpitive=descrpitive,remove_symbols=remove_symbols)
+def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False):
+	analysis = uralic_api_analyze(word, language,descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags)
 	hfsts = []
 	if len(analysis) == 0:
 		hfsts.append(word + "\t" +word + "+?\tinf")
@@ -28,14 +28,18 @@ def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True
 	return hfsts
 
 class Cg3():
-	def __init__(self, language):
+	def __init__(self, language, morphology_languages=None):
+		if morphology_languages is None:
+			self.morphology_languages = language
+		else:
+			self.morphology_languages = morphology_languages
 		model_path = where_models(language)
 		cg_path = os.path.join(model_path, "cg")
 		self.cg_path = cg_path
 		self.language = language
 
-	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True, temp_file=None):
-		hfst_output = __parse_sentence(words + [""], self.language, morphology_ignore_after, descrpitive=descrpitive,remove_symbols=remove_symbols)
+	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True, temp_file=None, language_flags=False):
+		hfst_output = __parse_sentence(words + [""], self.morphology_languages, morphology_ignore_after, descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags)
 		if temp_file is None:
 			p1 = Popen(["echo", hfst_output], stdout=PIPE)
 		else:

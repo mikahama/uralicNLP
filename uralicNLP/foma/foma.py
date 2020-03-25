@@ -113,7 +113,7 @@ try:
     foma_add_defined_function = foma.add_defined_function
     foma_add_defined_function.restype = c_int
 except:
-    warnings.warn("Foma. AttributeError: /usr/lib/x86_64-linux-gnu/libfoma.so.0: undefined symbol: add_defined_function")
+    pass
 defined_networks_init = foma.defined_networks_init
 defined_networks_init.restype = c_void_p
 defined_functions_init = foma.defined_functions_init

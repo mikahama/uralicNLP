@@ -46,7 +46,7 @@ print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
 
 
 
-
+"""
 for w in ["الكتاب", "الكاتب", "الميكا", "المكتوب", "كلب", "كلبين", "كلاب", "كلبتي", "كلبي", "قلب", "قلبين"]:
 	print("\n\n" +w)
 	print(uralicApi.analyze(w,"ara"))
@@ -57,6 +57,14 @@ print(uralicApi.generate("+noun+humanكاتب+masc+pl@","ara"))
 
 str = "+adj{كَلْبِيّ}+masc+sg@"
 print(re.findall(r"[ء-ي]+", str))
+
+"""
+
+print(uralicApi.analyze("kissa", "fin"))
+print(uralicApi.analyze("on", ["fin","olo"]))
+print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
+cg = Cg3("fin", morphology_languages=["fin", "olo"])
+print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
 
 
 """
