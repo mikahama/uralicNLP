@@ -22,6 +22,7 @@ except ImportError:
 import hfst
 
 api_url = "https://akusanat.com/smsxml/"
+download_server_url = "https://uralic.mikakalevi.com/nightly/"
 
 class ModelNotFound(Exception):
     pass
@@ -87,15 +88,15 @@ def model_info(language):
 	mikatools.print_json_help(d)
 
 def download(language, show_progress=True):
-	model_types = ["analyser","analyser-norm","generator-desc","generator-norm", "generator", "cg", "metadata.json"]
+	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json"}
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
 		os.makedirs(download_to)
-	for model_type in model_types:
+	for model_type, model_url in model_types.items():
 		try:
 			print("Downloading " + model_type + " for " + language)
-			url = api_url + "downloadModel/?language=" + language + "&type=" + model_type
+			url = download_server_url + language + "/" + model_url
 			save_to = os.path.join(download_to, model_type)
 			mikatools.download_file(url, save_to, show_progress)
 			print("Model " + model_type + " for " + language + " was downloaded")
@@ -181,7 +182,7 @@ def __regex_escape(word):
 	return word
 
 def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
-	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=False)
+	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=True)
 	abcs = analyzer.get_alphabet()
 	f = []
 	flags = []
@@ -211,7 +212,7 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 	output = list(map(lambda x: x.split('\t'), output))
 	return list(map(lambda x: (x[0], float(x[1]),), output))
 
-def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=True, remove_symbols=True):
+def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=False, remove_symbols=True):
 	if force_local or __where_models(language, safe=True):
 		r = __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	else:
