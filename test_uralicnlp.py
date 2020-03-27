@@ -1,6 +1,6 @@
 #encoding: utf-8
 from uralicNLP import uralicApi
-from uralicNLP.cg3 import Cg3
+from uralicNLP.cg3 import Cg3, Cg3Pipe
 from uralicNLP.translate import *
 from uralicNLP import dependency
 import re
@@ -59,12 +59,21 @@ str = "+adj{كَلْبِيّ}+masc+sg@"
 print(re.findall(r"[ء-ي]+", str))
 
 """
-
+"""
 print(uralicApi.analyze("kissa", "fin"))
 print(uralicApi.analyze("on", ["fin","olo"]))
 print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
+
 cg = Cg3("fin", morphology_languages=["fin", "olo"])
 print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
+"""
+
+cg = Cg3("fin")
+cg2 = Cg3("rus")
+
+cg_pipe = Cg3Pipe(cg, cg2)
+print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
+
 
 
 """

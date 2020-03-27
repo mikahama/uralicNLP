@@ -4,17 +4,25 @@ from .uralicApi import __where_models as where_models
 import os, sys
 from subprocess import Popen, PIPE
 from mikatools import open_write
+import copy
+import re
 
-def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False):
+def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False, words_analysis=None):
 	sentence = []
-	for word in words:
-		analysis = __hfst_format(word, language, morphology_ignore_after,descrpitive=descrpitive, remove_symbols=remove_symbols, language_flags=language_flags)
+	if words_analysis is not None and len(words_analysis) < len(words):
+		words_analysis = words_analysis + [[]]
+	for i, word in enumerate(words):
+		existing_analysis = None
+		if words_analysis is not None:
+			existing_analysis = words_analysis[i]
+		analysis = __hfst_format(word, language, morphology_ignore_after,descrpitive=descrpitive, remove_symbols=remove_symbols, language_flags=language_flags, analysis=existing_analysis)
 		sentence.extend(analysis)
 	hfst_result_string = "\n".join(sentence)
 	return hfst_result_string
 
-def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False):
-	analysis = uralic_api_analyze(word, language,descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags)
+def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False, analysis=None):
+	if analysis is None:
+		analysis = uralic_api_analyze(word, language,descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags)
 	hfsts = []
 	if len(analysis) == 0:
 		hfsts.append(word + "\t" +word + "+?\tinf")
@@ -38,8 +46,8 @@ class Cg3():
 		self.cg_path = cg_path
 		self.language = language
 
-	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True, temp_file=None, language_flags=False):
-		hfst_output = __parse_sentence(words + [""], self.morphology_languages, morphology_ignore_after, descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags)
+	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True, temp_file=None, language_flags=False, morphologies=None):
+		hfst_output = __parse_sentence(words + [""], self.morphology_languages, morphology_ignore_after, descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags, words_analysis=morphologies)
 		if temp_file is None:
 			p1 = Popen(["echo", hfst_output], stdout=PIPE)
 		else:
@@ -90,6 +98,35 @@ class Cg3Disambiguation():
 	def __init__(self):
 		self.arg = arg
 		
+class Cg3Pipe():
+	def __init__(self, *args, **kwargs):
+		self.cgs = args
+
+	def _find_weight(self, cg_morphologies):
+		for i, m in enumerate(cg_morphologies):
+			if re.search(r"^\<W\:(\d+|\.)+\>$",m):
+				return i
+
+	def _convert_morphologies(self, cg_results):
+		analysis = []
+		cg_results = copy.deepcopy(cg_results)
+		for disambiguation in cg_results:
+			possible_words = disambiguation[1]
+			word_analysis = []
+			for possible_word in possible_words:
+				w = "".join(re.findall(r"\d+|\.", possible_word.morphology.pop(self._find_weight(possible_word.morphology))))
+				w = float(w)
+				r = [possible_word.lemma + "+" + "+".join(possible_word.morphology), w]
+				word_analysis.append(r)
+			analysis.append(word_analysis)
+		return analysis
+
+	def disambiguate(self, words, **kwargs):
+		morphologies = None
+		for cg in self.cgs:
+			res = cg.disambiguate(words, morphologies=morphologies, **kwargs)
+			morphologies = self._convert_morphologies(res)
+		return res
 		
 		
 

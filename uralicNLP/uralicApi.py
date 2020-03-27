@@ -6,7 +6,10 @@ import re
 import mikatools
 from .foma import FomaFSTWrapper
 from .string_processing import filter_arabic
-from collections.abc import Iterable 
+from collections.abc import Iterable
+import glob
+import datetime
+
 
 try:
     # For Python 3.0 and later
@@ -51,13 +54,29 @@ def is_language_installed(language):
 		return False
 	return True
 
-def __where_models(language, safe=False):
+def _file_modification_time(filename):
+    t = os.path.getmtime(filename)
+    return datetime.datetime.fromtimestamp(t)
+
+def __where_models(language, safe=False, return_latest=True):
 	paths = __model_base_folders()
+	latest_model = [None, 0]
 	for path in paths:
 		path = os.path.join(path, language)
 		e = os.path.exists(path)
 		if e:
-			return path
+			if return_latest is False:
+				return path
+			else:
+				files = glob.glob(os.path.join(path, "*"))
+				files.sort(key=os.path.getmtime)
+				if len(files) == 0:
+					continue
+				t = _file_modification_time(files[0])
+				if latest_model[0] is None or t > latest_model[1]:
+					latest_model = [path, t]
+	if return_latest:
+		return latest_model[0]
 	if safe:
 		return None
 	raise ModelNotFound("Models for " + language + " were not in " + " or ".join(paths) + ". Use uralicApi.download(\""+ language+"\") to download models.")
@@ -126,7 +145,11 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 
 def _load_transducer(filename, invert):
 	metadata_filename =  os.path.join(os.path.dirname(filename), "metadata.json")
-	metadata = mikatools.json_load(metadata_filename)
+	try:
+		metadata = mikatools.json_load(metadata_filename)
+	except:
+		#No crash if JSON is not found or malformed for some reason
+		metadata = {}
 	if "fst_type" in metadata and metadata["fst_type"] == "foma":
 		return FomaFSTWrapper(filename, invert)
 	else:
