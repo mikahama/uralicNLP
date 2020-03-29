@@ -4,7 +4,9 @@
 
 UralicNLP is a natural language processing library targeted mainly for Uralic languages. Its lexicographic functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
 
-UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. At the time of writing, at least the following languages are supported: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. This information originates mainly from FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses the nightly builds for languages supported by Apertium and less frequently updated FSTs and CGs for the other languages.
+UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. At the time of writing, at least the following languages are supported: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. This information originates mainly from FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses the nightly builds for most of the supported languages.
+
+[See the catalog of supported languages](https://uralic.mikakalevi.com/nightly)
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
@@ -30,9 +32,9 @@ The API is under constant development and new languages will be added to the San
 
 The *languages* key lists the languages that are supported by the lexical lookup, whereas *morph* lists the languages that have morphological FSTs and optionally CGs.
 
-### Download the models 
+### Download models 
 
-If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily. Although, it is possible to use the transducers over Akusanat API.
+If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily. Although, it is possible to use the transducers over Akusanat API by passing *force_local=False*.
 
 On command line:
 
@@ -50,6 +52,10 @@ Use **uralicApi.model_info(language)** to see information about the FSTs and CGs
     from uralicNLP import uralicApi
     uralicApi.model_info("fin")
 
+To remove the models of a language, run
+
+    from uralicNLP import uralicApi
+    uralicApi.uninstall("fin")
 
 ### Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
@@ -78,7 +84,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
     uralicApi.generate("käsi+N+Sg+Par", "fin")
     >>[['kättä', 0.0]]
   
-An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **normative dictionary** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=False)* uses a regular normative generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator.
+An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator.
 
 
 ### Access the HFST transducer
@@ -117,6 +123,28 @@ The return object is a list of tuples. The first item in each tuple is the word 
 The *cg.disambiguate* takes in *remove_symbols* as an optional argument. Its default value is *True* which means that it removes the symbols (segments surrounded by @) from the FST output before feeding it to the CG disambiguator. If the value is set to *False*, the FST morphology is fed in to the CG unmodified.
 
 The **default FST analyzer is a descriptive one**, to use a normative analyzer, set the *descriptive* parameter to False *cg.disambiguate(tokens,descrpitive=False)*.
+
+#### Multilingual CG
+
+It is possible to run one CG with tags produced by transducers of multiple languages. 
+
+    from uralicNLP.cg3 import Cg3
+    cg = Cg3("fin", morphology_languages=["fin", "olo"])
+    print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
+
+The code above will use the Finnish (fin) CG rules to disambiguate the tags produced by Finnish (fin) and Olonetsian (olo) transducers. The *language_flags* parameter can be used to append the language code at the end of each morphological reading to identify the transducer that produced the reading.
+
+It is also possible to pipe multiple CG analyzers. This will run the initial morphological analysis in the first CG, disambiguate and pass the disambiguated results to the next CG analyzer.
+
+    from uralicNLP.cg3 import Cg3, Cg3Pipe
+
+    cg1 = Cg3("fin")
+    cg2 = Cg3("olo")
+
+    cg_pipe = Cg3Pipe(cg1, cg2)
+    print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
+
+The example above will create a CG analyzer for Finnish and Olonetsian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonetsian FST to do further disambiguation. Note that FST is only run in the first CG object of the pipe.
 
 ### Lexical information
 UralicNLP makes it possible to obtain the information available in akusanat.com entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 

@@ -9,6 +9,7 @@ from .string_processing import filter_arabic
 from collections.abc import Iterable
 import glob
 import datetime
+import shutil
 
 
 try:
@@ -86,6 +87,13 @@ def model_info(language):
 	filename = os.path.join(__where_models(language), "metadata.json")
 	d = mikatools.json_load(filename)
 	mikatools.print_json_help(d)
+
+def uninstall(language):
+	path = __where_models(language, safe=True)
+	while path is not None:
+		print("removing " + path)
+		shutil.rmtree(path)
+		path = __where_models(language, safe=True)
 
 def download(language, show_progress=True):
 	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json"}
