@@ -10,6 +10,7 @@ from collections.abc import Iterable
 import glob
 import datetime
 import shutil
+from .dictionary_backends import TinyDictionary
 
 
 try:
@@ -96,7 +97,7 @@ def uninstall(language):
 		path = __where_models(language, safe=True)
 
 def download(language, show_progress=True):
-	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json"}
+	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
@@ -115,6 +116,7 @@ def download(language, show_progress=True):
 
 generator_cache = {}
 analyzer_cache = {}
+dictionary_cache = {}
 
 def __generator_model_name(descrpitive, dictionary_forms):
 	if not descrpitive and dictionary_forms:
@@ -302,9 +304,26 @@ def __api_generate(query, language, descrpitive=False, dictionary_forms=True):
 		raise UnsupportedModel("Server only supports normative dictionary forms. Please download the models and generate locally")
 	return __send_request("generate/", {"query": query, "language": language})["analysis"]
 
-def dictionary_search(word, language):
+def dictionary_search(word, language, force_local=True):
+	if force_local:
+		d = _get_dictionary(language)
+		lemmas = list(set(lemmatize(word, language)) - set([word]))
+		return d.find(word, lemmas)
+	else:
+		return _api_dictionary_search(word, language)
+
+def _api_dictionary_search(word, language):
 	return __send_request("search/", {"word": word, "language": language})
 
 def __send_request(url, data):
 	r = requests.get(api_url + url, params=data)
 	return r.json()
+
+def _get_dictionary(language):
+	if language in dictionary_cache:
+		return dictionary_cache[language]
+	path = os.path.join(__where_models(language), "dictionary.json")
+	dictionary = TinyDictionary(path)
+	dictionary_cache[language] = dictionary
+	return dictionary
+

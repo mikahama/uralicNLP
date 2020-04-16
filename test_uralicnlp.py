@@ -68,13 +68,17 @@ cg = Cg3("fin", morphology_languages=["fin", "olo"])
 print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
 """
 
+"""
 cg = Cg3("fin")
 cg2 = Cg3("rus")
 
 cg_pipe = Cg3Pipe(cg, cg2)
 print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
+"""
+print(uralicApi.dictionary_search("car", "sms"))
+print(uralicApi.dictionary_search("byrokratti", "sms"))
 
-
+print(uralicApi.dictionary_search("tavallinen ihminen", "sms"))
 
 """
 print(uralicApi.analyze("cats", "eng"))
