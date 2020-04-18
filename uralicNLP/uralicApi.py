@@ -10,7 +10,7 @@ from collections.abc import Iterable
 import glob
 import datetime
 import shutil
-from .dictionary_backends import TinyDictionary
+from .dictionary_backends import TinyDictionary, MongoDictionary
 
 
 try:
@@ -304,13 +304,21 @@ def __api_generate(query, language, descrpitive=False, dictionary_forms=True):
 		raise UnsupportedModel("Server only supports normative dictionary forms. Please download the models and generate locally")
 	return __send_request("generate/", {"query": query, "language": language})["analysis"]
 
-def dictionary_search(word, language, force_local=True):
+def dictionary_search(word, language, force_local=True, backend=TinyDictionary):
 	if force_local:
-		d = _get_dictionary(language)
+		d = _get_dictionary(language,backend=backend)
 		lemmas = list(set(lemmatize(word, language)) - set([word]))
 		return d.find(word, lemmas)
 	else:
 		return _api_dictionary_search(word, language)
+
+def dictionary_lemmas(language, backend=TinyDictionary):
+	d = _get_dictionary(language,backend=backend)
+	return d.lemmas()
+
+def import_dictionary_to_db(language, backend=MongoDictionary):
+	d = _get_dictionary(language, backend=backend)
+	d.import_data()
 
 def _api_dictionary_search(word, language):
 	return __send_request("search/", {"word": word, "language": language})
@@ -319,11 +327,12 @@ def __send_request(url, data):
 	r = requests.get(api_url + url, params=data)
 	return r.json()
 
-def _get_dictionary(language):
-	if language in dictionary_cache:
-		return dictionary_cache[language]
+def _get_dictionary(language, backend=TinyDictionary):
+	cache_key = backend.__name__ + "_" + language
+	if cache_key in dictionary_cache:
+		return dictionary_cache[cache_key]
 	path = os.path.join(__where_models(language), "dictionary.json")
-	dictionary = TinyDictionary(path)
-	dictionary_cache[language] = dictionary
+	dictionary = backend(path, language)
+	dictionary_cache[cache_key] = dictionary
 	return dictionary
 

@@ -1,9 +1,16 @@
 from tinydb import TinyDB, Query
+import argparse
 
-class TinyDictionary(object):
-	"""docstring for TinyDictionary"""
-	def __init__(self, path):
-		self.db = TinyDB(path)
+try:
+	from pymongo import MongoClient
+except:
+	pass
+
+class DictionaryInterface(object):
+	"""docstring for DictionaryInterface"""
+	def __init__(self, path, language):
+		self.path = path
+		self.language = language
 
 	def find(self, word, lemmas):
 		results = {"lemmatized":[]}
@@ -12,6 +19,39 @@ class TinyDictionary(object):
 			results["lemmatized"].append(self._lemma_query(lemma))
 		results["other_languages"] = self._lang_query(word)
 		return results
+
+	def lemmas(self):
+		data = self._get_all()
+		lems = []
+		for l in data:
+			try:
+				lem = l["lg"]["l"]["#text"]
+				lems.append(lem)
+			except:
+				pass
+		return list(set(lems))
+
+	def _lemma_query(self, lemma):
+		return []
+
+	def _lang_query(self, lemma):
+		return []
+
+	def _get_all(self):
+		return []
+
+	def import_data(self):
+		pass
+
+class TinyDictionary(DictionaryInterface):
+	"""docstring for TinyDictionary"""
+	def __init__(self, path, language):
+		self.db = TinyDB(path)
+		super(TinyDictionary, self).__init__(path, language)
+
+	def _get_all(self):
+		return self.db.all()
+
 
 	def _lemma_query(self, lemma):
 		E = Query()
@@ -28,7 +68,43 @@ class TinyDictionary(object):
 
 		return res1 + res2 +res3
 
-				
+
+class MongoDictionary(DictionaryInterface):
+	"""docstring for MongoDictionary"""
+	def __init__(self, path, language):
+		client = MongoClient()
+		self.db = client['uralicNLP_dicts']
+		self.collection = self.db[language]
+		super(MongoDictionary, self).__init__(path, language)
+
+	def _get_all(self):
+		return self.collection.find()
+
+
+	def _lemma_query(self, lemma):
+		res = self.collection.find({"lg" : {"l": {"#text": lemma}}})
+		return list(res)
+
+	def _lang_query(self, lemma):
+		res = self.collection.find(
+			{ "$or": [
+		            { "mg.tg": { "$elemMatch": { "t": {"$elemMatch": {"#text": lemma }  } } } },
+		            { "mg.tg.t.#text": lemma }
+		        ]
+		    }
+		)
+
+		return list(res)
+
+	def import_data(self):
+		if self.collection.count() != 0:
+			self.collection.drop()
+			self.collection = self.db[self.language]
+		tiny = TinyDictionary(self.path, self.language)
+		data = tiny._get_all()
+		self.collection.insert_many(data)
+
+
 
 
 

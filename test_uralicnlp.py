@@ -3,6 +3,7 @@ from uralicNLP import uralicApi
 from uralicNLP.cg3 import Cg3, Cg3Pipe
 from uralicNLP.translate import *
 from uralicNLP import dependency
+from uralicNLP.dictionary_backends import MongoDictionary
 import re
 
 #print(uralicApi.supported_languages())
@@ -75,10 +76,12 @@ cg2 = Cg3("rus")
 cg_pipe = Cg3Pipe(cg, cg2)
 print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
 """
-print(uralicApi.dictionary_search("car", "sms"))
-print(uralicApi.dictionary_search("byrokratti", "sms"))
 
-print(uralicApi.dictionary_search("tavallinen ihminen", "sms"))
+print(uralicApi.dictionary_lemmas("sms",backend=MongoDictionary))
+print(uralicApi.dictionary_search("car", "sms",backend=MongoDictionary))
+print(uralicApi.dictionary_search("byrokratti", "sms",backend=MongoDictionary))
+
+print(uralicApi.dictionary_search("tavallinen ihminen", "sms",backend=MongoDictionary))
 
 """
 print(uralicApi.analyze("cats", "eng"))
