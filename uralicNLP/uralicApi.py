@@ -78,7 +78,7 @@ def __where_models(language, safe=False, return_latest=True):
 				t = _file_modification_time(files[0])
 				if latest_model[0] is None or t > latest_model[1]:
 					latest_model = [path, t]
-	if return_latest:
+	if return_latest and latest_model[0] is not None:
 		return latest_model[0]
 	if safe:
 		return None

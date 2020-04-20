@@ -1,10 +1,15 @@
 from tinydb import TinyDB, Query
 import argparse
+import os
 
 try:
 	from pymongo import MongoClient
 except:
 	pass
+
+class EmptyDatabaseException(Exception):
+    """Base class for exceptions in this module."""
+    pass
 
 class DictionaryInterface(object):
 	"""docstring for DictionaryInterface"""
@@ -46,7 +51,12 @@ class DictionaryInterface(object):
 class TinyDictionary(DictionaryInterface):
 	"""docstring for TinyDictionary"""
 	def __init__(self, path, language):
+		if not os.path.isfile(path):
+			raise EmptyDatabaseException("No dictionary.json available in " + path +"\nRunning uralicApi.download('"+language+"') may fix this if there is a dictionary available")
 		self.db = TinyDB(path)
+
+		if len(self.db) == 0:
+			raise EmptyDatabaseException("The dictionary is empty for " + language + " in path " + path)
 		super(TinyDictionary, self).__init__(path, language)
 
 	def _get_all(self):
@@ -75,17 +85,21 @@ class MongoDictionary(DictionaryInterface):
 		client = MongoClient()
 		self.db = client['uralicNLP_dicts']
 		self.collection = self.db[language]
+		self.empty = self.collection.count() == 0
 		super(MongoDictionary, self).__init__(path, language)
 
 	def _get_all(self):
+		self._check_empty()
 		return self.collection.find()
 
 
 	def _lemma_query(self, lemma):
+		self._check_empty()
 		res = self.collection.find({"lg" : {"l": {"#text": lemma}}})
 		return list(res)
 
 	def _lang_query(self, lemma):
+		self._check_empty()
 		res = self.collection.find(
 			{ "$or": [
 		            { "mg.tg": { "$elemMatch": { "t": {"$elemMatch": {"#text": lemma }  } } } },
@@ -96,13 +110,19 @@ class MongoDictionary(DictionaryInterface):
 
 		return list(res)
 
+	def _check_empty(self):
+		if self.empty:
+			raise EmptyDatabaseException("The dictionary database for '" + self.language + "' is empty.\nRun uralicApi.import_dictionary_to_db('" + self.language + "') first")
+
+
 	def import_data(self):
-		if self.collection.count() != 0:
+		if self.empty:
 			self.collection.drop()
 			self.collection = self.db[self.language]
 		tiny = TinyDictionary(self.path, self.language)
 		data = tiny._get_all()
 		self.collection.insert_many(data)
+		self.empty = self.collection.count() == 0
 
 
 
