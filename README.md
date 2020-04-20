@@ -147,7 +147,7 @@ It is also possible to pipe multiple CG analyzers. This will run the initial mor
 The example above will create a CG analyzer for Finnish and Olonetsian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonetsian FST to do further disambiguation. Note that FST is only run in the first CG object of the pipe.
 
 ### Dictionaries
-UralicNLP makes it possible to obtain the information lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
+UralicNLP makes it possible to obtain the lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
 
 For example, "sms" selects the Skolt Sami dictionary. However, the word used to query can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages". I.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": [Skolt Sami lexical items that translate to cat]}
 
