@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638)
 
-UralicNLP is a natural language processing library targeted mainly for Uralic languages. Its lexicographic functionality is provided by [akusanat.com](https://akusanat.com) API which is also developed by [Mika Hämäläinen](https://mikakalevi.com).
+UralicNLP is a natural language processing library targeted mainly for Uralic languages.
 
 UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. At the time of writing, at least the following languages are supported: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. This information originates mainly from FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses the nightly builds for most of the supported languages.
 
@@ -28,9 +28,9 @@ The API is under constant development and new languages will be added to the San
 
     from uralicNLP import uralicApi
     uralicApi.supported_languages()
-    >>{u'languages': [u'sms', u'izh', u'mhr', u'vot', u'olo', u'myv', u'mdf', u'mrj', u'udm', u'yrk', u'koi', u'kpv', u'fin'], u'morph': [u'mdf', u'mhr', u'sma', u'olo', u'rus', u'mrj', u'nob', u'fin', u'sms', u'cor', u'deu', u'kpv', u'lav', u'liv', u'kal', u'udm', u'nds', u'est', u'fao', u'izh', u'vot', u'smj', u'smn', u'sme', u'lut', u'vro', u'yrk', u'myv', u'gle', u'crk', u'koi']}
+    >>{'cg': ['vot', 'lav', 'izh', 'rus', 'lut', 'fao', 'est', 'nob', 'ron', 'olo', 'bxr', 'hun', 'crk', 'chr', 'vep', 'deu', 'mrj', 'gle', 'sjd', 'nio', 'myv', 'som', 'sma', 'sms', 'smn', 'kal', 'bak', 'kca', 'otw', 'ciw', 'fkv', 'nds', 'kpv', 'sme', 'sje', 'evn', 'oji', 'ipk', 'fit', 'fin', 'mns', 'rmf', 'liv', 'cor', 'mdf', 'yrk', 'tat', 'smj'], 'dictionary': ['vot', 'lav', 'rus', 'est', 'nob', 'ron', 'olo', 'hun', 'koi', 'chr', 'deu', 'mrj', 'sjd', 'myv', 'som', 'sma', 'sms', 'smn', 'kal', 'fkv', 'mhr', 'kpv', 'sme', 'sje', 'hdn', 'fin', 'mns', 'mdf', 'vro', 'udm', 'smj'], 'morph': ['vot', 'lav', 'izh', 'rus', 'lut', 'fao', 'est', 'nob', 'swe', 'ron', 'eng', 'olo', 'bxr', 'hun', 'koi', 'crk', 'chr', 'vep', 'deu', 'mrj', 'ara', 'gle', 'sjd', 'nio', 'myv', 'som', 'sma', 'sms', 'smn', 'kal', 'bak', 'kca', 'otw', 'ciw', 'fkv', 'nds', 'mhr', 'kpv', 'sme', 'sje', 'evn', 'oji', 'ipk', 'fit', 'fin', 'mns', 'rmf', 'liv', 'cor', 'mdf', 'yrk', 'vro', 'udm', 'tat', 'smj']}
 
-The *languages* key lists the languages that are supported by the lexical lookup, whereas *morph* lists the languages that have morphological FSTs and optionally CGs.
+The *dictionary* key lists the languages that are supported by the lexical lookup, whereas *morph* lists the languages that have morphological FSTs and *cg* lists the languages that have a CG.
 
 ### Download models 
 
@@ -146,17 +146,45 @@ It is also possible to pipe multiple CG analyzers. This will run the initial mor
 
 The example above will create a CG analyzer for Finnish and Olonetsian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonetsian FST to do further disambiguation. Note that FST is only run in the first CG object of the pipe.
 
-### Lexical information
-UralicNLP makes it possible to obtain the information available in akusanat.com entries in JSON format. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
+### Dictionaries
+UralicNLP makes it possible to obtain the information lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
 
-For example, "sms" selects the Skolt Sami dictionary. However, the word used to query can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages" under the language code of that language. I.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": "eng": [Skolt Sami lexical items that translate to cat]}
+For example, "sms" selects the Skolt Sami dictionary. However, the word used to query can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages". I.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": [Skolt Sami lexical items that translate to cat]}
+
+An example of querying the Skolt Sami dictionary with *car*.
 
 
     from uralicNLP import uralicApi
     uralicApi.dictionary_search("car", "sms")
-    >>{'lemmatized': [], 'query': 'car', 'exact_match': {}, 'other_languages': {'eng': [{'lemma': 'autt', ...}]}, 'language': 'sms'}
+    >>{'lemmatized': [], exact_match': [], 'other_languages': [{'lemma': 'autt', ...}, ...]
   
-An example of querying the Skolt Sami dictionary with *car*.
+It is possible to list all lemmas in the dictionary:
+
+    from uralicNLP import uralicApi
+    uralicApi.dictionary_lemmas("sms")
+    >> ['autt', 'sokk' ...]
+
+## Fast Dictionary Look-ups
+
+By default, UralicNLP uses a TinyDB backend. This is easy as it does not require an external database server, but it can be extremely slow. For this reason, UralicNLP provides a [MongoDB backend](https://www.mongodb.com/download-center/community).
+
+Make sure you have both **MongoDB and [pymongo](https://pypi.org/project/pymongo/) installed**.
+
+First, you will need to download the dictionary and import it to MongoDB. The following example shows how to do it for Komi-Zyrian.
+
+    from uralicNLP import uralicApi
+
+    uralicApi.download("kpv") #Download the latest dictionary data
+    uralicApi.import_dictionary_to_db("kpv") #Update the MongoDB with the new data
+
+After the initial setup, you can use the dictionary queries, but you will need to specify the backend.
+
+    from uralicNLP import uralicApi
+    from uralicNLP.dictionary_backends import MongoDictionary
+    uralicApi.dictionary_lemmas("sms",backend=MongoDictionary)
+    uralicApi.dictionary_search("car", "sms",backend=MongoDictionary)
+
+Now you can query the dictionaries fast.
 
 ### Parsing UD CoNLL-U annotated TreeBank data
 

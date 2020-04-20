@@ -292,7 +292,8 @@ def lemmatize(word, language, force_local=True, descrpitive=True, word_boundarie
     return lemmas
 
 def supported_languages():
-	return __send_request("listLanguages/", {"user": "uralicApi"})
+	d = requests.get("https://uralic.mikakalevi.com/nightly/supported_languages.json")
+	return d.json()
 
 def __api_analyze(word, language,descrpitive=True):
 	if not descrpitive:
