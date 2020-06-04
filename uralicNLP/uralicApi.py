@@ -313,9 +313,9 @@ def dictionary_search(word, language, force_local=True, backend=TinyDictionary):
 	else:
 		return _api_dictionary_search(word, language)
 
-def dictionary_lemmas(language, backend=TinyDictionary):
+def dictionary_lemmas(language, backend=TinyDictionary, group_by_pos=False):
 	d = _get_dictionary(language,backend=backend)
-	return d.lemmas()
+	return d.lemmas(group_by_pos=group_by_pos)
 
 def import_dictionary_to_db(language, backend=MongoDictionary):
 	d = _get_dictionary(language, backend=backend)

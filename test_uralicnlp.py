@@ -77,11 +77,11 @@ cg_pipe = Cg3Pipe(cg, cg2)
 print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
 """
 
-print(uralicApi.dictionary_lemmas("sms",backend=MongoDictionary))
-print(uralicApi.dictionary_search("car", "sms",backend=MongoDictionary))
-print(uralicApi.dictionary_search("byrokratti", "sms",backend=MongoDictionary))
+print(uralicApi.dictionary_lemmas("sms", group_by_pos=True))
+#print(uralicApi.dictionary_search("car", "sms",backend=MongoDictionary))
+#print(uralicApi.dictionary_search("byrokratti", "sms",backend=MongoDictionary))
 
-print(uralicApi.dictionary_search("tavallinen ihminen", "sms",backend=MongoDictionary))
+#print(uralicApi.dictionary_search("tavallinen ihminen", "sms",backend=MongoDictionary))
 
 """
 print(uralicApi.analyze("cats", "eng"))

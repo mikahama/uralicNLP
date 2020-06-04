@@ -25,7 +25,13 @@ class DictionaryInterface(object):
 		results["other_languages"] = self._lang_query(word)
 		return results
 
-	def lemmas(self):
+	def lemmas(self, group_by_pos=False):
+		if group_by_pos:
+			return self._list_lemmas_by_pos()
+		else:
+			return self._list_lemmas()
+
+	def _list_lemmas(self):
 		data = self._get_all()
 		lems = []
 		for l in data:
@@ -35,6 +41,22 @@ class DictionaryInterface(object):
 			except:
 				pass
 		return list(set(lems))
+
+	def _list_lemmas_by_pos(self):
+		data = self._get_all()
+		lems = {}
+		for l in data:
+			try:
+				lem = l["lg"]["l"]["#text"]
+				pos = l["lg"]["l"]["@pos"]
+				if pos not in lems:
+					lems[pos] = []
+				lems[pos].append(lem)
+			except:
+				pass
+		for k in list(lems.keys()):
+			lems[k] = list(set(lems[k]))
+		return lems
 
 	def _lemma_query(self, lemma):
 		return []
