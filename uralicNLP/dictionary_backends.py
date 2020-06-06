@@ -138,7 +138,7 @@ class MongoDictionary(DictionaryInterface):
 
 
 	def import_data(self):
-		if self.empty:
+		if not self.empty:
 			self.collection.drop()
 			self.collection = self.db[self.language]
 		tiny = TinyDictionary(self.path, self.language)
