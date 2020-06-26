@@ -144,7 +144,7 @@ It is also possible to pipe multiple CG analyzers. This will run the initial mor
     cg_pipe = Cg3Pipe(cg1, cg2)
     print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
 
-The example above will create a CG analyzer for Finnish and Olonetsian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonetsian FST to do further disambiguation. Note that FST is only run in the first CG object of the pipe.
+The example above will create a CG analyzer for Finnish and Olonetsian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonetsian CG to do a further disambiguation. Note that FST is only run in the first CG object of the pipe.
 
 ### Dictionaries
 UralicNLP makes it possible to obtain the lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
