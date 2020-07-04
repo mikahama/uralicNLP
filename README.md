@@ -4,7 +4,7 @@
 
 UralicNLP is a natural language processing library targeted mainly for Uralic languages.
 
-UralicNLP can produce **morphological analysis**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. At the time of writing, at least the following languages are supported: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. This information originates mainly from FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses the nightly builds for most of the supported languages.
+UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. The information originates mainly in FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses nightly builds for most of the supported languages.
 
 [See the catalog of supported languages](https://uralic.mikakalevi.com/nightly)
 
@@ -13,7 +13,7 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
 
     pip install uralicNLP
    
-In case you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
+If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
 If you are using Linux and you run into problems with installing HFST, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
 
@@ -34,9 +34,9 @@ The *dictionary* key lists the languages that are supported by the lexical looku
 
 ### Download models 
 
-If you have a lot of data to process, it might be a good idea to download the morphological models to your computer locally. This can be done easily. Although, it is possible to use the transducers over Akusanat API by passing *force_local=False*.
+If you have a lot of data to process, it might be a good idea to download the morphological models for use on your computer locally. This can be done easily. Although, it is possible to use the transducers over Akusanat API by passing *force_local=False*.
 
-On command line:
+On the command line:
 
     python -m uralicNLP.download --languages fin eng
 
@@ -99,7 +99,7 @@ The same parameters can be used here as for *generate()* and *analyze()* to spec
 
 ### Syntax - Constraint Grammar disambiguation
 
-**Note** this requires the models to be installed (see above) and [VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/). The disambiguation process is easy.
+**Note** this requires the models to be installed (see above) and [VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/). The disambiguation process is simple.
 
     from uralicNLP.cg3 import Cg3
     sentence = "Kissa voi nauraa"
@@ -132,7 +132,7 @@ It is possible to run one CG with tags produced by transducers of multiple langu
     cg = Cg3("fin", morphology_languages=["fin", "olo"])
     print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
 
-The code above will use the Finnish (fin) CG rules to disambiguate the tags produced by Finnish (fin) and Olonetsian (olo) transducers. The *language_flags* parameter can be used to append the language code at the end of each morphological reading to identify the transducer that produced the reading.
+The code above will use the Finnish (fin) CG rules to disambiguate the tags produced by Finnish (fin) and Olonets-Karelian (olo) transducers. The *language_flags* parameter can be used to append the language code at the end of each morphological reading to identify the transducer that produced the reading.
 
 It is also possible to pipe multiple CG analyzers. This will run the initial morphological analysis in the first CG, disambiguate and pass the disambiguated results to the next CG analyzer.
 
@@ -144,12 +144,12 @@ It is also possible to pipe multiple CG analyzers. This will run the initial mor
     cg_pipe = Cg3Pipe(cg1, cg2)
     print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
 
-The example above will create a CG analyzer for Finnish and Olonetsian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonetsian CG to do a further disambiguation. Note that FST is only run in the first CG object of the pipe.
+The example above will create a CG analyzer for Finnish and Olonets-Karelian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonets-Karelian CG to do a further disambiguation. Note that FST is only run in the first CG object of the pipe.
 
 ### Dictionaries
 UralicNLP makes it possible to obtain the lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
 
-For example, "sms" selects the Skolt Sami dictionary. However, the word used to query can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages". I.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": [Skolt Sami lexical items that translate to cat]}
+For example, "sms" selects the Skolt Sami dictionary. The word used to query, however, can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages", i.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": [Skolt Sami lexical items that translate to cat]}
 
 An example of querying the Skolt Sami dictionary with *car*.
 
