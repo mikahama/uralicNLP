@@ -6,7 +6,7 @@ UralicNLP is a natural language processing library targeted mainly for Uralic la
 
 UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. The information originates mainly in FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses nightly builds for most of the supported languages.
 
-[See the catalog of supported languages](https://uralic.mikakalevi.com/nightly)
+[See the catalog of supported languages](https://models.uralicnlp.com/nightly/)
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
