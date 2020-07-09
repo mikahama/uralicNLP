@@ -24,7 +24,7 @@ except ImportError:
 import hfst
 
 api_url = "https://akusanat.com/smsxml/"
-download_server_url = "https://uralic.mikakalevi.com/nightly/"
+download_server_url = "https://models.uralicnlp.com/nightly/"
 
 class ModelNotFound(Exception):
     pass
@@ -148,6 +148,7 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 			generator = analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)]
 		else:
 			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
+			#print(filename)
 			generator =  _load_transducer(filename, False)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
@@ -163,6 +164,8 @@ def _load_transducer(filename, invert):
 		metadata = {}
 	if "fst_type" in metadata and metadata["fst_type"] == "foma":
 		return FomaFSTWrapper(filename, invert)
+	elif "fst_type" in metadata and metadata["fst_type"] == "att":
+		return hfst.read_att_transducer(mikatools.open_read(filename))
 	else:
 		input_stream = hfst.HfstInputStream(filename)
 		return input_stream.read()
@@ -282,6 +285,8 @@ def lemmatize(word, language, force_local=True, descrpitive=True, word_boundarie
         elif language == "ara":
         	lemmas.append(filter_arabic(an,combine_by=bound))
         else:
+            if not "+Cmp#" in an and "#" in an:
+                an = an.replace("#", "+Cmp#")
             res = an.split("+Cmp#")
             lemma = [x.split("+")[0] for x in res]
             if language == "eng":
