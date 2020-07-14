@@ -24,7 +24,7 @@ Arabic and English FSTs require [Foma](https://fomafst.github.io/).
 ## Usage
 
 ### List supported languages
-The API is under constant development and new languages will be added to the Sanat infrastructure. That's why UralicNLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
+The API is under constant development and new languages will be added to the nightly builds system. That's why UralicNLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
 
     from uralicNLP import uralicApi
     uralicApi.supported_languages()
