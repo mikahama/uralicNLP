@@ -31,9 +31,9 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/mikahama/uralicNLP',
-
+    zip_safe=False,
     # Author details
-    author='Mika Hämäläinen, Dept. of  Digital Humanities, University of Helsinki',
+    author='Mika Hämäläinen',
     author_email='mika.hamalainen@helsinki.fi',
 
     # Choose your license
@@ -80,7 +80,9 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={},
+    package_data={
+    "uralicNLP": ["lang_codes.json"]
+    },
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
