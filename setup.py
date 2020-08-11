@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.2.1',
+    version='1.2.2',
 
     description='An NLP library for Uralic languages such as Finnish and Sami. Also supports Arabic, Russian etc.',
     long_description=long_description,

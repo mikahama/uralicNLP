@@ -97,7 +97,7 @@ def uninstall(language):
 		path = __where_models(language, safe=True)
 
 def download(language, show_progress=True):
-	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
+	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
@@ -126,33 +126,34 @@ def __generator_model_name(descrpitive, dictionary_forms):
 	else:
 		return "generator-norm"
 
-def __generate_locally(query, language, cache=True, descrpitive=False, dictionary_forms=True):
-	generator = get_transducer(language,cache=cache, analyzer=False, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
+def __generate_locally(query, language, cache=True, descrpitive=False, dictionary_forms=True,filename=None):
+	generator = get_transducer(language,cache=cache, analyzer=False, descrpitive=descrpitive, dictionary_forms=dictionary_forms,filename=filename)
 	r = generator.lookup(query)
 	return r
 
-def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictionary_forms=True, convert_to_openfst=False):
+def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictionary_forms=True, convert_to_openfst=False, filename=None):
 	conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
 	if not analyzer:
 		#generator
-		if cache and language + str(descrpitive) + str(dictionary_forms) + str(convert_to_openfst) in generator_cache:
-			generator = generator_cache[language + str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)]
-		else:
+		if filename is None:
 			filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
+		if cache and filename in generator_cache:
+			generator = generator_cache[filename]
+		else:
 			generator = _load_transducer(filename, True)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
-			generator_cache[language+ str(descrpitive) + str(dictionary_forms)+ str(convert_to_openfst)] = generator
+			generator_cache[filename] = generator
 	else:
-		if cache and language + str(descrpitive)+ str(convert_to_openfst) in analyzer_cache:
-			generator = analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)]
+		if filename is None:
+			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive, dictionary_forms))
+		if cache and filename in analyzer_cache:
+			generator = analyzer_cache[filename]
 		else:
-			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive))
-			#print(filename)
 			generator =  _load_transducer(filename, False)
 			if convert_to_openfst:
 				generator.convert(conversion_type)
-			analyzer_cache[language+ str(descrpitive)+ str(convert_to_openfst)] = generator
+			analyzer_cache[filename] = generator
 	return generator
 
 def _load_transducer(filename, invert):
@@ -172,14 +173,16 @@ def _load_transducer(filename, invert):
 
 
 
-def __analyzer_model_name(descrpitive):
-	if descrpitive:
+def __analyzer_model_name(descrpitive, dictionary):
+	if dictionary:
+		return "analyser-dict"
+	elif descrpitive:
 		return "analyser"
 	else:
 		return "analyser-norm"
 
-def __analyze_locally(query, language, cache=True, descrpitive=True):
-	generator = get_transducer(language,cache=cache, analyzer=True, descrpitive=descrpitive)
+def __analyze_locally(query, language, cache=True, descrpitive=True, dictionary_forms=False, filename=None):
+	generator = get_transducer(language,cache=cache, analyzer=True, descrpitive=descrpitive, dictionary_forms=dictionary_forms,filename=filename)
 	r = generator.lookup(query)
 	return r
 
@@ -195,7 +198,7 @@ def __regex_escape(word):
 	return word
 
 def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
-	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=True)
+	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=True, dictionary_forms=False)
 	abcs = analyzer.get_alphabet()
 	f = []
 	flags = []
@@ -225,9 +228,9 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 	output = list(map(lambda x: x.split('\t'), output))
 	return list(map(lambda x: (x[0], float(x[1]),), output))
 
-def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=False, remove_symbols=True):
+def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=False, remove_symbols=True, filename=None):
 	if force_local or __where_models(language, safe=True):
-		r = __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
+		r = __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms,filename=filename)
 	else:
 		r = __api_generate(query, language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
 	if remove_symbols:
@@ -237,16 +240,16 @@ def generate(query, language, force_local=True, descrpitive=False, dictionary_fo
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True,language_flags=False):
+def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None):
 	if not isinstance(language, str) and isinstance(language, Iterable):
 		#Treat as a list
 		r = []
 		for l in language:
-			r.extend(analyze(query,l, force_local=force_local, descrpitive=descrpitive, remove_symbols=remove_symbols,language_flags=language_flags))
+			r.extend(analyze(query,l, force_local=force_local, descrpitive=descrpitive, remove_symbols=remove_symbols,language_flags=language_flags, dictionary_forms=dictionary_forms,filename=filename))
 		return r
 
 	if force_local or __where_models(language, safe=True):
-		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive)
+		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive,dictionary_forms=dictionary_forms,filename=filename)
 	else:
 		r = __api_analyze(query, language,descrpitive=descrpitive)
 	if remove_symbols:
@@ -270,8 +273,8 @@ def _remove_analysis_symbols(r):
 		r[i] = (__remove_symbols(item[0]),item[1])
 	return r
 
-def lemmatize(word, language, force_local=True, descrpitive=True, word_boundaries=False):
-    analysis = analyze(word, language, force_local, descrpitive=descrpitive)
+def lemmatize(word, language, force_local=True, descrpitive=True, word_boundaries=False, dictionary_forms=False, filename=None):
+    analysis = analyze(word, language, force_local, descrpitive=descrpitive, dictionary_forms=dictionary_forms, filename=filename)
     lemmas = []
     if word_boundaries:
     	bound = "|"

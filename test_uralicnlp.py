@@ -6,6 +6,12 @@ from uralicNLP import dependency
 from uralicNLP.dictionary_backends import MongoDictionary
 import re
 
+uralicApi.get_all_forms("kissa", "N", "fin")
+
+uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
+print(uralicApi.analyze("hola", "spa"))
+print(type(uralicApi.get_transducer("spa", analyzer=True)))
+print()
 #print(uralicApi.supported_languages())
 
 #uralicApi.download("fin")
@@ -77,7 +83,7 @@ cg_pipe = Cg3Pipe(cg, cg2)
 print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
 """
 
-print(uralicApi.dictionary_lemmas("sms", group_by_pos=True))
+#print(uralicApi.dictionary_lemmas("sms", group_by_pos=True))
 #print(uralicApi.dictionary_search("car", "sms",backend=MongoDictionary))
 #print(uralicApi.dictionary_search("byrokratti", "sms",backend=MongoDictionary))
 
