@@ -19,13 +19,13 @@ For requesting new features, open up an issue on GitHub. If you want to help in 
 
 ## Adding new languages
 
-If you have your FSTs and CGs distributed through Apertium repository, I can add them easily and they will be updated automatically. Just send me the ISO code by email mika.hamalainen📧helsinki.fi
+If you have your FSTs and CGs distributed on GitHub with documented build scripts, I can add them to our nightly build system and they will be updated automatically. Just send me an email to mika.hamalainen@helsinki.fi
 
-If your files are not distributed through Apertium, compile them and name them accordingly to Giellatekno naming conventions.
+If your files are not available on GitHub, compile them and name them accordingly to Giellatekno naming conventions.
 
-- generator-gt-norm.hfstol
+- generator-gt-norm.hfstol (required)
 - generator-gt-desc.hfstol
-- generator-dict-gt-norm.hfstol (required)
+- generator-dict-gt-norm.hfstol 
 - analyser-gt-norm.hfstol
 - analyser-gt-desc.hfstol (required)
 - disambiguator.cg3
@@ -35,7 +35,7 @@ Send the files to me by email.
 
 ## Making model information more accurate
 
-Every language distributed through akusanat.com has *metadata.json* file. This file contains information about the authors of the FSTs and CGs. However, as most of the tools are from Giellatekno and the AUTHORS and LICENSE contain more often than not \_\_FIXME\_\_ placeholder, this information is mostly missing. If you would like to help in making this information more accurate, feel free to send me a more complete metadata.json by mika.hamalainen📧helsinki.fi
+Every language distributed through akusanat.com has *metadata.json* file. This file contains information about the authors of the FSTs and CGs. However, as most of the tools are from Giellatekno and the AUTHORS and LICENSE contain more often than not \_\_FIXME\_\_ placeholder, this information is mostly missing. If you would like to help in making this information more accurate, feel free to send me a more complete metadata.json by mika.hamalainen@helsinki.fi
 
 An example of metadata.json
 
