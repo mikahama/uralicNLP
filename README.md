@@ -66,7 +66,7 @@ A word form can be lemmatized with UralicNLP. This does not do any disambiguatio
     uralicApi.lemmatize("luutapiiri", "fin", word_boundaries=True)
     >>['luuta|piiri', 'luu|tapiiri']
   
-An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descrpitive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |.
+An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descrpitive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
 ### Morphological analysis
 Apart from just getting the lemmas, it's also possible to perform a complete morphological analysis.
@@ -75,7 +75,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
     uralicApi.analyze("voita", "fin")
     >>[['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]
   
-An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descrpitive=False)*
+An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descrpitive=False)*. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
 ### Morphological generation
 From a lemma and a morphological analysis, it's possible to generate the desired word form. 
@@ -84,7 +84,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
     uralicApi.generate("käsi+N+Sg+Par", "fin")
     >>[['kättä', 0.0]]
   
-An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator.
+An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
 
 ### Access the HFST transducer
