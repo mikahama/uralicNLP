@@ -1,6 +1,6 @@
 # UralicNLP
 
-[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638) [![Downloads](https://pepy.tech/badge/uralicnlp)](https://pepy.tech/project/uralicnlp)
+[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638) [![Downloads](https://pepy.tech/badge/uralicnlp)](https://pepy.tech/project/uralicnlp) [![DOI](https://joss.theoj.org/papers/10.21105/joss.01345/status.svg)](https://doi.org/10.21105/joss.01345)
 
 UralicNLP is a natural language processing library targeted mainly for Uralic languages.
 
