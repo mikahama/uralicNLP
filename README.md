@@ -156,7 +156,7 @@ An example of querying the Skolt Sami dictionary with *car*.
 
     from uralicNLP import uralicApi
     uralicApi.dictionary_search("car", "sms")
-    >>{'lemmatized': [], exact_match': [], 'other_languages': [{'lemma': 'autt', ...}, ...]
+    >>{'lemmatized': [], 'exact_match': [], 'other_languages': [{'lemma': 'autt', ...}, ...]
   
 It is possible to list all lemmas in the dictionary:
 
