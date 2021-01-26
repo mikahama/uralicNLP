@@ -3,15 +3,17 @@ from uralicNLP import uralicApi
 from uralicNLP.cg3 import Cg3, Cg3Pipe
 from uralicNLP.translate import *
 from uralicNLP import dependency
+from uralicNLP.ud_tools import UD_collection
 from uralicNLP.dictionary_backends import MongoDictionary
 import re
+from mikatools import *
 
 uralicApi.get_all_forms("kissa", "N", "fin")
 
-uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
-print(uralicApi.analyze("hola", "spa"))
-print(type(uralicApi.get_transducer("spa", analyzer=True)))
-print()
+#uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
+#print(uralicApi.analyze("hola", "spa"))
+#print(type(uralicApi.get_transducer("spa", analyzer=True)))
+#print()
 #print(uralicApi.supported_languages())
 
 #uralicApi.download("fin")
@@ -52,7 +54,6 @@ print(cg.disambiguate("театрӧ пыран абонемент".split(" ")))
 #print (uralicApi.lemmatize("livsmedel", "swe",force_local=True, word_boundaries=True))
 
 
-
 """
 for w in ["الكتاب", "الكاتب", "الميكا", "المكتوب", "كلب", "كلبين", "كلاب", "كلبتي", "كلبي", "قلب", "قلبين"]:
 	print("\n\n" +w)
@@ -64,8 +65,8 @@ print(uralicApi.generate("+noun+humanكاتب+masc+pl@","ara"))
 
 str = "+adj{كَلْبِيّ}+masc+sg@"
 print(re.findall(r"[ء-ي]+", str))
-
 """
+
 """
 print(uralicApi.analyze("kissa", "fin"))
 print(uralicApi.analyze("on", ["fin","olo"]))
@@ -112,3 +113,9 @@ for sentence in ud:
 		print word.pos, word.lemma, word.get_attribute("deprel")
 	print "---"
 """
+ud = UD_collection(open_read("test_data/fi_test.conllu"))
+sentences = ud.find_sentences(query={"lemma": "olla"}) #finds all sentences with the lemma kissa
+
+for sentence in sentences:
+    word = sentence.find(query={"lemma": "olla"})
+    print(word[0].get_attribute("form"))

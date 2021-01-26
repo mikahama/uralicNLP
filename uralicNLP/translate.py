@@ -76,8 +76,7 @@ def ApertiumStableTranslator():
 def ApertiumGiellateknoTranslator():
 	return ApertiumTranslator("https://gtweb.uit.no/apy/")
 
-def ApertiumJorgalTranslator():
-	return ApertiumTranslator("http://gtweb.uit.no/jorgal/apy/")
+ApertiumJorgalTranslator = ApertiumGiellateknoTranslator
 
 def ApertiumLocalhostTranslator():
 	return ApertiumTranslator("http://localhost:2737/")

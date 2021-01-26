@@ -2,6 +2,7 @@
 import re, sys
 from copy import copy
 import codecs
+from typing import Pattern
 
 if (sys.version_info > (3, 0)):
 	#python 3
@@ -246,7 +247,7 @@ class UD_node():
 				else:
 					attr = self.get_attribute(key)
 				v = query[key]
-				if isinstance(v, re._pattern_type):
+				if isinstance(v, Pattern):
 					if v.match(attr) is None:
 						passed = False
 						break
@@ -273,7 +274,7 @@ class UD_node():
 						else:
 							attr = getattr(self, key)
 						v = head_query[key]
-						if isinstance(v, re._pattern_type):
+						if isinstance(v, Pattern):
 							if v.match(attr) is None:
 								head_pass = False
 								break
