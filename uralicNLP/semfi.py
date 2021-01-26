@@ -5,7 +5,7 @@ from .uralicApi import __find_writable_folder, __model_base_folders, ModelNotFou
 import sqlite3
 from collections import defaultdict
 
-semfi_urls = "https://mikakalevi.com/semfi/static/whereis.json"
+semfi_urls = "https://mikakalevi.com/whereis_semfi.json"
 
 __connections = {}
 

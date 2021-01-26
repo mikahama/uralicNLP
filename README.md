@@ -156,7 +156,7 @@ An example of querying the Skolt Sami dictionary with *car*.
 
     from uralicNLP import uralicApi
     uralicApi.dictionary_search("car", "sms")
-    >>{'lemmatized': [], exact_match': [], 'other_languages': [{'lemma': 'autt', ...}, ...]
+    >>{'lemmatized': [], 'exact_match': [], 'other_languages': [{'lemma': 'autt', ...}, ...]
   
 It is possible to list all lemmas in the dictionary:
 
@@ -198,6 +198,12 @@ UralicNLP provides semantic models for Finnish (SemFi) and other Uralic language
 
 - [Machine Translation](https://github.com/mikahama/uralicNLP/wiki/Machine-Translation)
 - [Finnish Dependency Parsing](https://github.com/mikahama/uralicNLP/wiki/Dependency-parsing)
+
+# Business solutions
+
+<img src="https://rootroo.com/cropped-logo-01-png/" alt="Rootroo logo" width="128px" height="128px">
+
+When your NLP needs grow out of what UralicNLP can provide, we have your back! [Rootroo offers consulting related to a variety of NLP tasks](https://rootroo.com/). We have a strong academic background in the state-of-the-art AI solutions for every NLP need. Just contact us, we won't bite.
 
 # Cite
 
