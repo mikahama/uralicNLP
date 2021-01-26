@@ -4,3 +4,6 @@ hfst_trials.py
 uralicNLP/__pycache__/*
 uralicNLP/models/*
 __pycache__/
+build/*
+dist/*
+uralicNLP.egg-info/*
