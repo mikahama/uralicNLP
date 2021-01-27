@@ -21,7 +21,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
     new_python = False
-import hfst
+import hfst_dev
 
 api_url = "https://akusanat.com/smsxml/"
 download_server_url = "https://models.uralicnlp.com/nightly/"
@@ -344,4 +344,3 @@ def _get_dictionary(language, backend=TinyDictionary):
 	dictionary = backend(path, language)
 	dictionary_cache[cache_key] = dictionary
 	return dictionary
-
