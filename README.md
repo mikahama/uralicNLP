@@ -105,7 +105,7 @@ The same parameters can be used here as for *generate()* and *analyze()* to spec
     sentence = "Kissa voi nauraa"
     tokens = sentence.split(" ") #Do a simple tokenization for the sentence
     cg = Cg3("fin")
-    print cg.disambiguate(tokens)
+    print(cg.disambiguate(tokens))
     >>[(u'Kissa', [<Kissa - N, Prop, Sg, Nom, <W:0.000000>>, <kissa - N, Sg, Nom, <W:0.000000>>]), (u'voi', [<voida - V, Act, Ind, Prs, Sg3, <W:0.000000>>]), (u'nauraa', [<nauraa - V, Act, InfA, Sg, Lat, <W:0.000000>>])]
     
 The return object is a list of tuples. The first item in each tuple is the word form used in the sentence, the second item is a list of *Cg3Word* objects. In the case of a full disambiguation, these lists have only one Cg3Word object, but some times the result of the disambiguation still has some ambiguity. Each Cg3Word object has three variables *lemma*, *form* and *morphology*.
@@ -114,7 +114,7 @@ The return object is a list of tuples. The first item in each tuple is the word 
     for disambiguation in disambiguations:
         possible_words = disambiguation[1]
         for possible_word in possible_words:
-            print possible_word.lemma, possible_word.morphology
+            print(possible_word.lemma, possible_word.morphology)
     >>Kissa [u'N', u'Prop', u'Sg', u'Nom', u'<W:0.000000>']
     >>kissa [u'N', u'Sg', u'Nom', u'<W:0.000000>']
     >>voida [u'V', u'Act', u'Ind', u'Prs', u'Sg3', u'<W:0.000000>']
