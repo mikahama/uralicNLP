@@ -287,6 +287,9 @@ def lemmatize(word, language, force_local=True, descrpitive=True, word_boundarie
             lemmas.append(lemma)
         elif language == "ara":
         	lemmas.append(filter_arabic(an,combine_by=bound))
+        elif language == "fin_hist":
+        	lemma = bound.join(re.findall("(?<=WORD_ID=)[^\]]*", an))
+        	lemmas.append(lemma)
         else:
             if not "+Cmp#" in an and "#" in an:
                 an = an.replace("#", "+Cmp#")
