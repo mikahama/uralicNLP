@@ -164,6 +164,12 @@ It is possible to list all lemmas in the dictionary:
     uralicApi.dictionary_lemmas("sms")
     >> ['autt', 'sokk' ...]
 
+You can also group the lemmas by part-of-speech
+
+    from uralicNLP import uralicApi
+    uralicApi.dictionary_lemmas("sms",group_by_pos=True)
+    >> {"N": ['autt', 'sokk' ...], "V":[...]}
+
 #### Fast Dictionary Look-ups
 
 By default, UralicNLP uses a TinyDB backend. This is easy as it does not require an external database server, but it can be extremely slow. For this reason, UralicNLP provides a [MongoDB backend](https://www.mongodb.com/download-center/community).
