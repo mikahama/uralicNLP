@@ -11,11 +11,11 @@ our community a harassment-free experience for Mika. 🤷🏼‍♂️
 Examples of behavior that contributes to creating a positive environment
 include:
 
-* Using welcoming and inclusive language
+* Using welcoming and inclusive language towards Mika
 * Being respectful of Mika's viewpoints and experiences
 * Gracefully accepting constructive criticism -> No criticism, only positive thoughts 😇
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+* Focusing on what is best for Mika
+* Showing empathy towards Mika
 
 Examples of unacceptable behavior by participants include:
 
@@ -23,10 +23,13 @@ Examples of unacceptable behavior by participants include:
 * Public or private harassment
 * Publishing others' private information, such as a physical or electronic address, without explicit permission (wtf?)
 * Other conduct which could reasonably be considered inappropriate in a professional setting. Remeber, anything can be considered offensive in the modern world. 👍 I retain my right to get upset.
+* Opening issues on behalf of a company that is going to benefit from Mika's hard work
+
+NB. Mika is always right and gets to decide what is acceptable and unacceptable
 
 ## Your Responsibilities
 
-It is within your responsibilities to cite the paper describing UralicNLP whenever possible. 🤩
+It is within your responsibilities to cite the paper describing UralicNLP whenever possible. 🤩 And shove money into Mika's pockets if you use UralicNLP in commercial applications.
 
 ## Scope
 
@@ -40,9 +43,9 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior (like not citing me) may be
-reported by contacting the project team at mika.hamalainen@helsinki.fi. All
+reported by contacting Mika at mika.hamalainen@helsinki.fi. All
 complaints will be reviewed and investigated and might result in a response that
-is deemed necessary and appropriate to the circumstances, but mostly will result in a drama and overreacting. The project team is
+is deemed necessary and appropriate to the circumstances, but mostly will result in drama and overreacting. The project team is
 obligated to ~~maintain confidentiality~~ gossip with regard to the reporter of an incident.
 Further details of specific enforcement policies may be posted separately.
 
