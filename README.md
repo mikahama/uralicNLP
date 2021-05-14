@@ -23,6 +23,8 @@ On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](h
 
 Arabic and English FSTs require [Foma](https://fomafst.github.io/).
 
+**🆕 Neural models!** Check out the wiki to learn [how to use neural models](https://github.com/mikahama/uralicNLP/wiki/Neural-morphology).
+
 ## Usage
 
 ### List supported languages
