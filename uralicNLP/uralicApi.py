@@ -11,7 +11,7 @@ import glob
 import datetime
 import shutil
 from .dictionary_backends import TinyDictionary, MongoDictionary
-
+from .neural_fst import NeuralFST
 
 try:
     # For Python 3.0 and later
@@ -97,7 +97,7 @@ def uninstall(language):
 		path = __where_models(language, safe=True)
 
 def download(language, show_progress=True):
-	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
+	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyzer.pt": "../neural/"+language+"_analyzer_nmt-model_step_100000.pt","generator.pt": "../neural/"+language+"_generator_nmt-model_step_100000.pt", "lemmatizer.pt": "../neural/"+language+"_lemmatizer_nmt-model_step_100000.pt", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
@@ -118,25 +118,25 @@ generator_cache = {}
 analyzer_cache = {}
 dictionary_cache = {}
 
-def __generator_model_name(descrpitive, dictionary_forms):
-	if not descrpitive and dictionary_forms:
+def __generator_model_name(descriptive, dictionary_forms):
+	if not descriptive and dictionary_forms:
 		return "generator"
-	elif descrpitive:
+	elif descriptive:
 		return "generator-desc"
 	else:
 		return "generator-norm"
 
-def __generate_locally(query, language, cache=True, descrpitive=False, dictionary_forms=True,filename=None):
-	generator = get_transducer(language,cache=cache, analyzer=False, descrpitive=descrpitive, dictionary_forms=dictionary_forms,filename=filename)
+def __generate_locally(query, language, cache=True, descriptive=False, dictionary_forms=True,filename=None):
+	generator = get_transducer(language,cache=cache, analyzer=False, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
 	r = generator.lookup(query)
 	return r
 
-def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictionary_forms=True, convert_to_openfst=False, filename=None):
+def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True, convert_to_openfst=False, filename=None):
 	conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
 	if not analyzer:
 		#generator
 		if filename is None:
-			filename = os.path.join(__where_models(language), __generator_model_name(descrpitive, dictionary_forms))
+			filename = os.path.join(__where_models(language), __generator_model_name(descriptive, dictionary_forms))
 		if cache and filename in generator_cache:
 			generator = generator_cache[filename]
 		else:
@@ -146,7 +146,7 @@ def get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictio
 			generator_cache[filename] = generator
 	else:
 		if filename is None:
-			filename = os.path.join(__where_models(language), __analyzer_model_name(descrpitive, dictionary_forms))
+			filename = os.path.join(__where_models(language), __analyzer_model_name(descriptive, dictionary_forms))
 		if cache and filename in analyzer_cache:
 			generator = analyzer_cache[filename]
 		else:
@@ -173,16 +173,16 @@ def _load_transducer(filename, invert):
 
 
 
-def __analyzer_model_name(descrpitive, dictionary):
+def __analyzer_model_name(descriptive, dictionary):
 	if dictionary:
 		return "analyser-dict"
-	elif descrpitive:
+	elif descriptive:
 		return "analyser"
 	else:
 		return "analyser-norm"
 
-def __analyze_locally(query, language, cache=True, descrpitive=True, dictionary_forms=False, filename=None):
-	generator = get_transducer(language,cache=cache, analyzer=True, descrpitive=descrpitive, dictionary_forms=dictionary_forms,filename=filename)
+def __analyze_locally(query, language, cache=True, descriptive=True, dictionary_forms=False, filename=None):
+	generator = get_transducer(language,cache=cache, analyzer=True, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
 	r = generator.lookup(query)
 	return r
 
@@ -197,8 +197,8 @@ def __regex_escape(word):
 		word = word.replace(e, "%" +e)
 	return word
 
-def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
-	analyzer = get_transducer(language, descrpitive=descrpitive, analyzer=True, convert_to_openfst=True, cache=True, dictionary_forms=False)
+def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
+	analyzer = get_transducer(language, descriptive=descriptive, analyzer=True, convert_to_openfst=True, cache=True, dictionary_forms=False)
 	abcs = analyzer.get_alphabet()
 	f = []
 	flags = []
@@ -228,32 +228,38 @@ def get_all_forms(word, pos, language, descrpitive=True, limit_forms=-1, filter_
 	output = list(map(lambda x: x.split('\t'), output))
 	return list(map(lambda x: (x[0], float(x[1]),), output))
 
-def generate(query, language, force_local=True, descrpitive=False, dictionary_forms=False, remove_symbols=True, filename=None):
+def generate(query, language, force_local=True, descriptive=False, dictionary_forms=False, remove_symbols=True, filename=None, neural_fallback=False):
 	if force_local or __where_models(language, safe=True):
-		r = __generate_locally(__encode_query(query), language, descrpitive=descrpitive, dictionary_forms=dictionary_forms,filename=filename)
+		r = __generate_locally(__encode_query(query), language, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
 	else:
-		r = __api_generate(query, language, descrpitive=descrpitive, dictionary_forms=dictionary_forms)
+		r = __api_generate(query, language, descriptive=descriptive, dictionary_forms=dictionary_forms)
 	if remove_symbols:
 		r = _remove_analysis_symbols(r)
+	if neural_fallback and len(r) == 0:
+		nfst = NeuralFST(__where_models(language, safe=True))
+		return nfst.generate(query)
 	return r
 
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=True, descrpitive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None):
+def analyze(query, language, force_local=True, descriptive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None,neural_fallback=False):
 	if not isinstance(language, str) and isinstance(language, Iterable):
 		#Treat as a list
 		r = []
 		for l in language:
-			r.extend(analyze(query,l, force_local=force_local, descrpitive=descrpitive, remove_symbols=remove_symbols,language_flags=language_flags, dictionary_forms=dictionary_forms,filename=filename))
+			r.extend(analyze(query,l, force_local=force_local, descriptive=descriptive, remove_symbols=remove_symbols,language_flags=language_flags, dictionary_forms=dictionary_forms,filename=filename))
 		return r
 
 	if force_local or __where_models(language, safe=True):
-		r = __analyze_locally(__encode_query(query), language,descrpitive=descrpitive,dictionary_forms=dictionary_forms,filename=filename)
+		r = __analyze_locally(__encode_query(query), language,descriptive=descriptive,dictionary_forms=dictionary_forms,filename=filename)
 	else:
-		r = __api_analyze(query, language,descrpitive=descrpitive)
+		r = __api_analyze(query, language,descriptive=descriptive)
 	if remove_symbols:
 		r = _remove_analysis_symbols(r)
+	if neural_fallback and len(r) == 0:
+		nfst = NeuralFST(__where_models(language, safe=True))
+		r = nfst.analyze(query)
 
 	if language_flags:
 		return _add_language_flag(r, language)
@@ -273,8 +279,8 @@ def _remove_analysis_symbols(r):
 		r[i] = (__remove_symbols(item[0]),item[1])
 	return r
 
-def lemmatize(word, language, force_local=True, descrpitive=True, word_boundaries=False, dictionary_forms=False, filename=None):
-    analysis = analyze(word, language, force_local, descrpitive=descrpitive, dictionary_forms=dictionary_forms, filename=filename)
+def lemmatize(word, language, force_local=True, descriptive=True, word_boundaries=False, dictionary_forms=False, filename=None, neural_fallback = False):
+    analysis = analyze(word, language, force_local, descriptive=descriptive, dictionary_forms=dictionary_forms, filename=filename,neural_fallback=neural_fallback)
     lemmas = []
     if word_boundaries:
     	bound = "|"
@@ -306,13 +312,13 @@ def supported_languages():
 	d = requests.get("https://uralic.mikakalevi.com/nightly/supported_languages.json")
 	return d.json()
 
-def __api_analyze(word, language,descrpitive=True):
-	if not descrpitive:
-		raise UnsupportedModel("Server only supports descrpitive analysis. Please download the models and analyze locally")
+def __api_analyze(word, language,descriptive=True):
+	if not descriptive:
+		raise UnsupportedModel("Server only supports descriptive analysis. Please download the models and analyze locally")
 	return __send_request("analyze/", {"word": word, "language": language})["analysis"]
 
-def __api_generate(query, language, descrpitive=False, dictionary_forms=True):
-	if descrpitive or not dictionary_forms:
+def __api_generate(query, language, descriptive=False, dictionary_forms=True):
+	if descriptive or not dictionary_forms:
 		raise UnsupportedModel("Server only supports normative dictionary forms. Please download the models and generate locally")
 	return __send_request("generate/", {"query": query, "language": language})["analysis"]
 

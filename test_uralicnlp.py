@@ -8,7 +8,7 @@ from uralicNLP.dictionary_backends import MongoDictionary
 import re
 from mikatools import *
 
-uralicApi.get_all_forms("kissa", "N", "fin")
+#uralicApi.get_all_forms("kissa", "N", "fin")
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
 #print(uralicApi.analyze("hola", "spa"))
@@ -19,16 +19,16 @@ uralicApi.get_all_forms("kissa", "N", "fin")
 #uralicApi.download("fin")
 """
 print(uralicApi.analyze("voita", "fin"))
-print(uralicApi.analyze("voita", "fin", descrpitive=False))
+print(uralicApi.analyze("voita", "fin", descriptive=False))
 print(uralicApi.analyze("voita", "fin"))
-print(uralicApi.analyze("voita", "fin", descrpitive=False))
+print(uralicApi.analyze("voita", "fin", descriptive=False))
 
 
 
 print(uralicApi.generate("käsi+N+Sg+Par", "fin"))
 print(uralicApi.generate("käsi+N+Sg+Par", "fin"))
-print(uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True))
-print(uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True))
+print(uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True))
+print(uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True))
 print(uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=False))
 print(uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=False))
 
@@ -36,7 +36,7 @@ print(uralicApi.generate("käsi+N+Sg+Par", "deu"))
 
 #print(uralicApi.dictionary_search("car", "sms"))
 
-print(uralicApi.lemmatize("voita", "fin", descrpitive=True))
+print(uralicApi.lemmatize("voita", "fin", descriptive=True))
 
 
 #uralicApi.download("kpv")
@@ -44,7 +44,7 @@ print(uralicApi.lemmatize("voita", "fin", descrpitive=True))
 """
 """
 cg = Cg3("fin")
-print(cg.disambiguate(["Kissa","voi","nauraa", "."], descrpitive=True))
+print(cg.disambiguate(["Kissa","voi","nauraa", "."], descriptive=True))
 
 
 cg = Cg3("kpv")
@@ -113,9 +113,19 @@ for sentence in ud:
 		print word.pos, word.lemma, word.get_attribute("deprel")
 	print "---"
 """
+
+"""
 ud = UD_collection(open_read("test_data/fi_test.conllu"))
 sentences = ud.find_sentences(query={"lemma": "olla"}) #finds all sentences with the lemma kissa
 
 for sentence in sentences:
     word = sentence.find(query={"lemma": "olla"})
     print(word[0].get_attribute("form"))
+
+"""
+
+print(uralicApi.analyze("hörpähdin", "fin", neural_fallback=True))
+print(uralicApi.lemmatize("nirhautan", "fin", neural_fallback=True))
+print(uralicApi.generate("hömpötti+N+Sg+Gen", "fin", neural_fallback=True))
+print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=True))
+print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))

@@ -7,7 +7,7 @@ from mikatools import open_write
 import copy
 import re
 
-def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False, words_analysis=None):
+def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descriptive=True,remove_symbols=True, language_flags=False, words_analysis=None,neural_fallback=False):
 	sentence = []
 	if words_analysis is not None and len(words_analysis) < len(words):
 		words_analysis = words_analysis + [[]]
@@ -15,14 +15,14 @@ def _Cg3__parse_sentence(words, language, morphology_ignore_after=None, descrpit
 		existing_analysis = None
 		if words_analysis is not None:
 			existing_analysis = words_analysis[i]
-		analysis = __hfst_format(word, language, morphology_ignore_after,descrpitive=descrpitive, remove_symbols=remove_symbols, language_flags=language_flags, analysis=existing_analysis)
+		analysis = __hfst_format(word, language, morphology_ignore_after,descriptive=descriptive, remove_symbols=remove_symbols, language_flags=language_flags, analysis=existing_analysis,neural_fallback=neural_fallback)
 		sentence.extend(analysis)
 	hfst_result_string = "\n".join(sentence)
 	return hfst_result_string
 
-def __hfst_format(word, language, morphology_ignore_after=None, descrpitive=True,remove_symbols=True, language_flags=False, analysis=None):
+def __hfst_format(word, language, morphology_ignore_after=None, descriptive=True,remove_symbols=True, language_flags=False, analysis=None,neural_fallback=False):
 	if analysis is None:
-		analysis = uralic_api_analyze(word, language,descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags)
+		analysis = uralic_api_analyze(word, language,descriptive=descriptive,remove_symbols=remove_symbols, language_flags=language_flags,neural_fallback=neural_fallback)
 	hfsts = []
 	if len(analysis) == 0:
 		hfsts.append(word + "\t" +word + "+?\tinf")
@@ -46,8 +46,8 @@ class Cg3():
 		self.cg_path = cg_path
 		self.language = language
 
-	def disambiguate(self, words, morphology_ignore_after=None,descrpitive=True,remove_symbols=True, temp_file=None, language_flags=False, morphologies=None):
-		hfst_output = __parse_sentence(words + [""], self.morphology_languages, morphology_ignore_after, descrpitive=descrpitive,remove_symbols=remove_symbols, language_flags=language_flags, words_analysis=morphologies)
+	def disambiguate(self, words, morphology_ignore_after=None,descriptive=True,remove_symbols=True, temp_file=None, language_flags=False, morphologies=None, neural_fallback=False):
+		hfst_output = __parse_sentence(words + [""], self.morphology_languages, morphology_ignore_after, descriptive=descriptive,remove_symbols=remove_symbols, language_flags=language_flags, words_analysis=morphologies, neural_fallback=neural_fallback)
 		if temp_file is None:
 			p1 = Popen(["echo", hfst_output], stdout=PIPE)
 		else:

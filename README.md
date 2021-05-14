@@ -1,6 +1,8 @@
 # UralicNLP
 
-[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1143638.svg)](https://doi.org/10.5281/zenodo.1143638) [![Downloads](https://pepy.tech/badge/uralicnlp)](https://pepy.tech/project/uralicnlp) [![DOI](https://joss.theoj.org/papers/10.21105/joss.01345/status.svg)](https://doi.org/10.21105/joss.01345)
+[![Build Status](https://travis-ci.com/mikahama/uralicNLP.svg?branch=master)](https://travis-ci.com/mikahama/uralicNLP) [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/)  [![Downloads](https://pepy.tech/badge/uralicnlp)](https://pepy.tech/project/uralicnlp) [![DOI](https://joss.theoj.org/papers/10.21105/joss.01345/status.svg)](https://doi.org/10.21105/joss.01345)
+
+![CC BY NC ND](https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png)
 
 UralicNLP is a natural language processing library targeted mainly for Uralic languages.
 
@@ -66,7 +68,7 @@ A word form can be lemmatized with UralicNLP. This does not do any disambiguatio
     uralicApi.lemmatize("luutapiiri", "fin", word_boundaries=True)
     >>['luuta|piiri', 'luu|tapiiri']
   
-An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descrpitive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
+An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descriptive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
 ### Morphological analysis
 Apart from just getting the lemmas, it's also possible to perform a complete morphological analysis.
@@ -75,7 +77,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
     uralicApi.analyze("voita", "fin")
     >>[['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]
   
-An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descrpitive=False)*. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
+An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descriptive=False)*. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
 ### Morphological generation
 From a lemma and a morphological analysis, it's possible to generate the desired word form. 
@@ -84,7 +86,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
     uralicApi.generate("käsi+N+Sg+Par", "fin")
     >>[['kättä', 0.0]]
   
-An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descrpitive=True)* a descriptive generator. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
+An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True)* a descriptive generator. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
 
 ### Access the HFST transducer
@@ -95,7 +97,7 @@ If you need to get a lower level access to [the HFST transducer object](https://
     sms_generator = uralicApi.get_transducer("sms", analyzer=False) #generator
     sms_analyzer = uralicApi.get_transducer("sms", analyzer=True) #analyzer
 
-The same parameters can be used here as for *generate()* and *analyze()* to specify whether you want to use the normative or descriptive analyzers and so on. The defaults are *get_transducer(language, cache=True, analyzer=True, descrpitive=True, dictionary_forms=True)*.
+The same parameters can be used here as for *generate()* and *analyze()* to specify whether you want to use the normative or descriptive analyzers and so on. The defaults are *get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True)*.
 
 ### Syntax - Constraint Grammar disambiguation
 
@@ -122,7 +124,7 @@ The return object is a list of tuples. The first item in each tuple is the word 
     
 The *cg.disambiguate* takes in *remove_symbols* as an optional argument. Its default value is *True* which means that it removes the symbols (segments surrounded by @) from the FST output before feeding it to the CG disambiguator. If the value is set to *False*, the FST morphology is fed in to the CG unmodified.
 
-The **default FST analyzer is a descriptive one**, to use a normative analyzer, set the *descriptive* parameter to False *cg.disambiguate(tokens,descrpitive=False)*.
+The **default FST analyzer is a descriptive one**, to use a normative analyzer, set the *descriptive* parameter to False *cg.disambiguate(tokens,descriptive=False)*.
 
 #### Multilingual CG
 
