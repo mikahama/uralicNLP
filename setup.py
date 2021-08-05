@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.3.0',
+    version='1.3.1',
 
     description='An NLP library for Uralic languages such as Finnish and Sami. Also supports Arabic, Russian etc.',
     long_description=long_description,
@@ -34,7 +34,7 @@ setup(
     zip_safe=False,
     # Author details
     author='Mika Hämäläinen',
-    author_email='mika.hamalainen@helsinki.fi',
+    author_email='mika@rootroo.com',
 
     # Choose your license
     license='Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License',
@@ -69,7 +69,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["requests", "hfst", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb"],
+    install_requires=["requests", "hfst-dev", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb"],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,

@@ -8,7 +8,7 @@ from uralicNLP.dictionary_backends import MongoDictionary
 import re
 from mikatools import *
 
-#uralicApi.get_all_forms("kissa", "N", "fin")
+print(uralicApi.get_all_forms("kissa", "N", "fin"))
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
 #print(uralicApi.analyze("hola", "spa"))
@@ -123,9 +123,10 @@ for sentence in sentences:
     print(word[0].get_attribute("form"))
 
 """
-
+"""
 print(uralicApi.analyze("hörpähdin", "fin", neural_fallback=True))
 print(uralicApi.lemmatize("nirhautan", "fin", neural_fallback=True))
 print(uralicApi.generate("hömpötti+N+Sg+Gen", "fin", neural_fallback=True))
 print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=True))
 print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
+"""

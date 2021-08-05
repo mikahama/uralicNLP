@@ -21,7 +21,8 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
     new_python = False
-import hfst
+
+import hfst_dev as hfst
 
 api_url = "https://akusanat.com/smsxml/"
 download_server_url = "https://models.uralicnlp.com/nightly/"
@@ -224,9 +225,9 @@ def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_
 	analyzer2 = analyzer.copy()
 	analyzer2.compose(reg)
 	output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
-	output = filter(lambda x: x, output)
-	output = list(map(lambda x: x.split('\t'), output))
-	return list(map(lambda x: (x[0], float(x[1]),), output))
+	output = [_o.split('\t') for _o in output if _o]
+	output = [(":".join(_o[:-1]), float(_o[-1]), ) for _o in output]
+	return output
 
 def generate(query, language, force_local=True, descriptive=False, dictionary_forms=False, remove_symbols=True, filename=None, neural_fallback=False):
 	if force_local or __where_models(language, safe=True):
