@@ -24,6 +24,8 @@ except ImportError:
 
 import hfst_dev as hfst
 
+
+
 api_url = "https://akusanat.com/smsxml/"
 download_server_url = "https://models.uralicnlp.com/nightly/"
 
@@ -167,7 +169,10 @@ def _load_transducer(filename, invert):
 	if "fst_type" in metadata and metadata["fst_type"] == "foma":
 		return FomaFSTWrapper(filename, invert)
 	elif "fst_type" in metadata and metadata["fst_type"] == "att":
-		return hfst.read_att_transducer(mikatools.open_read(filename))
+		return hfst.AttReader(mikatools.open_read(filename)).read()
+	elif "apertium" in metadata and metadata["apertium"] == True:
+		input_stream = hfst.HfstInputStream(filename)
+		return input_stream.read_all()[1]
 	else:
 		input_stream = hfst.HfstInputStream(filename)
 		return input_stream.read()
@@ -250,9 +255,8 @@ def analyze(query, language, force_local=True, descriptive=True, remove_symbols=
 		r = []
 		for l in language:
 			r.extend(analyze(query,l, force_local=force_local, descriptive=descriptive, remove_symbols=remove_symbols,language_flags=language_flags, dictionary_forms=dictionary_forms,filename=filename))
-		return r
 
-	if force_local or __where_models(language, safe=True):
+	elif force_local or __where_models(language, safe=True):
 		r = __analyze_locally(__encode_query(query), language,descriptive=descriptive,dictionary_forms=dictionary_forms,filename=filename)
 	else:
 		r = __api_analyze(query, language,descriptive=descriptive)
@@ -297,6 +301,9 @@ def lemmatize(word, language, force_local=True, descriptive=True, word_boundarie
         elif language == "fin_hist":
         	lemma = bound.join(re.findall("(?<=WORD_ID=)[^\]]*", an))
         	lemmas.append(lemma)
+        elif "<" in an and ">" in an:
+        	#apertium
+        	lemmas.append(an.split("<")[0])
         else:
             if not "+Cmp#" in an and "#" in an:
                 an = an.replace("#", "+Cmp#")

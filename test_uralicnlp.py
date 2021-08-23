@@ -8,10 +8,12 @@ from uralicNLP.dictionary_backends import MongoDictionary
 import re
 from mikatools import *
 
-print(uralicApi.get_all_forms("kissa", "N", "fin"))
+#print(uralicApi.get_all_forms("kissa", "N", "fin"))
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
-#print(uralicApi.analyze("hola", "spa"))
+print(uralicApi.analyze("como", "spa"))
+print(uralicApi.generate("perro<n><m><sg>", "spa"))
+print(uralicApi.lemmatize("como", "spa"))
 #print(type(uralicApi.get_transducer("spa", analyzer=True)))
 #print()
 #print(uralicApi.supported_languages())
