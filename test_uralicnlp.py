@@ -12,6 +12,7 @@ from mikatools import *
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
 print(uralicApi.analyze("segiz", "kaa"))
+print(uralicApi.analyze("barchamizga", "uzb"))
 print(uralicApi.analyze("como", "spa"))
 print(uralicApi.generate("perro<n><m><sg>", "spa"))
 print(uralicApi.generate("segiz<num><subst><nom>+e<cop><aor><p3><pl>", "kaa"))
