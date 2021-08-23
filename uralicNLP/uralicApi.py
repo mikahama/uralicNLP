@@ -130,11 +130,14 @@ def __generator_model_name(descriptive, dictionary_forms):
 		return "generator-norm"
 
 def __generate_locally(query, language, cache=True, descriptive=False, dictionary_forms=True,filename=None):
-	generator = get_transducer(language,cache=cache, analyzer=False, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
-	r = generator.lookup(query)
+	generator = get_transducer(language,cache=cache, analyzer=False, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename,force_no_list=False)
+	if not isinstance(generator, list):
+		generator = [generator]
+	r = []
+	[r.extend(x.lookup(query)) for x in generator]
 	return r
 
-def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True, convert_to_openfst=False, filename=None):
+def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True, convert_to_openfst=False, filename=None, force_no_list=True):
 	conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
 	if not analyzer:
 		#generator
@@ -145,7 +148,10 @@ def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictio
 		else:
 			generator = _load_transducer(filename, True)
 			if convert_to_openfst:
-				generator.convert(conversion_type)
+				if  isinstance(generator, list):
+					[x.convert(conversion_type) for x in generator]
+				else:
+					generator.convert(conversion_type)
 			generator_cache[filename] = generator
 	else:
 		if filename is None:
@@ -155,8 +161,13 @@ def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictio
 		else:
 			generator =  _load_transducer(filename, False)
 			if convert_to_openfst:
-				generator.convert(conversion_type)
+				if  isinstance(generator, list):
+					[x.convert(conversion_type) for x in generator]
+				else:
+					generator.convert(conversion_type)
 			analyzer_cache[filename] = generator
+	if force_no_list and isinstance(generator, list):
+		generator = generator[0]
 	return generator
 
 def _load_transducer(filename, invert):
@@ -172,7 +183,7 @@ def _load_transducer(filename, invert):
 		return hfst.AttReader(mikatools.open_read(filename)).read()
 	elif "apertium" in metadata and metadata["apertium"] == True:
 		input_stream = hfst.HfstInputStream(filename)
-		return input_stream.read_all()[1]
+		return input_stream.read_all()
 	else:
 		input_stream = hfst.HfstInputStream(filename)
 		return input_stream.read()
@@ -188,8 +199,11 @@ def __analyzer_model_name(descriptive, dictionary):
 		return "analyser-norm"
 
 def __analyze_locally(query, language, cache=True, descriptive=True, dictionary_forms=False, filename=None):
-	generator = get_transducer(language,cache=cache, analyzer=True, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
-	r = generator.lookup(query)
+	generator = get_transducer(language,cache=cache, analyzer=True, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename, force_no_list=False)
+	if not isinstance(generator, list):
+		generator = [generator]
+	r = []
+	[r.extend(x.lookup(query)) for x in generator]
 	return r
 
 def __encode_query(query):
@@ -303,7 +317,9 @@ def lemmatize(word, language, force_local=True, descriptive=True, word_boundarie
         	lemmas.append(lemma)
         elif "<" in an and ">" in an:
         	#apertium
-        	lemmas.append(an.split("<")[0])
+        	parts = an.split("+")
+        	lemma = bound.join([x.split("<")[0] for x in parts])
+        	lemmas.append(lemma)
         else:
             if not "+Cmp#" in an and "#" in an:
                 an = an.replace("#", "+Cmp#")

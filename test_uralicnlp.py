@@ -11,9 +11,13 @@ from mikatools import *
 #print(uralicApi.get_all_forms("kissa", "N", "fin"))
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
+print(uralicApi.analyze("segiz", "kaa"))
 print(uralicApi.analyze("como", "spa"))
 print(uralicApi.generate("perro<n><m><sg>", "spa"))
+print(uralicApi.generate("segiz<num><subst><nom>+e<cop><aor><p3><pl>", "kaa"))
 print(uralicApi.lemmatize("como", "spa"))
+print(uralicApi.lemmatize("segiz", "kaa"))
+print(uralicApi.lemmatize("segiz", "kaa",word_boundaries=True))
 #print(type(uralicApi.get_transducer("spa", analyzer=True)))
 #print()
 #print(uralicApi.supported_languages())
