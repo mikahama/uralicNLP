@@ -10,6 +10,8 @@ UralicNLP can produce **morphological analyses**, **generate morphological forms
 
 [See the catalog of supported languages](https://models.uralicnlp.com/nightly/)
 
+Some of the supported languages: 🇸🇦 🇪🇸 🇮🇹 🇵🇹 🇩🇪 🇫🇷 🇳🇱 🇬🇧 🇷🇺 🇫🇮 🇸🇪 🇳🇴 🇩🇰 🇱🇻 🇪🇪
+
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
