@@ -12,6 +12,8 @@ UralicNLP can produce **morphological analyses**, **generate morphological forms
 
 Some of the supported languages: 🇸🇦 🇪🇸 🇮🇹 🇵🇹 🇩🇪 🇫🇷 🇳🇱 🇬🇧 🇷🇺 🇫🇮 🇸🇪 🇳🇴 🇩🇰 🇱🇻 🇪🇪
 
+Check out [**UralicGUI** - a graphical user interface for UralicNLP](https://github.com/mikahama/uralicGUI).
+
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
