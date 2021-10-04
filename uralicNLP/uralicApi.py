@@ -248,7 +248,7 @@ def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_
 	output = [(":".join(_o[:-1]), float(_o[-1]), ) for _o in output]
 	return output
 
-def generate(query, language, force_local=True, descriptive=False, dictionary_forms=False, remove_symbols=True, filename=None, neural_fallback=False):
+def generate(query, language, force_local=True, descriptive=False, dictionary_forms=False, remove_symbols=True, filename=None, neural_fallback=False, n_best=1):
 	if force_local or __where_models(language, safe=True):
 		r = __generate_locally(__encode_query(query), language, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
 	else:
@@ -257,13 +257,13 @@ def generate(query, language, force_local=True, descriptive=False, dictionary_fo
 		r = _remove_analysis_symbols(r)
 	if neural_fallback and len(r) == 0:
 		nfst = NeuralFST(__where_models(language, safe=True))
-		return nfst.generate(query)
+		return nfst.generate(query, n_best=n_best)
 	return r
 
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=True, descriptive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None,neural_fallback=False):
+def analyze(query, language, force_local=True, descriptive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None,neural_fallback=False, n_best=1):
 	if not isinstance(language, str) and isinstance(language, Iterable):
 		#Treat as a list
 		r = []
@@ -278,7 +278,7 @@ def analyze(query, language, force_local=True, descriptive=True, remove_symbols=
 		r = _remove_analysis_symbols(r)
 	if neural_fallback and len(r) == 0:
 		nfst = NeuralFST(__where_models(language, safe=True))
-		r = nfst.analyze(query)
+		r = nfst.analyze(query, n_best=n_best)
 
 	if language_flags:
 		return _add_language_flag(r, language)
@@ -298,8 +298,8 @@ def _remove_analysis_symbols(r):
 		r[i] = (__remove_symbols(item[0]),item[1])
 	return r
 
-def lemmatize(word, language, force_local=True, descriptive=True, word_boundaries=False, dictionary_forms=False, filename=None, neural_fallback = False):
-    analysis = analyze(word, language, force_local, descriptive=descriptive, dictionary_forms=dictionary_forms, filename=filename,neural_fallback=neural_fallback)
+def lemmatize(word, language, force_local=True, descriptive=True, word_boundaries=False, dictionary_forms=False, filename=None, neural_fallback = False, n_best=1):
+    analysis = analyze(word, language, force_local, descriptive=descriptive, dictionary_forms=dictionary_forms, filename=filename,neural_fallback=neural_fallback, n_best=n_best)
     lemmas = []
     if word_boundaries:
     	bound = "|"

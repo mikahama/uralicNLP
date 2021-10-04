@@ -11,6 +11,8 @@ from mikatools import *
 #print(uralicApi.get_all_forms("kissa", "N", "fin"))
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
+
+"""
 print(uralicApi.analyze("segiz", "kaa"))
 print(uralicApi.analyze("barchamizga", "uzb"))
 print(uralicApi.analyze("como", "spa"))
@@ -19,6 +21,8 @@ print(uralicApi.generate("segiz<num><subst><nom>+e<cop><aor><p3><pl>", "kaa"))
 print(uralicApi.lemmatize("como", "spa"))
 print(uralicApi.lemmatize("segiz", "kaa"))
 print(uralicApi.lemmatize("segiz", "kaa",word_boundaries=True))
+"""
+
 #print(type(uralicApi.get_transducer("spa", analyzer=True)))
 #print()
 #print(uralicApi.supported_languages())
@@ -130,10 +134,10 @@ for sentence in sentences:
     print(word[0].get_attribute("form"))
 
 """
-"""
-print(uralicApi.analyze("hörpähdin", "fin", neural_fallback=True))
-print(uralicApi.lemmatize("nirhautan", "fin", neural_fallback=True))
-print(uralicApi.generate("hömpötti+N+Sg+Gen", "fin", neural_fallback=True))
-print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=True))
+
+print(uralicApi.analyze("hörpähdin", "fin", neural_fallback=True, n_best=10))
+print(uralicApi.lemmatize("nirhautan", "fin", neural_fallback=True, n_best=10))
+print(uralicApi.generate("hömpötti+N+Sg+Gen", "fin", neural_fallback=True, n_best=10))
+print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=True, n_best=10))
 print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
-"""
+

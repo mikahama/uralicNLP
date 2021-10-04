@@ -14,20 +14,22 @@ class NeuralFST(object):
 		
 		self.model_path = model_path
 	
-	def analyze(self, word):
+	def analyze(self, word, n_best=1):
 		if len(word) == 0:
 			return []
 		model_a = os.path.join(self.model_path, "analyzer.pt")
 		model_l = os.path.join(self.model_path, "lemmatizer.pt")
-		tags = call_onmt([" ".join(word)] ,model_a,n_best=1)[0][0].replace(" ", "+")
-		lemma = call_onmt([" ".join(word)], model_l,n_best=1)[0][0].replace(" ", "")
-		return [(lemma + "+" + tags, 0.0)]
+		tags = call_onmt([" ".join(word)] ,model_a,n_best=n_best,return_scores=True)[0]
+		lemma = call_onmt([" ".join(word)], model_l,n_best=n_best,return_scores=True)[0]
+		lem_tags = zip(tags, lemma)
+		return [(l[0].replace(" ","") + "+" + t[0].replace(" ","+"), l[1] + t[1]) for t,l in lem_tags ]
 
-	def generate(self, word):
+	def generate(self, word, n_best=1):
 		if len(word) ==0:
 			return []
 		model_g = os.path.join(self.model_path, "generator.pt")
 		parts = word.split("+")
 		parts[0] = " ".join(parts[0])
-		form =  call_onmt([" ".join(parts)] ,model_g, n_best=1)[0][0].replace(" ", "")
-		return [(form, 0.0)]
+		forms =  call_onmt([" ".join(parts)] ,model_g, n_best=n_best,return_scores=True)[0]
+		return [(form.replace(" ", ""), score) for form, score in forms]
+
