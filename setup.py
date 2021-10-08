@@ -10,12 +10,20 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
+import os
 
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
+
+reqs = ["requests", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb"]
+
+if os.name == 'nt':
+    reqs.append("hfst")
+else:
+    reqs.append("hfst-dev")
 
 setup(
     name='uralicNLP',
@@ -69,7 +77,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["requests", "hfst-dev", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb"],
+    install_requires=reqs,
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,

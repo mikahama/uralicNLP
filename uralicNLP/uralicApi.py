@@ -22,7 +22,10 @@ except ImportError:
     from urllib2 import urlopen
     new_python = False
 
-import hfst_dev as hfst
+try:
+	import hfst_dev as hfst
+except:
+	import hfst
 
 
 
