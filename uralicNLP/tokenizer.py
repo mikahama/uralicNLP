@@ -2,7 +2,10 @@ import re
 import mikatools
 
 sentence_end = set("!?。……‥！？。⋯…؟჻!…")
+word_end_puct = set(",;:”’'\"»」)]}،؛》』〕｠〉》】〗〙〛–—")
+word_start_punct = set("'\"¡¿「«“”‘({[《『〔｟〈《【〖〘〚–—”")
 numbers = set("0123456789١٢٣٤٥٦٧٨٩٠")
+_custom_punctuation = set('!"#$%&\'()*+,-.:;<=>?@[]^_`{|}~')
 
 abrvs = mikatools.json_load(mikatools.script_path("abrvs.json"))
 abrv_regex = re.compile(r"(^|\s)(" + "|".join([re.escape(a) for a in abrvs]) + ")$")
@@ -73,10 +76,63 @@ def sentences(text):
 	return parts
 
 
-
-
 def words(text):
-	pass
+	multidot = re.compile(r"(\.{2,})$")
+	space_regex = re.compile(r"\s+")
+	for sentence_end_p in sentence_end:
+		text = text.replace(sentence_end_p, " " + sentence_end_p)
+	text = space_regex.sub(" ", text).strip()
+	whitespace_tokens = text.split(" ")
+	tokens = []
+	for t in whitespace_tokens:
+		first_tok = []
+		last_tok = []
+		cont_first = True
+		while cont_first:
+			cont_first = False
+			if len(t) > 0 and t[0] in word_start_punct:
+				cont_first = True
+				first_tok.append(t[0])
+				t = t[1:]
+		cont_last = True
+		while cont_last:
+			cont_last = False
+			if len(t) > 0 and t[-1] in word_end_puct:
+				cont_last = True
+				last_tok.insert(0,t[-1])
+				t = t[:-1]
+			elif len(t)>1 and t[-1] == "." and t[-2] in word_end_puct:
+				cont_last = True
+				last_tok.insert(0,t[-1])
+				last_tok.insert(0,t[-2])
+				t = t[:-2]
+		dots = multidot.search(t)
+		if dots is not None:
+			#Make .. or ... or whaterver its own token
+			dots = dots.groups()[0]
+			last_tok.insert(0, dots)
+			t = t[:-len(dots)]
+		elif len(t) >0 and t[-1] == ".":
+			if not _ends_in_abrv(t[:-1]):
+				t = t[:-1]
+				last_tok.insert(0, ".")
+
+		if ("/" in t or "\\" in t) and not any((x in _custom_punctuation for x in t)):
+			#not a link
+			t = t.replace("/", " /").replace("\\", " \\")
+			t = t.split(" ")
+		else:
+			t = [t]
+		t = [x for x in t if len(x) > 0]
+
+		first_tok.extend(t)
+		first_tok.extend(last_tok)
+		tokens.extend(first_tok)
+
+	tokens = [tok for tok in tokens if len(tok) > 0]
+	return tokens
+
+	
 
 def tokenize(text):
 	pass
