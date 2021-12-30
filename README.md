@@ -6,7 +6,7 @@
 
 UralicNLP is a natural language processing library targeted mainly for Uralic languages.
 
-UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. The information originates mainly in FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/). Currently, UralicNLP uses nightly builds for most of the supported languages.
+UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. The functionality originates mainly in FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/) and [Apertium](https://github.com/apertium). Currently, UralicNLP uses nightly builds for most of the supported languages.
 
 [See the catalog of supported languages](https://models.uralicnlp.com/nightly/)
 
@@ -110,8 +110,9 @@ The same parameters can be used here as for *generate()* and *analyze()* to spec
 **Note** this requires the models to be installed (see above) and [VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/). The disambiguation process is simple.
 
     from uralicNLP.cg3 import Cg3
+    from uralicNLP import tokenizer
     sentence = "Kissa voi nauraa"
-    tokens = sentence.split(" ") #Do a simple tokenization for the sentence
+    tokens = tokenizer.words(sentence)
     cg = Cg3("fin")
     print(cg.disambiguate(tokens))
     >>[(u'Kissa', [<Kissa - N, Prop, Sg, Nom, <W:0.000000>>, <kissa - N, Sg, Nom, <W:0.000000>>]), (u'voi', [<voida - V, Act, Ind, Prs, Sg3, <W:0.000000>>]), (u'nauraa', [<nauraa - V, Act, InfA, Sg, Lat, <W:0.000000>>])]
