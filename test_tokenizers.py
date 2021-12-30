@@ -8,6 +8,6 @@ from mikatools import *
 
 
 s = open_read("test_data/fi_text.txt").read()
-for se in tokenizer.words(s):
+for se in tokenizer.tokenize(s):
 	print(se)
 

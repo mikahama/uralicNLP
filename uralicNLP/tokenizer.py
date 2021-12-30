@@ -135,4 +135,5 @@ def words(text):
 	
 
 def tokenize(text):
-	pass
+	sents = sentences(text)
+	return [words(s) for s in sents]
