@@ -213,6 +213,8 @@ UralicNLP provides semantic models for Finnish (SemFi) and other Uralic language
 
 - [Machine Translation](https://github.com/mikahama/uralicNLP/wiki/Machine-Translation)
 - [Finnish Dependency Parsing](https://github.com/mikahama/uralicNLP/wiki/Dependency-parsing)
+- [ISO code to language name](https://github.com/mikahama/uralicNLP/wiki/uralicNLP.string_processing#iso_to_name)
+- [Tokenization](https://github.com/mikahama/uralicNLP/wiki/Tokenization)
 
 # Business solutions
 
