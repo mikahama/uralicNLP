@@ -14,6 +14,8 @@ Some of the supported languages: 🇸🇦 🇪🇸 🇮🇹 🇵🇹 🇩🇪 �
 
 Check out [**UralicGUI** - a graphical user interface for UralicNLP](https://github.com/mikahama/uralicGUI).
 
+☕ Check out UralicNLP [official Java version](https://github.com/mikahama/uralicNLP-Java)
+
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
