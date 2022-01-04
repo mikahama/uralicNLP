@@ -104,7 +104,7 @@ class Cg3Pipe():
 
 	def _find_weight(self, cg_morphologies):
 		for i, m in enumerate(cg_morphologies):
-			if re.search(r"^\<W\:(\d+|\.)+\>$",m):
+			if re.search(r"^\<W\:\d\.?\d+\>$",m):
 				return i
 
 	def _convert_morphologies(self, cg_results):
