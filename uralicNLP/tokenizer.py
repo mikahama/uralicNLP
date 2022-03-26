@@ -1,5 +1,10 @@
 import re
 import mikatools
+from . import uralicApi
+from . import string_processing
+
+preps = list(set("كبولف"))
+al = "ال"
 
 sentence_end = set("!?。……‥！？。⋯…؟჻!…")
 word_end_puct = set(",;:”’'\"»」)]}،؛》』〕｠〉》】〗〙〛–—")
@@ -12,6 +17,60 @@ abrv_regex = re.compile(r"(^|\s)(" + "|".join([re.escape(a) for a in abrvs]) + "
 
 def _ends_in_abrv(text):
 	return abrv_regex.search(text.lower()) is not None
+
+def _remove_preps(word):
+	for p in preps:
+		if word.startswith(p):
+			word = word[1:]
+			return word, p
+	return word, None
+
+def tokenize_arabic(text):
+	toksut = sentences(text)
+	#print(toksut)
+	output = []
+	for sentence in toksut:
+		o_sentence = []
+		for w in words(sentence):
+			#print(o_sentence)
+			#print(w)
+			word = w
+			lemmas = uralicApi.lemmatize(word, "ara",word_boundaries=True)
+			preppu = None
+			alli = None
+			high_count = 0
+			long_len = 0
+			stop =False
+			for l in lemmas:
+				if "|" in l:
+					c = l.count("|")
+					if c > high_count:
+						high_count = c
+						long_len = len(l)
+						stop = l
+					elif high_count == c:
+						if len(l) > long_len:
+							stop = l
+							long_len = len(l)
+			if high_count > 0:
+				o_sentence.extend([x for x in stop.split("|") if len(string_processing.remove_arabic_diacritics(x)) >0])
+				continue
+
+			if len(lemmas) == 0:
+				word, preppu = _remove_preps(word)
+				lemmas = uralicApi.lemmatize(word, "ara")
+			if len(lemmas) == 0 and word.startswith(al):
+				word = word[2:]
+				alli = al
+				lemmas = uralicApi.lemmatize(word, "ara")
+			if len(lemmas) == 0:
+				o_sentence.append(w)
+			else:
+				parttusan = [preppu, alli, lemmas[0]]
+				#print(parttusan)
+				o_sentence.extend([x for x in parttusan if x is not None])
+		output.append(o_sentence)
+	return output
 
 def sentences(text):
 	parts = []

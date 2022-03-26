@@ -20,3 +20,20 @@ def filter_arabic(text, keep_vowels=True, combine_by=""):
 		
 def iso_to_name(iso):
     return isos[iso]
+
+arabic_diacritics = re.compile("""
+                             ّ    | # Tashdid
+                             َ    | # Fatha
+                             ً    | # Tanwin Fath
+                             ُ    | # Damma
+                             ٌ    | # Tanwin Damm
+                             ِ    | # Kasra
+                             ٍ    | # Tanwin Kasr
+                             ْ    | # Sukun
+                             ـ     # Tatwil/Kashida
+                         """, re.VERBOSE)
+
+
+def remove_arabic_diacritics(text):
+    text = re.sub(arabic_diacritics, '', text)
+    return text

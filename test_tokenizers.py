@@ -6,8 +6,11 @@ from mikatools import *
 
 #print(tokenizer.words(s))
 
-
+"""
 s = open_read("test_data/fi_text.txt").read()
 for se in tokenizer.tokenize(s):
 	print(se)
+
+"""
+print(tokenizer.tokenize_arabic("ومن الناس من يقول آمنا بالله وباليوم الآخر وما هم بمؤمنين"))
 
