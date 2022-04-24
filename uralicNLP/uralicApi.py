@@ -186,7 +186,10 @@ def _load_transducer(filename, invert):
 		return hfst.AttReader(mikatools.open_read(filename)).read()
 	elif "apertium" in metadata and metadata["apertium"] == True:
 		input_stream = hfst.HfstInputStream(filename)
-		return input_stream.read_all()
+		parts = []
+		while not input_stream.is_eof():
+			parts.append(input_stream.read())
+		return parts #input_stream.read_all()
 	else:
 		input_stream = hfst.HfstInputStream(filename)
 		return input_stream.read()
@@ -220,9 +223,7 @@ def __regex_escape(word):
 		word = word.replace(e, "%" +e)
 	return word
 
-def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
-	analyzer = get_transducer(language, descriptive=descriptive, analyzer=True, convert_to_openfst=True, cache=True, dictionary_forms=False)
-	abcs = analyzer.get_alphabet()
+def _get_flag_string(abcs, filter_out):
 	f = []
 	flags = []
 	for abc in abcs:
@@ -236,20 +237,50 @@ def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_
 	flag_end = ""
 	start_flag_end = ""
 	flag_string_start = ""
+	if len(flags) == 0:
+		flags = ['"@DUMMY@"']
 	if len(flags) > 0:
 		flag_string_start =  " [ "+ " | ".join(flags)
 		flag_string =  flag_string_start +" | "
 		flag_string_start = "" +flag_string_start
 		flag_end = "]"
 		start_flag_end = "]* "
-	reg_text = flag_string_start + start_flag_end + "{"+word+"} %+"+pos+ flag_string + " [ ? -  [ "+ " | ".join(f) +" ]]"+flag_end+"*"
-	reg = hfst.regex(reg_text)
-	analyzer2 = analyzer.copy()
-	analyzer2.compose(reg)
-	output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
-	output = [_o.split('\t') for _o in output if _o]
-	output = [(":".join(_o[:-1]), float(_o[-1]), ) for _o in output]
-	return output
+	return flag_string_start, start_flag_end, flag_string, flag_end, f
+
+def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
+	analyzer = get_transducer(language, descriptive=descriptive, analyzer=True, convert_to_openfst=True, cache=True, dictionary_forms=False, force_no_list=False)
+	if isinstance(analyzer, list):
+		#apertium
+		analyzers = analyzer
+		out = []
+		for analyzer in analyzers:
+			abcs = analyzer.get_alphabet()
+			flag_string_start, start_flag_end, flag_string, flag_end, f = _get_flag_string(abcs, filter_out)
+			if len(f) > 0:
+				f_string = " - [ "+ " | ".join(f) +" ]"
+			else:
+				f_string = ""
+			reg_text = flag_string_start + start_flag_end + "{"+word+"} %<"+pos+ "%>" + flag_string + " [ ? "+f_string+"]"+flag_end+"*"
+			reg = hfst.regex(reg_text)
+			analyzer2 = analyzer.copy()
+			analyzer2.compose(reg)
+			output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
+			output = [_o.split('\t') for _o in output if _o]
+			output = [(":".join(_o[:-1]), float(_o[-1]), ) for _o in output]
+			out.extend(output)
+		return out
+
+	else:
+		abcs = analyzer.get_alphabet()
+		flag_string_start, start_flag_end, flag_string, flag_end, f = _get_flag_string(abcs, filter_out)
+		reg_text = flag_string_start + start_flag_end + "{"+word+"} %+"+pos+ flag_string + " [ ? -  [ "+ " | ".join(f) +" ]]"+flag_end+"*"
+		reg = hfst.regex(reg_text)
+		analyzer2 = analyzer.copy()
+		analyzer2.compose(reg)
+		output = analyzer2.extract_paths(max_cycles=1, max_number=limit_forms,output='text').replace("@_EPSILON_SYMBOL_@","").split("\n")
+		output = [_o.split('\t') for _o in output if _o]
+		output = [(":".join(_o[:-1]), float(_o[-1]), ) for _o in output]
+		return output
 
 def generate(query, language, force_local=True, descriptive=False, dictionary_forms=False, remove_symbols=True, filename=None, neural_fallback=False, n_best=1):
 	if force_local or __where_models(language, safe=True):
