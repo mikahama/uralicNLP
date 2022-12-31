@@ -30,7 +30,7 @@ except:
 
 
 api_url = "https://akusanat.com/smsxml/"
-download_server_url = "https://models.uralicnlp.com/nightly/"
+download_server_url = "http://models.uralicnlp.com/nightly/"
 
 class ModelNotFound(Exception):
     pass
