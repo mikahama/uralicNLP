@@ -23,13 +23,9 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
    
 If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
-If you are using Linux and you run into problems with installing HFST, you can find some help on [a blog post on installing hfst](https://mikalikes.men/using-hfst-on-python/)
-
-On Windows, HFST depends on [32 bit Microsoft Visual C++ Redistributable 2017](https://go.microsoft.com/fwlink/?LinkId=746571). Although, I would recommend using [Windows subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-
 Arabic and English FSTs require [Foma](https://fomafst.github.io/).
 
-**🆕 Neural models!** Check out the wiki to learn [how to use neural models](https://github.com/mikahama/uralicNLP/wiki/Neural-morphology).
+**🆕 [Pyhfst](https://github.com/Rootroo-ltd/pyhfst)** UralicNLP uses a pure Python implementation of HFST!
 
 ## Usage
 
