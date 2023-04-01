@@ -78,11 +78,11 @@ str = "+adj{كَلْبِيّ}+masc+sg@"
 print(re.findall(r"[ء-ي]+", str))
 """
 
-"""
+
 print(uralicApi.analyze("kissa", "fin"))
 print(uralicApi.analyze("on", ["fin","olo"]))
 print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
-
+"""
 cg = Cg3("fin", morphology_languages=["fin", "olo"])
 print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
 """
@@ -133,7 +133,7 @@ for sentence in sentences:
     word = sentence.find(query={"lemma": "olla"})
     print(word[0].get_attribute("form"))
 
-"""
+
 
 print(uralicApi.analyze("hörpähdin", "fin", neural_fallback=True, n_best=10))
 print(uralicApi.lemmatize("nirhautan", "fin", neural_fallback=True, n_best=10))
@@ -141,3 +141,4 @@ print(uralicApi.generate("hömpötti+N+Sg+Gen", "fin", neural_fallback=True, n_b
 print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=True, n_best=10))
 print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 
+"""

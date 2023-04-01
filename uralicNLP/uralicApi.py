@@ -22,10 +22,17 @@ except ImportError:
     from urllib2 import urlopen
     new_python = False
 
+hfst_backend = "hfst"
+
 try:
 	import hfst_dev as hfst
 except:
-	import hfst
+	try:
+		import hfst
+	except:
+		hfst_backend = "pyhfst"
+		import pyhfst as hfst
+
 
 
 
@@ -36,6 +43,9 @@ class ModelNotFound(Exception):
     pass
 
 class UnsupportedModel(Exception):
+	pass
+
+class HFSTRequired(Exception):
 	pass
 
 def __model_base_folders():
@@ -141,7 +151,8 @@ def __generate_locally(query, language, cache=True, descriptive=False, dictionar
 	return r
 
 def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True, convert_to_openfst=False, filename=None, force_no_list=True):
-	conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
+	if convert_to_openfst and hfst_backend == "pyhfst":
+		raise HFSTRequired("OpenFST conversion requires pip install hfst or pip install hfst-dev")
 	if not analyzer:
 		#generator
 		if filename is None:
@@ -151,6 +162,7 @@ def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictio
 		else:
 			generator = _load_transducer(filename, True)
 			if convert_to_openfst:
+				conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
 				if  isinstance(generator, list):
 					[x.convert(conversion_type) for x in generator]
 				else:
@@ -164,6 +176,7 @@ def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictio
 		else:
 			generator =  _load_transducer(filename, False)
 			if convert_to_openfst:
+				conversion_type = hfst.ImplementationType.TROPICAL_OPENFST_TYPE
 				if  isinstance(generator, list):
 					[x.convert(conversion_type) for x in generator]
 				else:
@@ -184,13 +197,15 @@ def _load_transducer(filename, invert):
 		return FomaFSTWrapper(filename, invert)
 	elif "fst_type" in metadata and metadata["fst_type"] == "att":
 		return hfst.AttReader(mikatools.open_read(filename)).read()
-	elif "apertium" in metadata and metadata["apertium"] == True:
+	elif "apertium" in metadata and metadata["apertium"] == True and hfst_backend != "pyhfst":
 		input_stream = hfst.HfstInputStream(filename)
 		parts = []
 		while not input_stream.is_eof():
 			parts.append(input_stream.read())
 		return parts #input_stream.read_all()
 	else:
+		if "apertium" in metadata and metadata["apertium"] == True and hfst_backend == "pyhfst":
+			print("Apertium transducers may require you to pip install hfst or pip install hfst-dev")
 		input_stream = hfst.HfstInputStream(filename)
 		return input_stream.read()
 
@@ -248,6 +263,8 @@ def _get_flag_string(abcs, filter_out):
 	return flag_string_start, start_flag_end, flag_string, flag_end, f
 
 def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_out=["#", "+Der", "+Cmp","+Err"]):
+	if hfst_backend == "pyhfst":
+		HFSTRequired("get_all_forms requires pip install hfst or pip install hfst-dev")
 	analyzer = get_transducer(language, descriptive=descriptive, analyzer=True, convert_to_openfst=True, cache=True, dictionary_forms=False, force_no_list=False)
 	if isinstance(analyzer, list):
 		#apertium
@@ -303,6 +320,7 @@ def analyze(query, language, force_local=True, descriptive=True, remove_symbols=
 		r = []
 		for l in language:
 			r.extend(analyze(query,l, force_local=force_local, descriptive=descriptive, remove_symbols=remove_symbols,language_flags=language_flags, dictionary_forms=dictionary_forms,filename=filename))
+		language_flags = False #don't add them again
 
 	elif force_local or __where_models(language, safe=True):
 		r = __analyze_locally(__encode_query(query), language,descriptive=descriptive,dictionary_forms=dictionary_forms,filename=filename)
