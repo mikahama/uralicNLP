@@ -18,12 +18,8 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-reqs = ["requests", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb"]
+reqs = ["requests", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb", "pyhfst"]
 
-if os.name == 'nt':
-    reqs.append("hfst")
-else:
-    reqs.append("hfst-dev")
 
 setup(
     name='uralicNLP',
