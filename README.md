@@ -5,7 +5,7 @@
 
 ![CC BY NC ND](https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png)
 
-UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. The functionality originates mainly in FST tools and dictionaries developed in the [GiellaLT infrastructure](https://giellalt.uit.no/) and [Apertium](https://github.com/apertium). Currently, UralicNLP uses nightly builds for most of the supported languages. 
+UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. Currently, UralicNLP uses stable builds for the supported languages. 
 
 [See the catalog of supported languages](http://models.uralicnlp.com/nightly/)
 
@@ -23,9 +23,14 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
    
 If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
 
-Arabic and English FSTs require [Foma](https://fomafst.github.io/).
-
 **🆕 [Pyhfst](https://github.com/Rootroo-ltd/pyhfst)** UralicNLP uses a pure Python implementation of HFST!
+
+### Faster analysis and generation
+
+UralicNLP uses Pyhfst, which can also be installed with Cython support for faster processing times:
+
+    pip install cython
+    pip install --upgrade --force-reinstall pyhfst --no-cache-dir
 
 ## Usage
 
@@ -238,4 +243,6 @@ Hämäläinen, Mika. (2019). UralicNLP: An NLP Library for Uralic Languages. Jou
     }
 
 For citing the FSTs and CGs, see *uralicApi.model_info(language)*.
+
+The FST and CG tools and dictionaries come mostly from the [GiellaLT repositories](https://github.com/giellalt) and [Apertium](https://github.com/apertium).
 
