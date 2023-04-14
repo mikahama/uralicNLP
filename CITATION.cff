@@ -1,0 +1,29 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: 'UralicNLP: An NLP Library for Uralic Languages'
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Mika
+    family-names: Hämäläinen
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.2668061
+    description: Zenodo
+repository-code: 'https://github.com/mikahama/uralicNLP'
+date-released: '2019-05-06'
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Hämäläinen"
+    given-names: "Mika"
+  doi: "10.21105/joss.01345"
+  journal: "Journal of Open Source Software"
+  title: "UralicNLP: An NLP Library for Uralic Languages"
+  issue: 37
+  volume: 4
+  year: 2019
