@@ -113,7 +113,7 @@ def uninstall(language):
 		path = __where_models(language, safe=True)
 
 def download(language, show_progress=True):
-	model_types = {"analyser":"analyser-gt-desc.hfstol", "analyzer.pt": "../neural/"+language+"_analyzer_nmt-model_step_100000.pt","generator.pt": "../neural/"+language+"_generator_nmt-model_step_100000.pt", "lemmatizer.pt": "../neural/"+language+"_lemmatizer_nmt-model_step_100000.pt", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
+	model_types = {"analyser":"analyser-gt-desc.hfstol", "morpher-gt-desc.hfstol": "morpher-gt-desc.hfstol", "analyzer.pt": "../neural/"+language+"_analyzer_nmt-model_step_100000.pt","generator.pt": "../neural/"+language+"_generator_nmt-model_step_100000.pt", "lemmatizer.pt": "../neural/"+language+"_lemmatizer_nmt-model_step_100000.pt", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
@@ -128,7 +128,7 @@ def download(language, show_progress=True):
 		except:
 			if model_type == "metadata.json":
 				mikatools.json_dump({"info":"no metadata provided"}, save_to)
-			print("Couldn't download " + model_type + " for " + language + ". It might be that the model for the language is not supported yet.")
+			print("Couldn't find " + model_type + " for " + language + ". It is usually safe to ignore this message")
 
 generator_cache = {}
 analyzer_cache = {}
@@ -150,7 +150,7 @@ def __generate_locally(query, language, cache=True, descriptive=False, dictionar
 	[r.extend(x.lookup(query)) for x in generator]
 	return r
 
-def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True, convert_to_openfst=False, filename=None, force_no_list=True):
+def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True, convert_to_openfst=False, filename=None, force_no_list=True, segmentation=False):
 	if convert_to_openfst and hfst_backend == "pyhfst":
 		raise HFSTRequired("OpenFST conversion requires pip install hfst or pip install hfst-dev")
 	if not analyzer:
@@ -170,7 +170,7 @@ def get_transducer(language, cache=True, analyzer=True, descriptive=True, dictio
 			generator_cache[filename] = generator
 	else:
 		if filename is None:
-			filename = os.path.join(__where_models(language), __analyzer_model_name(descriptive, dictionary_forms))
+			filename = os.path.join(__where_models(language), __analyzer_model_name(descriptive, dictionary_forms, segmentation=segmentation))
 		if cache and filename in analyzer_cache:
 			generator = analyzer_cache[filename]
 		else:
@@ -211,7 +211,9 @@ def _load_transducer(filename, invert):
 
 
 
-def __analyzer_model_name(descriptive, dictionary):
+def __analyzer_model_name(descriptive, dictionary, segmentation=False):
+	if segmentation:
+		return "morpher-gt-desc.hfstol"
 	if dictionary:
 		return "analyser-dict"
 	elif descriptive:
@@ -219,8 +221,8 @@ def __analyzer_model_name(descriptive, dictionary):
 	else:
 		return "analyser-norm"
 
-def __analyze_locally(query, language, cache=True, descriptive=True, dictionary_forms=False, filename=None):
-	generator = get_transducer(language,cache=cache, analyzer=True, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename, force_no_list=False)
+def __analyze_locally(query, language, cache=True, descriptive=True, dictionary_forms=False, filename=None,segmentation=False):
+	generator = get_transducer(language,cache=cache, analyzer=True, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename, force_no_list=False,segmentation=segmentation)
 	if not isinstance(generator, list):
 		generator = [generator]
 	r = []
@@ -314,7 +316,7 @@ def generate(query, language, force_local=True, descriptive=False, dictionary_fo
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
-def analyze(query, language, force_local=True, descriptive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None,neural_fallback=False, n_best=1):
+def analyze(query, language, force_local=True, descriptive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None,neural_fallback=False, n_best=1, segmentation=False):
 	if not isinstance(language, str) and isinstance(language, Iterable):
 		#Treat as a list
 		r = []
@@ -323,7 +325,7 @@ def analyze(query, language, force_local=True, descriptive=True, remove_symbols=
 		language_flags = False #don't add them again
 
 	elif force_local or __where_models(language, safe=True):
-		r = __analyze_locally(__encode_query(query), language,descriptive=descriptive,dictionary_forms=dictionary_forms,filename=filename)
+		r = __analyze_locally(__encode_query(query), language,descriptive=descriptive,dictionary_forms=dictionary_forms,filename=filename,segmentation=segmentation)
 	else:
 		r = __api_analyze(query, language,descriptive=descriptive)
 	if remove_symbols:
@@ -429,4 +431,7 @@ def _get_dictionary(language, backend=TinyDictionary):
 	dictionary = backend(path, language)
 	dictionary_cache[cache_key] = dictionary
 	return dictionary
+
+def segment(query, language):
+	return analyze(query, language, segmentation=True)
 

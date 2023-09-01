@@ -15,7 +15,7 @@ class BackendNotOnline(Exception):
     pass
 
 def parse_text(sentence, language, **kwargs):
-	if language is not "fin":
+	if language != "fin":
 		raise LanguageNotSupported("Language is not supported")
 	return _turku_dependencies(sentence, **kwargs)
 

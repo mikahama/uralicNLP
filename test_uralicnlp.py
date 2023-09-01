@@ -79,9 +79,13 @@ print(re.findall(r"[ء-ي]+", str))
 """
 
 
-print(uralicApi.analyze("kissa", "fin"))
-print(uralicApi.analyze("on", ["fin","olo"]))
-print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
+#print(uralicApi.analyze("kissat", "fin"))
+#print(uralicApi.generate("koira+N+Pl+Nom", "fin"))
+
+print(uralicApi.segment("kissanikin", "fin"))
+
+#print(uralicApi.analyze("on", ["fin","olo"]))
+#print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
 """
 cg = Cg3("fin", morphology_languages=["fin", "olo"])
 print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
