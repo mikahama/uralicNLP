@@ -433,5 +433,5 @@ def _get_dictionary(language, backend=TinyDictionary):
 	return dictionary
 
 def segment(query, language):
-	return analyze(query, language, segmentation=True)
+	return [x[0].split(">") for x in analyze(query, language, segmentation=True)]
 
