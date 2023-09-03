@@ -97,6 +97,14 @@ From a lemma and a morphological analysis, it's possible to generate the desired
   
 An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True)* a descriptive generator. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
 
+### Morphological segmentation
+UralicNLP makes it possible to split a word form into morphemes. (Note: this does not work with all languages)
+
+    from uralicNLP import uralicApi
+    uralicApi.segment("luutapiirinikin", "fin")
+    >>[['luu', 'tapiiri', 'ni', 'kin'], ['luuta', 'piiri', 'ni', 'kin']]
+
+In the example, the word _luutapiirinikin_ has two possible interpretations luu|tapiiri and luuta|piiri, the segmentation is done for both interpretations.
 
 ### Access the HFST transducer
 
