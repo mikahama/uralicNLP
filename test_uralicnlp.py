@@ -82,7 +82,7 @@ print(re.findall(r"[ء-ي]+", str))
 #print(uralicApi.analyze("kissat", "fin"))
 #print(uralicApi.generate("koira+N+Pl+Nom", "fin"))
 
-print(uralicApi.segment("kissanikin", "fin"))
+print(uralicApi.segment("luutapiirinikin", "fin"))
 
 #print(uralicApi.analyze("on", ["fin","olo"]))
 #print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
