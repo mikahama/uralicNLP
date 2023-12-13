@@ -227,12 +227,6 @@ UralicNLP provides semantic models for Finnish (SemFi) and other Uralic language
 - [ISO code to language name](https://github.com/mikahama/uralicNLP/wiki/uralicNLP.string_processing#iso_to_name)
 - [Tokenization](https://github.com/mikahama/uralicNLP/wiki/Tokenization)
 
-# Business solutions
-
-<img src="https://rootroo.com/cropped-logo-01-png/" alt="Rootroo logo" width="128px" height="128px">
-
-When your NLP needs grow out of what UralicNLP can provide, we have your back! [Rootroo offers consulting related to a variety of NLP tasks](https://rootroo.com/). We have a strong academic background in the state-of-the-art AI solutions for every NLP need. Don't hesitate to contact us, regardless of the task even beyond Uralic languages!
-
 # Cite
 
 If you use UralicNLP in an academic publication, please cite it as follows:
