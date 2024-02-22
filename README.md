@@ -3,7 +3,6 @@
 
 [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/)  [![Downloads](https://static.pepy.tech/badge/uralicnlp)](https://pepy.tech/project/uralicnlp) [![DOI](https://joss.theoj.org/papers/10.21105/joss.01345/status.svg)](https://doi.org/10.21105/joss.01345)
 
-![CC BY NC ND](https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png)
 
 UralicNLP can produce **morphological analyses**, **generate morphological forms**, **lemmatize words** and **give lexical information** about words in Uralic and other languages. The languages we support include the following languages: Finnish, Russian, German, English, Norwegian, Swedish, Arabic, Ingrian, Meadow & Eastern Mari, Votic, Olonets-Karelian, Erzya, Moksha, Hill Mari, Udmurt, Tundra Nenets, Komi-Permyak, North Sami, South Sami and Skolt Sami. Currently, UralicNLP uses stable builds for the supported languages. 
 
@@ -15,6 +14,7 @@ Check out [**UralicGUI** - a graphical user interface for UralicNLP](https://git
 
 ☕ Check out UralicNLP [official Java version](https://github.com/mikahama/uralicNLP-Java)
 
+♯ Check out UralicNLP [official C# version](https://github.com/mikahama/uralicNLP.net)
 
 ## Installation
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
