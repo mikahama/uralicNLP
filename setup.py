@@ -27,7 +27,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.5.1',
+    version='1.5.2',
 
     description='An NLP library for Uralic languages such as Finnish and Sami. Also supports Spanish, Arabic, Russian etc.',
     long_description=long_description,
@@ -41,7 +41,7 @@ setup(
     author_email='mika@rootroo.com',
 
     # Choose your license
-    license='Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License',
+    license='Apache-2.0 license',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
