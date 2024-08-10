@@ -38,7 +38,7 @@ setup(
     zip_safe=False,
     # Author details
     author='Mika Hämäläinen',
-    author_email='mika@rootroo.com',
+    author_email='mika@flyforpoints.com',
 
     # Choose your license
     license='Apache-2.0 license',
