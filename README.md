@@ -21,7 +21,7 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
 
     pip install uralicNLP
    
-If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to [install VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/).
+If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to install VISL CG-3.
 
 **🆕 [Pyhfst](https://github.com/Rootroo-ltd/pyhfst)** UralicNLP uses a pure Python implementation of HFST!
 
@@ -118,7 +118,7 @@ The same parameters can be used here as for *generate()* and *analyze()* to spec
 
 ### Syntax - Constraint Grammar disambiguation
 
-**Note** this requires the models to be installed (see above) and [VISL CG-3](https://mikalikes.men/how-to-install-visl-cg3-on-mac-windows-and-linux/). The disambiguation process is simple.
+**Note** this requires the models to be installed (see above) and VISL CG-3. The disambiguation process is simple.
 
     from uralicNLP.cg3 import Cg3
     from uralicNLP import tokenizer
