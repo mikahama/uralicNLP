@@ -35,7 +35,7 @@ Send the files to me by email.
 
 ## Making model information more accurate
 
-Every language distributed through akusanat.com has *metadata.json* file. This file contains information about the authors of the FSTs and CGs. However, as most of the tools are from Giellatekno and the AUTHORS and LICENSE contain more often than not \_\_FIXME\_\_ placeholder, this information is mostly missing. If you would like to help in making this information more accurate, feel free to send me a more complete metadata.json by mika.hamalainen@helsinki.fi
+Every language distributed through akusanat.com has *metadata.json* file. This file contains information about the authors of the FSTs and CGs. However, as most of the tools are from Giellatekno and the AUTHORS and LICENSE contain more often than not \_\_FIXME\_\_ placeholder, this information is mostly missing. If you would like to help in making this information more accurate, feel free to send me a more complete metadata.json by mika.hamalainen@metropolia.fi
 
 An example of metadata.json
 
