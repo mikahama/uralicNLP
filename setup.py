@@ -18,7 +18,7 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-reqs = ["requests", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb", "pyhfst"]
+reqs = ["requests", "mikatools>=0.0.6", "argparse", "future>=0.18.2", "tinydb", "pyhfst", "py-markdown-table"]
 
 
 setup(

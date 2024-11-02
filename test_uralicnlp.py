@@ -8,6 +8,8 @@ from uralicNLP.dictionary_backends import MongoDictionary
 import re
 from mikatools import *
 
+from uralicNLP.llm import get_llm, disambiguate_sentence
+
 #print(uralicApi.get_all_forms("kissa", "N", "fin"))
 
 #uralicApi.get_transducer("spa", analyzer=True).lookup_optimize()
@@ -149,3 +151,11 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 
 #print(uralicApi.get_translation("piânnai", "sms", "fin",backend=MongoDictionary))
 #uralicApi.import_dictionary_to_db("sms")
+
+#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
+#result, llm_output = disambiguate_sentence("Ёртозь ёртовсь кудостонть.", "myv", "fin", llm)
+#print(result)
+#print(llm_output)
+#llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip())
+#llm = get_llm("microsoft/Phi-3.5-mini-instruct")
+#print(llm.prompt("What is Livonian?"))
