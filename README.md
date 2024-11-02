@@ -116,55 +116,9 @@ If you need to get a lower level access to [the HFST transducer object](https://
 
 The same parameters can be used here as for *generate()* and *analyze()* to specify whether you want to use the normative or descriptive analyzers and so on. The defaults are *get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True)*.
 
-### Syntax - Constraint Grammar disambiguation
+### Disambiguation
 
-**Note** this requires the models to be installed (see above) and VISL CG-3. The disambiguation process is simple.
-
-    from uralicNLP.cg3 import Cg3
-    from uralicNLP import tokenizer
-    sentence = "Kissa voi nauraa"
-    tokens = tokenizer.words(sentence)
-    cg = Cg3("fin")
-    print(cg.disambiguate(tokens))
-    >>[(u'Kissa', [<Kissa - N, Prop, Sg, Nom, <W:0.000000>>, <kissa - N, Sg, Nom, <W:0.000000>>]), (u'voi', [<voida - V, Act, Ind, Prs, Sg3, <W:0.000000>>]), (u'nauraa', [<nauraa - V, Act, InfA, Sg, Lat, <W:0.000000>>])]
-    
-The return object is a list of tuples. The first item in each tuple is the word form used in the sentence, the second item is a list of *Cg3Word* objects. In the case of a full disambiguation, these lists have only one Cg3Word object, but some times the result of the disambiguation still has some ambiguity. Each Cg3Word object has three variables *lemma*, *form* and *morphology*.
-
-    disambiguations = cg.disambiguate(tokens)
-    for disambiguation in disambiguations:
-        possible_words = disambiguation[1]
-        for possible_word in possible_words:
-            print(possible_word.lemma, possible_word.morphology)
-    >>Kissa [u'N', u'Prop', u'Sg', u'Nom', u'<W:0.000000>']
-    >>kissa [u'N', u'Sg', u'Nom', u'<W:0.000000>']
-    >>voida [u'V', u'Act', u'Ind', u'Prs', u'Sg3', u'<W:0.000000>']
-    >>nauraa [u'V', u'Act', u'InfA', u'Sg', u'Lat', u'<W:0.000000>']
-    
-The *cg.disambiguate* takes in *remove_symbols* as an optional argument. Its default value is *True* which means that it removes the symbols (segments surrounded by @) from the FST output before feeding it to the CG disambiguator. If the value is set to *False*, the FST morphology is fed in to the CG unmodified.
-
-The **default FST analyzer is a descriptive one**, to use a normative analyzer, set the *descriptive* parameter to False *cg.disambiguate(tokens,descriptive=False)*.
-
-#### Multilingual CG
-
-It is possible to run one CG with tags produced by transducers of multiple languages. 
-
-    from uralicNLP.cg3 import Cg3
-    cg = Cg3("fin", morphology_languages=["fin", "olo"])
-    print(cg.disambiguate(["Kissa","on","kotona", "."], language_flags=True))
-
-The code above will use the Finnish (fin) CG rules to disambiguate the tags produced by Finnish (fin) and Olonets-Karelian (olo) transducers. The *language_flags* parameter can be used to append the language code at the end of each morphological reading to identify the transducer that produced the reading.
-
-It is also possible to pipe multiple CG analyzers. This will run the initial morphological analysis in the first CG, disambiguate and pass the disambiguated results to the next CG analyzer.
-
-    from uralicNLP.cg3 import Cg3, Cg3Pipe
-
-    cg1 = Cg3("fin")
-    cg2 = Cg3("olo")
-
-    cg_pipe = Cg3Pipe(cg1, cg2)
-    print(cg_pipe.disambiguate(["Kissa","on","kotona", "."]))
-
-The example above will create a CG analyzer for Finnish and Olonets-Karelian and pipe them into a *Cg3Pipe* object. The analyzer will first use Finnish CG with a Finnish FST to disambiguate the sentence, and then Olonets-Karelian CG to do a further disambiguation. Note that FST is only run in the first CG object of the pipe.
+This section has been moved to [UralicNLP wiki](https://github.com/mikahama/uralicNLP/wiki/Disambiguation).
 
 ### Dictionaries
 UralicNLP makes it possible to obtain the lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
