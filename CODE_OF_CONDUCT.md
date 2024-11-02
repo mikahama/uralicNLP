@@ -43,7 +43,7 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior (like not citing me) may be
-reported by contacting Mika at mika.hamalainen@helsinki.fi. All
+reported by contacting Mika at mika.hamalainen@metropolia.fi. All
 complaints will be reviewed and investigated and might result in a response that
 is deemed necessary and appropriate to the circumstances, but mostly will result in drama and overreacting. The project team is
 obligated to ~~maintain confidentiality~~ gossip with regard to the reporter of an incident.
