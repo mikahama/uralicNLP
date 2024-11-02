@@ -19,7 +19,7 @@ For requesting new features, open up an issue on GitHub. If you want to help in 
 
 ## Adding new languages
 
-If you have your FSTs and CGs distributed on GitHub with documented build scripts, I can add them to our nightly build system and they will be updated automatically. Just send me an email to mika.hamalainen@helsinki.fi
+If you have your FSTs and CGs distributed on GitHub with documented build scripts, I can add them to our nightly build system and they will be updated automatically. Just send me an email to mika.hamalainen@metropolia.fi
 
 If your files are not available on GitHub, compile them and name them accordingly to Giellatekno naming conventions.
 
