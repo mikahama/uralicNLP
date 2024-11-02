@@ -435,3 +435,26 @@ def _get_dictionary(language, backend=TinyDictionary):
 def segment(query, language):
 	return [x[0].replace("#",">").split(">") for x in analyze(query, language, segmentation=True)]
 
+
+def get_translation(lemma, lang, trans_lang, backend=TinyDictionary):
+	res = dictionary_search(lemma, lang, backend=backend)
+	translations = []
+	for e in res["exact_match"]:
+		mgs = e["mg"]
+		if not isinstance(mgs, list):
+			mgs = [mgs]
+		for mg in mgs:
+			tgs = mg["tg"]
+			if not isinstance(tgs, list):
+				tgs = [tgs]
+			for tg in tgs:
+				for tr in tgs:
+					if tr["@xml:lang"] == trans_lang:
+						ts = tr["t"]
+						if not isinstance(ts, list):
+							ts = [ts]
+						for t in ts:
+							translations.append(t["#text"])
+		translations = list(set(translations))
+	return translations
+

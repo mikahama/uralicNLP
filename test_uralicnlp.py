@@ -82,7 +82,7 @@ print(re.findall(r"[ء-ي]+", str))
 #print(uralicApi.analyze("kissat", "fin"))
 #print(uralicApi.generate("koira+N+Pl+Nom", "fin"))
 
-print(uralicApi.segment("luutapiirinikin", "fin"))
+#print(uralicApi.segment("luutapiirinikin", "fin"))
 
 #print(uralicApi.analyze("on", ["fin","olo"]))
 #print(uralicApi.analyze("on", ["fin","olo"], language_flags=True))
@@ -146,3 +146,6 @@ print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=T
 print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 
 """
+
+#print(uralicApi.get_translation("piânnai", "sms", "fin",backend=MongoDictionary))
+#uralicApi.import_dictionary_to_db("sms")

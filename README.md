@@ -144,6 +144,14 @@ You can also group the lemmas by part-of-speech
     uralicApi.dictionary_lemmas("sms",group_by_pos=True)
     >> {"N": ['autt', 'sokk' ...], "V":[...]}
 
+To find translations in an endangered language dictionary to a certain language, you can run this script
+
+     from uralicNLP import uralicApi   
+     uralicApi.get_translation("piânnai", "sms", "fin")
+     >> ['koira']
+
+The example above searches for the word piânnai in Skolt Sami dictionary and returns the translations in Finnish.
+
 #### Fast Dictionary Look-ups
 
 By default, UralicNLP uses a TinyDB backend. This is easy as it does not require an external database server, but it can be extremely slow. For this reason, UralicNLP provides a [MongoDB backend](https://www.mongodb.com/download-center/community).

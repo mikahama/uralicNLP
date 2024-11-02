@@ -107,7 +107,7 @@ class MongoDictionary(DictionaryInterface):
 		client = MongoClient()
 		self.db = client['uralicNLP_dicts']
 		self.collection = self.db[language]
-		self.empty = self.collection.count() == 0
+		self.empty = self.collection.count_documents({}) == 0
 		super(MongoDictionary, self).__init__(path, language)
 
 	def _get_all(self):
@@ -117,7 +117,7 @@ class MongoDictionary(DictionaryInterface):
 
 	def _lemma_query(self, lemma):
 		self._check_empty()
-		res = self.collection.find({"lg" : {"l": {"#text": lemma}}})
+		res = self.collection.find({ "lg.l.#text" : lemma})
 		return list(res)
 
 	def _lang_query(self, lemma):
@@ -144,7 +144,7 @@ class MongoDictionary(DictionaryInterface):
 		tiny = TinyDictionary(self.path, self.language)
 		data = tiny._get_all()
 		self.collection.insert_many(data)
-		self.empty = self.collection.count() == 0
+		self.empty = self.collection.count_documents({}) == 0
 
 
 
