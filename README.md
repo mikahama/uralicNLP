@@ -34,6 +34,8 @@ UralicNLP uses Pyhfst, which can also be installed with Cython support for faste
 
 ## Usage
 
+### [Check out LLMs](https://github.com/mikahama/uralicNLP/wiki/Large-Language-Models)
+
 ### List supported languages
 The API is under constant development and new languages will be added to the nightly builds system. That's why UralicNLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
 
