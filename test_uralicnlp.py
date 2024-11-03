@@ -152,10 +152,19 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(uralicApi.get_translation("piânnai", "sms", "fin",backend=MongoDictionary))
 #uralicApi.import_dictionary_to_db("sms")
 
-#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
+#llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip(), model="text-embedding-3-small")
+#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip(), model="models/text-embedding-004")
 #result, llm_output = disambiguate_sentence("Ёртозь ёртовсь кудостонть.", "myv", "fin", llm)
 #print(result)
 #print(llm_output)
-#llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip())
-#llm = get_llm("microsoft/Phi-3.5-mini-instruct")
+#llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip(), model="mistral-embed")
+llm = get_llm("microsoft/Phi-3.5-mini-instruct")
 #print(llm.prompt("What is Livonian?"))
+
+#llm = get_llm("claude", open_read(os.path.expanduser("~/.claudeapikey")).read().strip())
+#print(llm.prompt("What is Tundra Nenets?")) 
+
+#llm = get_llm("voyage", open_read(os.path.expanduser("~/.voyageapikey")).read().strip())
+#print(llm.embed("Super great text to embed"))
+
+print(llm.embed_endangered("Näʹde täävtõõđi âʹtte peeʹlljid pärnnses täävtõõđi.", "sms", "fin"))

@@ -16,6 +16,16 @@ try:
 except:
 	pass
 
+try:
+	import anthropic
+except:
+	pass
+
+try:
+	import voyageai
+except:
+	pass
+
 from .uralicApi import lemmatize, get_translation
 
 from .tokenizer import words as tokenize_words
@@ -40,6 +50,10 @@ class NoLemmaException(Exception):
 class NothingToLemmatizeException(Exception):
     pass
 
+
+class NotImplementedException(Exception):
+    pass
+
 def get_llm(llm_name, *args, **kwargs):
 	if llm_name == "chatgpt":
 		return ChatGPT(*args, **kwargs)
@@ -47,6 +61,10 @@ def get_llm(llm_name, *args, **kwargs):
 		return Gemini(*args, **kwargs)
 	elif llm_name == "mistral":
 		return Mistral(*args, **kwargs)
+	elif llm_name == "claude":
+		return Claude(*args, **kwargs)
+	elif llm_name == "voyage":
+		return Voyage(*args, **kwargs)
 	else:
 		return HuggingFace(llm_name, *args, **kwargs)
 		
@@ -56,8 +74,27 @@ class LLM(object):
 	def __init__(self):
 		super(LLM, self).__init__()
 
-	def prompt(text):
-		pass
+	def prompt(self, text):
+		raise NotImplementedException("LLM does not support prompting")
+
+	def embed(self, text):
+		raise NotImplementedException("LLM does not support embeddings")
+
+	def embed_endangered(self, text, lang, dict_lang,backend=TinyDictionary):
+		r = []
+		for word in tokenize_words(text):
+			lemmas = lemmatize(word, lang)
+			if len(lemmas) == 0:
+				r.append(word)
+				continue
+			lemma = lemmas[0]
+			t = get_translation(lemma, lang, dict_lang,backend=backend)
+			if len(t) == 0:
+				r.append(lemma)
+				continue
+			r.append(t[0])
+		text = " ".join(r)
+		return self.embed(text)
 
 
 class ChatGPT(LLM):
@@ -83,29 +120,50 @@ class ChatGPT(LLM):
 		)
 		return chat_completion.choices[0].message.content
 
+	def embed(self, text):
+		response = self.client.embeddings.create(input=text, model=self.model)
+		return response.data[0].embedding
+
 class Gemini(LLM):
 	"""docstring for Gemini"""
-	def __init__(self, api_key, model="gemini-1.5-flash"):
+	def __init__(self, api_key, model="gemini-1.5-flash", task_type="retrieval_document"):
 		super(Gemini, self).__init__()
 		try:
 			genai.configure(api_key=api_key)
 		except:
 			raise ModuleNotInstalled("Google Python library is not installed. Run pip install google-generativeai. If you do have the library installed, check your API key.")
 		self.model = genai.GenerativeModel(model)
+		self.model_name = model
+		self.task_type = task_type
 
 	def prompt(self, prompt):
 		response = self.model.generate_content(prompt)
 		return response.text
 
+	def embed(self, text):
+		result = genai.embed_content(model=self.model_name, content=text, task_type=self.task_type)
+		return result['embedding']
+
 class HuggingFace(LLM):
-	def __init__(self, model, max_length=1000):
+	def __init__(self, model, max_length=1000, device=-1):
 		super(HuggingFace, self).__init__()
-		self.model = pipeline('text-generation', model = model)
 		self.max_length = max_length
+		self.model_name = model
+		self.model = None
+		self.embedder = None
+		self.device = device
 
 	def prompt(self, prompt):
-		r = self.model(prompt, max_length=self.max_length)
+		if self.model is None:
+			self.model = pipeline('text-generation', model = self.model_name, device = self.device)
+		r = self.model(prompt, max_length=self.max_length, truncation=True)
 		return " ".join([x['generated_text'] for x in r])
+
+	def embed(self, text):
+		if self.embedder is None:
+			self.embedder = pipeline('feature-extraction', model=self.model_name,device = self.device)
+		r = self.embedder(text, return_tensors="pt")[0].numpy().mean(axis=0)
+		return list(r)
 
 class Mistral(LLM):
 	def __init__(self, api_key, model="mistral-small-latest"):
@@ -113,12 +171,47 @@ class Mistral(LLM):
 		try:
 			self.s = MistralApi(api_key=api_key)
 		except:
-			ModuleNotInstalled("Mistral library is not installed. Run pip install mistralai. If you do have the library installed, check your API key.")
+			raise ModuleNotInstalled("Mistral library is not installed. Run pip install mistralai. If you do have the library installed, check your API key.")
 		self.model = model
 
 	def prompt(self, prompt):
 		r = self.s.chat.complete(model=self.model, messages=[{"content": prompt,"role": "user",}])
 		return r.choices[0].message.content
+
+	def embed(self, text):
+		embeddings_batch_response = self.s.embeddings.create(model=self.model, inputs=[text])
+		return embeddings_batch_response.data[0].embedding
+
+
+class Claude(LLM):
+	"""docstring for ChatGPT"""
+	def __init__(self, api_key, model="claude-3-5-sonnet-latest", max_length=1024):
+		super(Claude, self).__init__()
+		try:
+			self.client = anthropic.Anthropic(api_key=api_key)
+		except:
+			raise ModuleNotInstalled("Anthropic Python library is not installed. Run pip install anthropic. If you do have the library installed, check your API key.")
+		self.model = model
+		self.max_length = max_length
+
+	def prompt(self, prompt, temperature=1):
+		chat_completion = self.client.messages.create(model=self.model,messages=[{"role": "user", "content": prompt}], max_tokens=self.max_length)
+		return " ".join([x.text for x in chat_completion.content])
+
+
+class Voyage(LLM):
+	"""docstring for LLM"""
+	def __init__(self, api_key, model="voyage-3"):
+		super(Voyage, self).__init__()
+		try:
+			self.vo = voyageai.Client(api_key=api_key)
+		except:
+			raise ModuleNotInstalled("Voyage Python library is not installed. Run pip install voyageai. If you do have the library installed, check your API key.")
+		self.model = model
+
+	def embed(self, text):
+		result = self.vo.embed([text], model=self.model, input_type="document")
+		return result.embeddings[0]
 
 def _create_disambiguation_prompt(sentence,lang, dict_lang, raise_exceptions=False, backend=TinyDictionary):
 	if isinstance(sentence, str):
