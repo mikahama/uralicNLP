@@ -41,9 +41,10 @@ def _cluster(embeddings, hierarchical_clustering):
 		c_map = clusters
 		last_len = len(clusters)
 		while True:
-			c_embeddings = [_centroid([embeddings[v] for v in x]) for x in c_map]
+			c_embeddings = [_centroid([c_embeddings[v] for v in x]) for x in c_map]
 			x_map = _semantic_clusters(c_embeddings, False)
 			c_map = _semantic_clusters(c_embeddings, True)
+			print(c_map)
 			groups = []
 			for x in range(len(set(x_map))):
 				groups.append([])
