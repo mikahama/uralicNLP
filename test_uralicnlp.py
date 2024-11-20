@@ -176,4 +176,4 @@ endangered_texts = ["Ёртозь ёртовсь кудостонть.", "Тек
 #print(semantics.cluster(texts, llm))
 #print(semantics.cluster(texts, llm, hierarchical_clustering=True))
 #print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin"))
-print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin", hierarchical_clustering=True))
+print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin", hierarchical_clustering=True, method="hdbscan"))
