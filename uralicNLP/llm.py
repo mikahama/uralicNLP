@@ -38,6 +38,8 @@ from py_markdown_table.markdown_table import markdown_table
 
 import json
 
+from mikatools import pickle_dump, pickle_load
+
 class ModuleNotInstalled(Exception):
 	pass
 
@@ -72,14 +74,52 @@ def get_llm(llm_name, *args, **kwargs):
 class LLM(object):
 	"""docstring for LLM"""
 	def __init__(self):
+		self.cache = False
+		self._embed_cache_dict = {}
+		self._prompt_cache_dict = {}
 		super(LLM, self).__init__()
 
+
+	def _embed_cache(func):
+		def inner(*args, **kwargs):
+			self = args[0]
+			if self.cache and "_".join(args[1:]) in self._embed_cache_dict:
+				return self._embed_cache_dict["_".join(args[1:])]
+			else:
+				r = func(*args, **kwargs)
+				if self.cache:
+					self._embed_cache_dict["_".join(args[1:])] = r
+				return r
+		return inner
+
+	def _prompt_cache(func):
+		def inner(*args, **kwargs):
+			self = args[0]
+			if self.cache and "_".join(args[1:]) in self._prompt_cache_dict:
+				return self._prompt_cache_dict["_".join(args[1:])]
+			else:
+				r = func(*args, **kwargs)
+				if self.cache:
+					self._prompt_cache_dict["_".join(args[1:])] = r
+				return r
+		return inner
+
+
+	@_prompt_cache
 	def prompt(self, text):
+		return self._prompt(text)
+
+	def _prompt(self, text):
 		raise NotImplementedException("LLM does not support prompting")
 
+	@_embed_cache
 	def embed(self, text):
+		return self._embed(text)
+
+	def _embed(self, text):
 		raise NotImplementedException("LLM does not support embeddings")
 
+	@_embed_cache
 	def embed_endangered(self, text, lang, dict_lang,backend=TinyDictionary):
 		r = []
 		for word in tokenize_words(text):
@@ -96,6 +136,13 @@ class LLM(object):
 		text = " ".join(r)
 		return self.embed(text)
 
+	def save_cache(self, file, *args, **kwargs):
+		pickle_dump([self._embed_cache_dict, self._prompt_cache_dict], file, *args, **kwargs )
+
+	def load_cache(self, file, *args, **kwargs):
+		self.cache = True
+		self._embed_cache_dict, self._prompt_cache_dict = pickle_load(file, *args, **kwargs)
+
 
 class ChatGPT(LLM):
 	"""docstring for ChatGPT"""
@@ -107,7 +154,7 @@ class ChatGPT(LLM):
 			raise ModuleNotInstalled("OpenAI Python library is not installed. Run pip install openai. If you do have the library installed, check your API key.")
 		self.model = model
 
-	def prompt(self, prompt, temperature=1):
+	def _prompt(self, prompt, temperature=1):
 		chat_completion = self.client.chat.completions.create(
 			messages=[
 				{
@@ -120,7 +167,7 @@ class ChatGPT(LLM):
 		)
 		return chat_completion.choices[0].message.content
 
-	def embed(self, text):
+	def _embed(self, text):
 		response = self.client.embeddings.create(input=text, model=self.model)
 		return response.data[0].embedding
 
@@ -136,11 +183,11 @@ class Gemini(LLM):
 		self.model_name = model
 		self.task_type = task_type
 
-	def prompt(self, prompt):
+	def _prompt(self, prompt):
 		response = self.model.generate_content(prompt)
 		return response.text
 
-	def embed(self, text):
+	def _embed(self, text):
 		result = genai.embed_content(model=self.model_name, content=text, task_type=self.task_type)
 		return result['embedding']
 
@@ -153,13 +200,13 @@ class HuggingFace(LLM):
 		self.embedder = None
 		self.device = device
 
-	def prompt(self, prompt):
+	def _prompt(self, prompt):
 		if self.model is None:
 			self.model = pipeline('text-generation', model = self.model_name, device = self.device)
 		r = self.model(prompt, max_length=self.max_length, truncation=True)
 		return " ".join([x['generated_text'] for x in r])
 
-	def embed(self, text):
+	def _embed(self, text):
 		if self.embedder is None:
 			self.embedder = pipeline('feature-extraction', model=self.model_name,device = self.device)
 		r = self.embedder(text, return_tensors="pt")[0].numpy().mean(axis=0)
@@ -174,11 +221,11 @@ class Mistral(LLM):
 			raise ModuleNotInstalled("Mistral library is not installed. Run pip install mistralai. If you do have the library installed, check your API key.")
 		self.model = model
 
-	def prompt(self, prompt):
+	def _prompt(self, prompt):
 		r = self.s.chat.complete(model=self.model, messages=[{"content": prompt,"role": "user",}])
 		return r.choices[0].message.content
 
-	def embed(self, text):
+	def _embed(self, text):
 		embeddings_batch_response = self.s.embeddings.create(model=self.model, inputs=[text])
 		return embeddings_batch_response.data[0].embedding
 
@@ -194,7 +241,7 @@ class Claude(LLM):
 		self.model = model
 		self.max_length = max_length
 
-	def prompt(self, prompt, temperature=1):
+	def _prompt(self, prompt, temperature=1):
 		chat_completion = self.client.messages.create(model=self.model,messages=[{"role": "user", "content": prompt}], max_tokens=self.max_length)
 		return " ".join([x.text for x in chat_completion.content])
 
@@ -209,7 +256,7 @@ class Voyage(LLM):
 			raise ModuleNotInstalled("Voyage Python library is not installed. Run pip install voyageai. If you do have the library installed, check your API key.")
 		self.model = model
 
-	def embed(self, text):
+	def _embed(self, text):
 		result = self.vo.embed([text], model=self.model, input_type="document")
 		return result.embeddings[0]
 

@@ -159,8 +159,16 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(result)
 #print(llm_output)
 #llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip(), model="mistral-embed")
-#llm = get_llm("microsoft/Phi-3.5-mini-instruct")
-#print(llm.prompt("What is Livonian?"))
+llm = get_llm("roneneldan/TinyStories-33M")
+#llm.load_cache("cache.bin")
+#"microsoft/Phi-3.5-mini-instruct")
+prompts = ["What is Livonian?", "Look at this dog", "WTF are you talking about", "Yeah, right"]
+for prompt in prompts:
+	print(llm.prompt(prompt))
+	llm.embed(prompt)
+
+#llm.save_cache("cache.bin")
+
 
 #llm = get_llm("claude", open_read(os.path.expanduser("~/.claudeapikey")).read().strip())
 #print(llm.prompt("What is Tundra Nenets?")) 
@@ -169,11 +177,11 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(llm.embed("Super great text to embed"))
 
 #print(llm.embed_endangered("Näʹde täävtõõđi âʹtte peeʹlljid pärnnses täävtõõđi.", "sms", "fin"))
-llm = get_llm("google-bert/bert-base-uncased")
+#llm = get_llm("google-bert/bert-base-uncased")
 texts = ["dogs are funny", "cats play around", "cars go fast", "planes fly around", "parrots like to eat", "eagles soar in the skies", "moon is big", "saturn is a planet"]
 endangered_texts = ["Ёртозь ёртовсь кудостонть.", "Теке сялгонзояк те касовксонть арасть.", "Истяяк арсеват.", "Атякштне, кунсолан, сыргойсть омбоцеде.", "Вальмаванть неявить ульцява ардыцят.", "Морат эрзянь моро?"]
 #print(semantics.cluster(texts, llm, return_ids=True))
 #print(semantics.cluster(texts, llm))
 #print(semantics.cluster(texts, llm, hierarchical_clustering=True))
 #print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin"))
-print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin", hierarchical_clustering=True, method="hdbscan"))
+#print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin", hierarchical_clustering=True, method="hdbscan"))
