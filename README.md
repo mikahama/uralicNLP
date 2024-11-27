@@ -25,12 +25,6 @@ If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import C
 
 **🆕 [Pyhfst](https://github.com/Rootroo-ltd/pyhfst)** UralicNLP uses a pure Python implementation of HFST!
 
-### Faster analysis and generation
-
-UralicNLP uses Pyhfst, which can also be installed with Cython support for faster processing times:
-
-    pip install cython
-    pip install --upgrade --force-reinstall pyhfst --no-cache-dir
 
 ## Usage
 
