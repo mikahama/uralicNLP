@@ -28,7 +28,11 @@ If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import C
 
 ## Usage
 
-### [Check out LLMs](https://github.com/mikahama/uralicNLP/wiki/Large-Language-Models)
+### Large language models (LLMs)
+
+UralicNLP supports a wide range of LLMs and it can even embed text in some endangered languages [Check out LLMs](https://github.com/mikahama/uralicNLP/wiki/Large-Language-Models).
+
+UralicNLP can cluster texts into semantically similar categories. [Learn more about clustering](https://github.com/mikahama/uralicNLP/wiki/Semantics).
 
 ### List supported languages
 The API is under constant development and new languages will be added to the nightly builds system. That's why UralicNLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
@@ -92,69 +96,16 @@ In the example, the word _luutapiirinikin_ has two possible interpretations luu|
 
 ### Disambiguation
 
-This section has been moved to [UralicNLP wiki](https://github.com/mikahama/uralicNLP/wiki/Disambiguation).
+This section has been moved to [UralicNLP wiki page on disambiguation](https://github.com/mikahama/uralicNLP/wiki/Disambiguation).
 
 ### Dictionaries
-UralicNLP makes it possible to obtain the lexicographic information from the Giella dictionaries. The information can contain data such as translations, example sentences, semantic tags, morphological information and so on. You have to define the language code of the dictionary. 
 
-For example, "sms" selects the Skolt Sami dictionary. The word used to query, however, can appear in any language. If the word is a lemma in Skolt Sami, the result will appear in "exact_match", if it's a word form for a Skolt Sami word, the results will appear in "lemmatized", and if it's a word in some other language, the results will appear in "other\_languages", i.e if you search for *cat* in the Skolt Sami dictionary, you will get a result of a form {"other\_languages": [Skolt Sami lexical items that translate to cat]}
-
-An example of querying the Skolt Sami dictionary with *car*.
-
-
-    from uralicNLP import uralicApi
-    uralicApi.dictionary_search("car", "sms")
-    >>{'lemmatized': [], 'exact_match': [], 'other_languages': [{'lemma': 'autt', ...}, ...]
-  
-It is possible to list all lemmas in the dictionary:
-
-    from uralicNLP import uralicApi
-    uralicApi.dictionary_lemmas("sms")
-    >> ['autt', 'sokk' ...]
-
-You can also group the lemmas by part-of-speech
-
-    from uralicNLP import uralicApi
-    uralicApi.dictionary_lemmas("sms",group_by_pos=True)
-    >> {"N": ['autt', 'sokk' ...], "V":[...]}
-
-To find translations in an endangered language dictionary to a certain language, you can run this script
-
-     from uralicNLP import uralicApi   
-     uralicApi.get_translation("piânnai", "sms", "fin")
-     >> ['koira']
-
-The example above searches for the word piânnai in Skolt Sami dictionary and returns the translations in Finnish.
-
-#### Fast Dictionary Look-ups
-
-By default, UralicNLP uses a TinyDB backend. This is easy as it does not require an external database server, but it can be extremely slow. For this reason, UralicNLP provides a [MongoDB backend](https://www.mongodb.com/download-center/community).
-
-Make sure you have both **MongoDB and [pymongo](https://pypi.org/project/pymongo/) installed**.
-
-First, you will need to download the dictionary and import it to MongoDB. The following example shows how to do it for Komi-Zyrian.
-
-    from uralicNLP import uralicApi
-
-    uralicApi.download("kpv") #Download the latest dictionary data
-    uralicApi.import_dictionary_to_db("kpv") #Update the MongoDB with the new data
-
-After the initial setup, you can use the dictionary queries, but you will need to specify the backend.
-
-    from uralicNLP import uralicApi
-    from uralicNLP.dictionary_backends import MongoDictionary
-    uralicApi.dictionary_lemmas("sms",backend=MongoDictionary)
-    uralicApi.dictionary_search("car", "sms",backend=MongoDictionary)
-
-Now you can query the dictionaries fast.
+Learn more about dictionaries in [the wiki page on dictionaries](https://github.com/mikahama/uralicNLP/wiki/Dictionaries).
 
 ### Parsing UD CoNLL-U annotated TreeBank data
 
 UralicNLP comes with tools for parsing and searching CoNLL-U formatted data. Please refer to [the Wiki for the UD parser documentation](https://github.com/mikahama/uralicNLP/wiki/UD-parser).
 
-### Semantics
-
-UralicNLP provides semantic models for Finnish (SemFi) and other Uralic languages (SemUr) for Komi-Zyrian, Erzya, Moksha and Skolt Sami. [Find out how to use semantic models](https://github.com/mikahama/uralicNLP/wiki/Semantics-(SemFi,-SemUr))
 
 ### Other functionalities
 
