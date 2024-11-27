@@ -17,24 +17,20 @@ Check out [**UralicGUI** - a graphical user interface for UralicNLP](https://git
 ♯ Check out UralicNLP [official C# version](https://github.com/mikahama/uralicNLP.net)
 
 ## Installation
+
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
 
     pip install uralicNLP
    
 If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to install VISL CG-3.
 
-**🆕 [Pyhfst](https://github.com/Rootroo-ltd/pyhfst)** UralicNLP uses a pure Python implementation of HFST!
-
-
-## Usage
-
-### Large language models (LLMs)
+## Large language models (LLMs)
 
 UralicNLP supports a wide range of LLMs and it can even embed text in some endangered languages [Check out LLMs](https://github.com/mikahama/uralicNLP/wiki/Large-Language-Models).
 
 UralicNLP can cluster texts into semantically similar categories. [Learn more about clustering](https://github.com/mikahama/uralicNLP/wiki/Semantics).
 
-### List supported languages
+## List supported languages
 The API is under constant development and new languages will be added to the nightly builds system. That's why UralicNLP provides a functionality for looking up the list of currently supported languages. The method returns 3 letter ISO codes for the languages.
 
     from uralicNLP import uralicApi
@@ -43,7 +39,7 @@ The API is under constant development and new languages will be added to the nig
 
 The *dictionary* key lists the languages that are supported by the lexical lookup, whereas *morph* lists the languages that have morphological FSTs and *cg* lists the languages that have a CG.
 
-### Download models 
+## Download models 
 
 On the command line:
 
@@ -56,7 +52,7 @@ From python code:
 
 When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
 
-### Lemmatize words
+## Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
 
     from uralicNLP import uralicApi
@@ -67,7 +63,7 @@ A word form can be lemmatized with UralicNLP. This does not do any disambiguatio
   
 An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descriptive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |.
 
-### Morphological analysis
+## Morphological analysis
 Apart from just getting the lemmas, it's also possible to perform a complete morphological analysis.
 
     from uralicNLP import uralicApi
@@ -76,7 +72,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
   
 An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descriptive=False)*.
 
-### Morphological generation
+## Morphological generation
 From a lemma and a morphological analysis, it's possible to generate the desired word form. 
 
     from uralicNLP import uralicApi
@@ -85,7 +81,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
   
 An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True)* a descriptive generator.
 
-### Morphological segmentation
+## Morphological segmentation
 UralicNLP makes it possible to split a word form into morphemes. (Note: this does not work with all languages)
 
     from uralicNLP import uralicApi
@@ -94,20 +90,20 @@ UralicNLP makes it possible to split a word form into morphemes. (Note: this doe
 
 In the example, the word _luutapiirinikin_ has two possible interpretations luu|tapiiri and luuta|piiri, the segmentation is done for both interpretations.
 
-### Disambiguation
+## Disambiguation
 
 This section has been moved to [UralicNLP wiki page on disambiguation](https://github.com/mikahama/uralicNLP/wiki/Disambiguation).
 
-### Dictionaries
+## Dictionaries
 
 Learn more about dictionaries in [the wiki page on dictionaries](https://github.com/mikahama/uralicNLP/wiki/Dictionaries).
 
-### Parsing UD CoNLL-U annotated TreeBank data
+## Parsing UD CoNLL-U annotated TreeBank data
 
 UralicNLP comes with tools for parsing and searching CoNLL-U formatted data. Please refer to [the Wiki for the UD parser documentation](https://github.com/mikahama/uralicNLP/wiki/UD-parser).
 
 
-### Other functionalities
+## Other functionalities
 
 - [Machine Translation](https://github.com/mikahama/uralicNLP/wiki/Machine-Translation)
 - [Finnish Dependency Parsing](https://github.com/mikahama/uralicNLP/wiki/Dependency-parsing)
