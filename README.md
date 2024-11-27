@@ -41,8 +41,6 @@ The *dictionary* key lists the languages that are supported by the lexical looku
 
 ### Download models 
 
-If you have a lot of data to process, it might be a good idea to download the morphological models for use on your computer locally. This can be done easily. Although, it is possible to use the transducers over Akusanat API by passing *force_local=False*.
-
 On the command line:
 
     python -m uralicNLP.download --languages fin eng
@@ -54,16 +52,6 @@ From python code:
 
 When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
 
-Use **uralicApi.model_info(language)** to see information about the FSTs and CGs such as license and authors. If you know how to make this information more accurate, please don't hesitate to open an issue on GitHub.
-
-    from uralicNLP import uralicApi
-    uralicApi.model_info("fin")
-
-To remove the models of a language, run
-
-    from uralicNLP import uralicApi
-    uralicApi.uninstall("fin")
-
 ### Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
 
@@ -73,7 +61,7 @@ A word form can be lemmatized with UralicNLP. This does not do any disambiguatio
     uralicApi.lemmatize("luutapiiri", "fin", word_boundaries=True)
     >>['luuta|piiri', 'luu|tapiiri']
   
-An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descriptive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
+An example of lemmatizing the word *вирев* in Erzya (myv). By default, a **descriptive** analyzer is used. Use *uralicApi.lemmatize("вирев", "myv", descriptive=False)* for a non-descriptive analyzer. If *word_boundaries* is set to True, the lemmatizer will mark word boundaries with a |.
 
 ### Morphological analysis
 Apart from just getting the lemmas, it's also possible to perform a complete morphological analysis.
@@ -82,7 +70,7 @@ Apart from just getting the lemmas, it's also possible to perform a complete mor
     uralicApi.analyze("voita", "fin")
     >>[['voi+N+Sg+Par', 0.0], ['voi+N+Pl+Par', 0.0], ['voitaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voitaa+V+Act+Imprt+Sg2', 0.0], ['voitaa+V+Act+Ind+Prs+ConNeg', 0.0], ['voittaa+V+Act+Imprt+Prs+ConNeg+Sg2', 0.0], ['voittaa+V+Act+Imprt+Sg2', 0.0], ['voittaa+V+Act+Ind+Prs+ConNeg', 0.0], ['vuo+N+Pl+Par', 0.0]]
   
-An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descriptive=False)*. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
+An example of analyzing the word *voita* in Finnish (fin). The default analyzer is **descriptive**. To use a normative analyzer instead, use *uralicApi.analyze("voita", "fin", descriptive=False)*.
 
 ### Morphological generation
 From a lemma and a morphological analysis, it's possible to generate the desired word form. 
@@ -91,7 +79,7 @@ From a lemma and a morphological analysis, it's possible to generate the desired
     uralicApi.generate("käsi+N+Sg+Par", "fin")
     >>[['kättä', 0.0]]
   
-An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True)* a descriptive generator. [You can also use your own transducer](https://github.com/mikahama/uralicNLP/wiki/Models#using-your-own-transducers)
+An example of generating the singular partitive form for the Finnish noun *käsi*. The result is *kättä*. The default generator is a **regular normative** generator. *uralicApi.generate("käsi+N+Sg+Par", "fin", dictionary_forms=True)* uses a normative dictionary generator and *uralicApi.generate("käsi+N+Sg+Par", "fin", descriptive=True)* a descriptive generator.
 
 ### Morphological segmentation
 UralicNLP makes it possible to split a word form into morphemes. (Note: this does not work with all languages)
@@ -101,16 +89,6 @@ UralicNLP makes it possible to split a word form into morphemes. (Note: this doe
     >>[['luu', 'tapiiri', 'ni', 'kin'], ['luuta', 'piiri', 'ni', 'kin']]
 
 In the example, the word _luutapiirinikin_ has two possible interpretations luu|tapiiri and luuta|piiri, the segmentation is done for both interpretations.
-
-### Access the HFST transducer
-
-If you need to get a lower level access to [the HFST transducer object](https://hfst.github.io/python/3.12.1/classhfst_1_1HfstTransducer.html), you can use the following code
-
-    from uralicNLP import uralicApi
-    sms_generator = uralicApi.get_transducer("sms", analyzer=False) #generator
-    sms_analyzer = uralicApi.get_transducer("sms", analyzer=True) #analyzer
-
-The same parameters can be used here as for *generate()* and *analyze()* to specify whether you want to use the normative or descriptive analyzers and so on. The defaults are *get_transducer(language, cache=True, analyzer=True, descriptive=True, dictionary_forms=True)*.
 
 ### Disambiguation
 
