@@ -387,7 +387,7 @@ def lemmatize(word, language, force_local=True, descriptive=True, word_boundarie
     return lemmas
 
 def supported_languages():
-	d = requests.get("https://uralic.mikakalevi.com/nightly/supported_languages.json")
+	d = requests.get(download_server_url  + "supported_languages.json")
 	return d.json()
 
 def __api_analyze(word, language,descriptive=True):
