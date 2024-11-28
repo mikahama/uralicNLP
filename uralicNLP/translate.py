@@ -23,6 +23,38 @@ class Traslator(object):
 			self._get_languages()
 		return self.languages
 
+class TartuTranslator(Traslator):
+
+	def __init__(self, domain="general"):
+		super(TartuTranslator, self).__init__()
+		self.url = "https://api.tartunlp.ai/translation/v2/"
+		self.domain = domain
+
+	def _get_languages(self):
+		r = requests.get(self.url)
+		data = r.json()["domains"]
+		res = {}
+		for d in data:
+			d_res = {}
+			res[d["name"]] = d_res
+			for lang_pair in d["languages"]:
+				lang1, lang2 = lang_pair.split("-")
+				if lang1 not in d_res:
+					d_res[lang1] = []
+				d_res[lang1].append(lang2)
+
+			res[d["name"]] = d_res
+		self.languages = res
+
+	def translate(self, text, source, target):
+		r = requests.post(self.url, json={"text":text, "src": source, "tgt": target, "domain": self.domain, "application": "uralicNLP"})
+		if r.status_code != 200:
+			raise LanguageNotSupported(r.text)
+		data = r.json()
+		return data["result"]
+
+
+
 
 class ApertiumTranslator(Traslator):
 	"""docstring for ApertiumTranslator"""
