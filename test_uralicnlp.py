@@ -153,7 +153,7 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(uralicApi.get_translation("piânnai", "sms", "fin",backend=MongoDictionary))
 #uralicApi.import_dictionary_to_db("sms")
 
-llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())
+#llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())
 #llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
 #llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip())
 
@@ -202,5 +202,8 @@ llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read()
 
 #t = TartuTranslator()
 #print(t.translate("Hello, how are you?", "eng", "fin"))
+
+llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip(), model="omni-moderation-latest")
+print(llm.moderate("those faggots punched idiots and fucked each other."))
 
 

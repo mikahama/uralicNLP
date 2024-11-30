@@ -127,6 +127,10 @@ class LLM(object):
 		return inner
 
 	def prompt_image(self, text, image):
+		prompt_image = self._convert_image(image)
+		return self._prompt_image_decorated(text, prompt_image)
+
+	def _convert_image(self, image):
 		prompt_image = None
 		if type(image) == str:
 			if image.startswith("http://") or image.startswith("https://") or image.startswith("data:"):
@@ -146,7 +150,8 @@ class LLM(object):
 			byte_data = img_buffer.getvalue()
 			base64_str = base64.b64encode(byte_data)
 			prompt_image = f"data:image/png;base64,{base64_str}"
-		return self._prompt_image_decorated(text, prompt_image)
+		return prompt_image
+		
 
 	@_prompt_cache
 	def _prompt_image_decorated(self, text, prompt_image):
@@ -261,6 +266,23 @@ class ChatGPT(LLM):
 	def _embed(self, text):
 		response = self.client.embeddings.create(input=text, model=self.model)
 		return response.data[0].embedding
+
+	def moderate(self, text, image=None):
+		if image:
+			prompt_image = self._convert_image(image)
+			prompt = [{"type": "text", "text": text},{"type":"image_url", "image_url": {"url": prompt_image} }]
+		else:
+			prompt = text
+		response = self.client.moderations.create(model=self.model, input=prompt).to_dict()["results"][0]
+		final_res = {}
+		for category, modalities in response["category_applied_input_types"].items():
+			for modality in modalities:
+				if modality not in final_res:
+					final_res[modality] = {}
+				final_res[modality][category] = response["category_scores"][category]
+		return final_res
+
+
 
 class Gemini(LLM):
 	"""docstring for Gemini"""
