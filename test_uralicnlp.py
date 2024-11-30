@@ -153,8 +153,22 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(uralicApi.get_translation("piânnai", "sms", "fin",backend=MongoDictionary))
 #uralicApi.import_dictionary_to_db("sms")
 
-#llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip(), model="text-embedding-3-small")
-#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip(), model="models/text-embedding-004")
+llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())
+#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
+#llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip())
+
+#llm = get_llm("perplexity", open_read(os.path.expanduser("~/.perplexityapikey")).read().strip())
+#llm = get_llm("claude", open_read(os.path.expanduser("~/.claudeapikey")).read().strip())
+
+#print(llm.prompt_image("What is this image about?", "/Users/mikahama/Desktop/teams.jpg"))
+
+#print(llm.prompt("I forgot where I put my hat..."))
+
+#llm.set_system_prompt("You are an evil monkey that likes to steal hats.")
+#print("_____-----______")
+
+#print(llm.prompt("I forgot where I put my hat..."))
+
 #result, llm_output = disambiguate_sentence("Ёртозь ёртовсь кудостонть.", "myv", "fin", llm)
 #print(result)
 #print(llm_output)
@@ -174,7 +188,7 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(llm.prompt("What is Tundra Nenets?")) 
 
 #llm = get_llm("voyage", open_read(os.path.expanduser("~/.voyageapikey")).read().strip())
-#print(llm.embed("Super great text to embed"))
+#print(llm.embed("Super great text to embed")[:10])
 
 #print(llm.embed_endangered("Näʹde täävtõõđi âʹtte peeʹlljid pärnnses täävtõõđi.", "sms", "fin"))
 #llm = get_llm("google-bert/bert-base-uncased")
@@ -186,7 +200,7 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin"))
 #print(semantics.cluster_endangered(endangered_texts, llm, "myv", "fin", hierarchical_clustering=True, method="hdbscan"))
 
-t = TartuTranslator()
-print(t.translate("Hello, how are you?", "eng", "fin"))
+#t = TartuTranslator()
+#print(t.translate("Hello, how are you?", "eng", "fin"))
 
 
