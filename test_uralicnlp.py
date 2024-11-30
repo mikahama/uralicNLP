@@ -154,11 +154,13 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #uralicApi.import_dictionary_to_db("sms")
 
 #llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())
-#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
+llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
 #llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip())
 
 #llm = get_llm("perplexity", open_read(os.path.expanduser("~/.perplexityapikey")).read().strip())
 #llm = get_llm("claude", open_read(os.path.expanduser("~/.claudeapikey")).read().strip())
+
+print(llm.prompt_video("What is happening on this video?", "/Users/mikahama/Downloads/6830385-uhd_4096_2160_25fps.mp4"))
 
 #print(llm.prompt_image("What is this image about?", "/Users/mikahama/Desktop/teams.jpg"))
 
@@ -203,7 +205,7 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #t = TartuTranslator()
 #print(t.translate("Hello, how are you?", "eng", "fin"))
 
-llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip(), model="omni-moderation-latest")
-print(llm.moderate("those faggots punched idiots and fucked each other."))
+#llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip(), model="omni-moderation-latest")
+#print(llm.moderate("those faggots punched idiots and fucked each other."))
 
 

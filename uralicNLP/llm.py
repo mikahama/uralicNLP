@@ -100,7 +100,10 @@ class LLM(object):
 		if extra_content is None:
 			return prompt
 		else:
-			return [{"type": "text", "text": prompt}, extra_content]
+			if type(extra_content) == list:
+				return [{"type": "text", "text": prompt}] + extra_content
+			else:
+				return [{"type": "text", "text": prompt}, extra_content]
 
 	def _embed_cache(func):
 		def inner(*args, **kwargs):
@@ -117,18 +120,60 @@ class LLM(object):
 	def _prompt_cache(func):
 		def inner(*args, **kwargs):
 			self = args[0]
-			if self.cache and "_".join(args[1:]) in self._prompt_cache_dict:
-				return self._prompt_cache_dict["_".join(args[1:])]
+			if self.cache and "_".join([str(x) for x in args[1:]]) in self._prompt_cache_dict:
+				return self._prompt_cache_dict["_".join([str(x) for x in args[1:]])]
 			else:
 				r = func(*args, **kwargs)
 				if self.cache:
-					self._prompt_cache_dict["_".join(args[1:])] = r
+					self._prompt_cache_dict["_".join([str(x) for x in args[1:]])] = r
 				return r
 		return inner
 
 	def prompt_image(self, text, image):
 		prompt_image = self._convert_image(image)
 		return self._prompt_image_decorated(text, prompt_image)
+
+	def _prepare_video_frame(self, frame, size, i, b64):
+		height, width, channels = frame.shape
+		if height > width and height > size:
+			ratio = width/height
+			frame = cv2.resize(frame, (round(size*ratio), size))
+		elif width > height and width > size:
+			ratio = height/width
+			frame = cv2.resize(frame, (size, round(size*ratio)))
+		#cv2.imwrite("tmp/img" + str(i) + ".png", frame)	
+		_, buffer = cv2.imencode(".png", frame)
+		if b64:
+			return base64.b64encode(buffer).decode("utf-8")
+		else:
+			return buffer
+
+	@_prompt_cache
+	def prompt_video(self, text, video, size=1000, n_frames=5):
+		frames = self._process_video(video,size,n_frames,b64=True)
+		return self._prompt_video(text, frames)
+
+
+	def _process_video(self, video, size, n_frames, b64=True):
+		video = cv2.VideoCapture(video)
+		frames = []
+		while video.isOpened():
+			success, frame = video.read()
+			if not success:
+				break
+			frames.append(frame)
+			
+		video.release()
+		if (n_frames) >= len(frames):
+			intervals = 1
+		elif n_frames <= 0:
+			intervals = 1
+		else:
+			intervals = round(len(frames)/n_frames)
+		frames = frames[0::intervals]
+		frames = [self._prepare_video_frame(x, size, i, b64) for i, x in enumerate(frames)]
+		return frames
+
 
 	def _convert_image(self, image):
 		prompt_image = None
@@ -168,6 +213,9 @@ class LLM(object):
 		return self._prompt(text)
 
 	def _prompt(self, text):
+		raise NotImplementedException("LLM does not support prompting")
+
+	def _prompt_video(self, text, frames):
 		raise NotImplementedException("LLM does not support prompting")
 
 	@_embed_cache
@@ -249,6 +297,10 @@ class ChatGPT(LLM):
 	def _prompt_image(self, text, prompt_image):
 		return self._prompt(text, extra_content = {"type":"image_url", "image_url": {"url": prompt_image} })
 
+	def _prompt_video(self, text, frames):
+		extra_content = [{"type":"image_url", "image_url": {"url": "data:image/png;base64,"+ prompt_image} } for prompt_image in frames]
+		return self._prompt(text, extra_content=extra_content)
+
 	def _prompt(self, prompt, temperature=1, extra_content=None):
 		prompt = self._openai_format_prompt(prompt, extra_content)
 		chat_completion = self.client.chat.completions.create(
@@ -295,6 +347,11 @@ class Gemini(LLM):
 		self.model = genai.GenerativeModel(model)
 		self.model_name = model
 		self.task_type = task_type
+
+	def _prompt_video(self, text, frames):
+		img_prompts = [{'mime_type':'image/png', 'data': img} for img in frames]
+		response = self.model.generate_content(img_prompts + [text])
+		return response.text
 
 	def set_system_prompt(self, text):
 		self.model = genai.GenerativeModel(self.model_name, system_instruction=text)
@@ -380,6 +437,10 @@ class Claude(LLM):
 
 	def set_system_prompt(self, text):
 		self.system = text
+
+	def _prompt_video(self, text, frames):
+		extra_content = [{"type":"image", "source": {"data": prompt_image, "type":"base64", "media_type":"image/png" }} for prompt_image in frames]
+		return self._prompt(text, extra_content=extra_content)
 
 	def _prompt(self, prompt, temperature=1, extra_content=None):
 		prompt = self._openai_format_prompt(prompt, extra_content)
