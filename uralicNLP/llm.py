@@ -331,7 +331,8 @@ class ChatGPT(LLM):
 			for modality in modalities:
 				if modality not in final_res:
 					final_res[modality] = {}
-				final_res[modality][category] = response["category_scores"][category]
+				if response["categories"][category]:
+					final_res[modality][category] = response["category_scores"][category]
 		return final_res
 
 
