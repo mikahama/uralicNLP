@@ -19,22 +19,29 @@ def get_translation(lemma, lang):
 				tgs = [tgs]
 			for tg in tgs:
 				for tr in tgs:
-					if tr["@xml:lang"] not in translations:
-						translations[tr["@xml:lang"] ] = []
-					ts = tr["t"]
+					try:
+						if tr["@xml:lang"] not in translations:
+							translations[tr["@xml:lang"] ] = []
+					
+						ts = tr["t"]
+					except:
+						continue
 					if not isinstance(ts, list):
 						ts = [ts]
 					for t in ts:
-						translations[tr["@xml:lang"]].append(sanitize_word(t["#text"]))
+						try:
+							translations[tr["@xml:lang"]].append(sanitize_word(t["#text"]))
+						except:
+							pass
 		translations = {x:list(set(y)) for x, y in translations.items()}
 	return translations
 
 w = open_write("dict.lexc")
 w.write("LEXICON Root\n\n")
-for lang in ["sms"]:
+for lang in uralicApi.supported_languages()["dictionary"]:
 	print("Processing ", lang)
 	lemmas = uralicApi.dictionary_lemmas(lang)
-	for lemma in tqdm(lemmas[:10]):
+	for lemma in tqdm(lemmas):
 		translations = get_translation(lemma,lang)
 		lemma = sanitize_word(lemma)
 		for trans_lang, trans in translations.items():
