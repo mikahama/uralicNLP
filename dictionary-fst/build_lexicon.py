@@ -2,19 +2,26 @@ from uralicNLP import uralicApi
 from tqdm import tqdm
 from mikatools import *
 import re
+from uralicNLP.dictionary_backends import MongoDictionary
 
 def sanitize_word(word):
 	return re.sub(r'[`,:#\^\+\?\*\[\]\{\}\(\);" /\\|\.]', '', word.replace(" ", "_"))
 
-def get_translation(lemma, lang):
-	res = uralicApi.dictionary_search(lemma, lang)
+def get_translation(lemma, lang,backend=MongoDictionary):
+	res = uralicApi.dictionary_search(lemma, lang,backend=backend)
 	translations = {}
 	for e in res["exact_match"]:
-		mgs = e["mg"]
+		try:
+			mgs = e["mg"]
+		except:
+			continue
 		if not isinstance(mgs, list):
 			mgs = [mgs]
 		for mg in mgs:
-			tgs = mg["tg"]
+			try:
+				tgs = mg["tg"]
+			except:
+				continue
 			if not isinstance(tgs, list):
 				tgs = [tgs]
 			for tg in tgs:
@@ -39,10 +46,14 @@ def get_translation(lemma, lang):
 w = open_write("dict.lexc")
 w.write("LEXICON Root\n\n")
 for lang in uralicApi.supported_languages()["dictionary"]:
+	if lang in ["lav","rus","est","fin","fra","spa","esp","eng", "nob","swe"]:
+		continue
 	print("Processing ", lang)
-	lemmas = uralicApi.dictionary_lemmas(lang)
+	uralicApi.import_dictionary_to_db(lang)
+	print(lang, "in Mongo")
+	lemmas = uralicApi.dictionary_lemmas(lang,backend=MongoDictionary)
 	for lemma in tqdm(lemmas):
-		translations = get_translation(lemma,lang)
+		translations = get_translation(lemma,lang,backend=MongoDictionary)
 		lemma = sanitize_word(lemma)
 		for trans_lang, trans in translations.items():
 			for t in trans:
