@@ -7,13 +7,13 @@ mcp = FastMCP("Uralic Language Processor (UralicMCP)")
 
 @mcp.tool()
 def analyze_word(word: str, language_iso_code: str) -> list:
-	"""Analyzes a word in a supported language and returns a list of analysis. Each analysis consists of a lemma and morphological tags such as kissa, N, Sg, Nom"""
-	return [", ".join(x[0].split("+")) for x in uralicApi.analyze(word, language_iso_code)]
+	"""Analyzes a word in a supported language and returns a list of analysis. Each analysis consists of a lemma and morphological tags such as kissa+N+Sg+Nom"""
+	return [x[0] for x in uralicApi.analyze(word, language_iso_code)]
 
 
 @mcp.tool()
 def morphological_segmentation(word: str, language_iso_code: str) -> list:
-	"""Splits a word into morphemes. Returns a list of lists given that sometimes a word can be understood in multiple ways"""
+	"""Splits a word into morphemes. Returns a list of lists given that sometimes a word can be understood in multiple ways. E.g. koiranikin koira, ni, kin"""
 	return uralicApi.segment(word, language_iso_code)
 
 @mcp.tool()
@@ -23,7 +23,7 @@ def inflect_word(inflection: str, language_iso_code: str)  -> list:
 
 @mcp.resource("dictionary://{lemma}/{source_language_iso}/{target_language_iso}")
 def dictionary_lookup(lemma:str, source_language_iso:str, target_language_iso) -> list:
-	"""Finds target language translations for a lemma in source language. The language codes are ISO codes. NB these dictionaries are for endangered languages. They mostly have translations from an endangered language to Finnish, Russian or English. There are no dictionaries between two endangered languages."""
+	"""Finds target language translations for a lemma in source language. Traget language can be None for translations in all languages. The language codes are ISO codes. NB these dictionaries are for endangered languages. They mostly have translations from an endangered language to Finnish, Russian or English. There are no dictionaries between two endangered languages."""
 	return uralicApi.get_translation(lemma, source_language_iso, target_language_iso)
 
 @mcp.resource()
