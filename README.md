@@ -24,6 +24,10 @@ The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/
    
 If you want to use the Constraint Grammar features (*from uralicNLP.cg3 import Cg3*), you will also need to install VISL CG-3.
 
+## MCP
+
+Who said LLMs don't speak endangered languages? UralicNLP now supports MCP! Connect UralicNLP main functionality directly to your favorite MCP supporting LLM! [Read more in the UralicMCP wiki](https://github.com/mikahama/uralicNLP/wiki/UralicMCP).
+
 ## Large language models (LLMs)
 
 UralicNLP supports a wide range of LLMs and it can even embed text in some endangered languages [Check out LLMs](https://github.com/mikahama/uralicNLP/wiki/Large-Language-Models).
