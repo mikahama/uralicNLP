@@ -31,6 +31,8 @@ print(uralicApi.lemmatize("segiz", "kaa",word_boundaries=True))
 #print(uralicApi.supported_languages())
 
 #uralicApi.download("fin")
+#print(uralicApi.analyze("voita", "fin"))
+#print(uralicApi.generate("käsi+N+Sg+Par", "fin"))
 """
 print(uralicApi.analyze("voita", "fin"))
 print(uralicApi.analyze("voita", "fin", descriptive=False))
@@ -114,6 +116,8 @@ print(uralicApi.generate("cat[N]+N+PL", "eng"))
 print(uralicApi.lemmatize("cats", "eng"))
 
 """
+#print(uralicApi.lemmatize("cats", "eng"))
+#print(uralicApi.lemmatize("oli", "fin_hist"))
 
 """
 
@@ -154,13 +158,13 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 #uralicApi.import_dictionary_to_db("sms")
 
 #llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())
-llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
+#llm = get_llm("gemini", open_read(os.path.expanduser("~/.geminiapikey")).read().strip())
 #llm = get_llm("mistral", open_read(os.path.expanduser("~/.mistralapikey")).read().strip())
 
 #llm = get_llm("perplexity", open_read(os.path.expanduser("~/.perplexityapikey")).read().strip())
 #llm = get_llm("claude", open_read(os.path.expanduser("~/.claudeapikey")).read().strip())
 
-print(llm.prompt_video("What is happening on this video?", "/Users/mikahama/Downloads/6830385-uhd_4096_2160_25fps.mp4"))
+#print(llm.prompt_video("What is happening on this video?", "/Users/mikahama/Downloads/6830385-uhd_4096_2160_25fps.mp4"))
 
 #print(llm.prompt_image("What is this image about?", "/Users/mikahama/Desktop/teams.jpg"))
 

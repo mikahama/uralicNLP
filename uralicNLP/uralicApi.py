@@ -39,6 +39,8 @@ except:
 api_url = "https://akusanat.com/smsxml/"
 download_server_url = "http://models.uralicnlp.com/nightly/"
 
+language_installed_cache = []
+
 class ModelNotFound(Exception):
     pass
 
@@ -47,6 +49,15 @@ class UnsupportedModel(Exception):
 
 class HFSTRequired(Exception):
 	pass
+
+def ensure_model_installed(func):
+	def wrapper(*args, **kwargs):
+		lang = args[1]
+		if not is_language_installed(lang):
+			download(lang)
+		result = func(*args, **kwargs)
+		return result
+	return wrapper
 
 def __model_base_folders():
 	a = os.path.join(os.path.dirname(__file__), "models")
@@ -68,9 +79,12 @@ def _Cg3__where_models(language, safe=False):
 	return __where_models(language, safe)
 
 def is_language_installed(language):
+	if language in language_installed_cache:
+		return True
 	path = __where_models(language, True)
 	if path is None:
 		return False
+	language_installed_cache.append(language)
 	return True
 
 def _file_modification_time(filename):
@@ -301,6 +315,7 @@ def get_all_forms(word, pos, language, descriptive=True, limit_forms=-1, filter_
 		output = [(":".join(_o[:-1]), float(_o[-1]), ) for _o in output]
 		return output
 
+@ensure_model_installed
 def generate(query, language, force_local=True, descriptive=False, dictionary_forms=False, remove_symbols=True, filename=None, neural_fallback=False, n_best=1):
 	if force_local or __where_models(language, safe=True):
 		r = __generate_locally(__encode_query(query), language, descriptive=descriptive, dictionary_forms=dictionary_forms,filename=filename)
@@ -316,6 +331,7 @@ def generate(query, language, force_local=True, descriptive=False, dictionary_fo
 def __remove_symbols(string):
 	return re.sub('@[^@]*@', '', string)
 
+@ensure_model_installed
 def analyze(query, language, force_local=True, descriptive=True, remove_symbols=True,language_flags=False, dictionary_forms=False,filename=None,neural_fallback=False, n_best=1, segmentation=False):
 	if not isinstance(language, str) and isinstance(language, Iterable):
 		#Treat as a list
@@ -362,12 +378,12 @@ def lemmatize(word, language, force_local=True, descriptive=True, word_boundarie
     for tupla in analysis:
         an = tupla[0]
         if language == "swe":
-            lemma = re.sub("[\<].*?[\>]", bound, an).strip(bound)
+            lemma = re.sub(r"<.*?>", bound, an).strip(bound)
             lemmas.append(lemma)
         elif language == "ara":
         	lemmas.append(filter_arabic(an,combine_by=bound))
         elif language == "fin_hist":
-        	lemma = bound.join(re.findall("(?<=WORD_ID=)[^\]]*", an))
+        	lemma = bound.join(re.findall(r"(?<=WORD_ID=)[^]]*", an))
         	lemmas.append(lemma)
         elif "<" in an and ">" in an:
         	#apertium
@@ -380,7 +396,7 @@ def lemmatize(word, language, force_local=True, descriptive=True, word_boundarie
             res = an.split("+Cmp#")
             lemma = [x.split("+")[0] for x in res]
             if language == "eng":
-            	lemma = [re.sub("[\[].*?[\]]", "", x) for x in lemma]
+            	lemma = [re.sub(r"\[.*?]", "", x) for x in lemma]
             lemmas.append(bound.join(lemma))
 
     lemmas = list(set(lemmas))
