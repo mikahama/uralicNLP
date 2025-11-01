@@ -154,7 +154,7 @@ print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 
 """
 
-#print(uralicApi.get_translation("piânnai", "sms", "fin",backend=MongoDictionary))
+print(uralicApi.get_translation("piânnai", "sms"))
 #uralicApi.import_dictionary_to_db("sms")
 
 #llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())

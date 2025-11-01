@@ -451,8 +451,29 @@ def _get_dictionary(language, backend=TinyDictionary):
 def segment(query, language):
 	return [x[0].replace("#",">").split(">") for x in analyze(query, language, segmentation=True)]
 
+def get_translation(lemma, lang, trans_lang=None, backend=None):
+	if backend is not None:
+		return get_translation_db(lemma, lang, trans_lang, backend=backend)
+	t1 = analyze(lang + "_" + lemma, "dictionary")
+	t2 = generate(lang + "_" + lemma, "dictionary")
+	res = {}
+	for t in t1 + t2:
+		l, w = t[0].split("_",1)
+		w = w.replace("_", " ")
+		if l not in res:
+			res[l] = []
+		res[l].append(w)
+	res = {x:list(set(y)) for x, y in res.items()}
+	if trans_lang is not None:
+		if trans_lang in res:
+			return res[trans_lang]
+		else:
+			return []
+	else:
+		return res
 
-def get_translation(lemma, lang, trans_lang, backend=TinyDictionary):
+
+def get_translation_db(lemma, lang, trans_lang, backend=TinyDictionary):
 	res = dictionary_search(lemma, lang, backend=backend)
 	translations = []
 	for e in res["exact_match"]:
