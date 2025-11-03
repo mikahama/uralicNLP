@@ -9,3 +9,6 @@ dist/*
 uralicNLP.egg-info/*
 *.DS_Store
 tools/dictionaries/*
+*.hfst
+*.hfstol
+
