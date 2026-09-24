@@ -16,6 +16,8 @@ Check out [**UralicGUI** - a graphical user interface for UralicNLP](https://git
 
 ♯ Check out UralicNLP [official C# version](https://github.com/mikahama/uralicNLP.net)
 
+🌐 Check out UralicNLP [official JS version](https://github.com/mikahama/UralicNLP-JS/)
+
 ## Installation
 
 The library can be installed from [PyPi](https://pypi.python.org/pypi/uralicNLP/).
