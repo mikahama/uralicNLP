@@ -56,13 +56,15 @@ The *dictionary* key lists the languages that are supported by the lexical looku
 On the command line:
 
     python -m uralicNLP.download --languages fin eng
+    python -m uralicNLP.download --languages dictionary
 
 From python code:
 
     from uralicNLP import uralicApi
     uralicApi.download("fin")
+    uralicApi.download("dictionary")
 
-When models are installed, *generate()*, *analyze()* and *lemmatize()* methods will automatically use them instead of the server side API. [More information about the models](https://github.com/mikahama/uralicNLP/wiki/Models).
+Notice that __dictionary__ downloads a multilingual dictionary model for all supported languages.
 
 ## Lemmatize words
 A word form can be lemmatized with UralicNLP. This does not do any disambiguation but rather returns a list of all the possible lemmas.
