@@ -144,7 +144,7 @@ for sentence in sentences:
     word = sentence.find(query={"lemma": "olla"})
     print(word[0].get_attribute("form"))
 
-
+"""
 
 print(uralicApi.analyze("hörpähdin", "fin", neural_fallback=True, n_best=10))
 print(uralicApi.lemmatize("nirhautan", "fin", neural_fallback=True, n_best=10))
@@ -152,12 +152,12 @@ print(uralicApi.generate("hömpötti+N+Sg+Gen", "fin", neural_fallback=True, n_b
 print(uralicApi.generate("koirailla+V+Act+Ind+Prs+Sg1", "fin", neural_fallback=True, n_best=10))
 print(uralicApi.analyze("juoksen", "fin", neural_fallback=True))
 
-"""
+
 
 #print(uralicApi.analyze("тонь", "sms"))
 
 
-print(uralicApi.get_translation("piânnai", "sms"))
+#print(uralicApi.get_translation("piânnai", "sms"))
 #uralicApi.import_dictionary_to_db("sms")
 
 #llm = get_llm("chatgpt", open_read(os.path.expanduser("~/.openaiapikey")).read().strip())
