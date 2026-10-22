@@ -458,8 +458,13 @@ def get_translation(lemma, lang, trans_lang=None, backend=None, filename1=None, 
 		return get_translation_db(lemma, lang, trans_lang, backend=backend)
 	t1 = analyze(lang + "_" + lemma, "dictionary", filename=filename1)
 	t2 = generate(lang + "_" + lemma, "dictionary", filename=filename2)
+	try:
+		t3 = analyze(lang + "_" + lemma, "dictionary", filename=filename1, descriptive=False)
+	except:
+		print("Not all dictionaries are loaded! Please, rerun:\n\npython -m uralicNLP.download --languages dictionary")
+		t3 = []
 	res = {}
-	for t in t1 + t2:
+	for t in t1 + t2 +t3:
 		l, w = t[0].split("_",1)
 		w = w.replace("_", " ")
 		if l not in res:
