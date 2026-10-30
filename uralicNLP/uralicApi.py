@@ -129,7 +129,7 @@ def uninstall(language):
 		path = __where_models(language, safe=True)
 
 def download(language, show_progress=True):
-	model_types = {"analyser":"analyser-gt-desc.hfstol", "morpher-gt-desc.hfstol": "morpher-gt-desc.hfstol", "analyzer.pt": "../neural/"+language+"_analyzer_nmt-model_step_100000.pt","generator.pt": "../neural/"+language+"_generator_nmt-model_step_100000.pt", "lemmatizer.pt": "../neural/"+language+"_lemmatizer_nmt-model_step_100000.pt", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg":"disambiguator.bin", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
+	model_types = {"analyser":"analyser-gt-desc.hfstol", "morpher-gt-desc.hfstol": "morpher-gt-desc.hfstol", "analyzer.pt": "../neural/"+language+"_analyzer_nmt-model_step_100000.pt","generator.pt": "../neural/"+language+"_generator_nmt-model_step_100000.pt", "lemmatizer.pt": "../neural/"+language+"_lemmatizer_nmt-model_step_100000.pt", "analyser-norm":"analyser-gt-norm.hfstol","analyser-dict":"analyser-dict-gt-norm.hfstol", "generator-desc":"generator-gt-desc.hfstol", "generator-norm":"generator-gt-norm.hfstol", "generator":"generator-dict-gt-norm.hfstol", "cg3":"disambiguator.cg3", "metadata.json":"metadata.json", "dictionary.json":"dictionary.json"}
 	download_to = os.path.join(__find_writable_folder(__model_base_folders()), language)
 	ssl._create_default_https_context = ssl._create_unverified_context
 	if not os.path.exists(download_to):
