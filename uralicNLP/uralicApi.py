@@ -438,7 +438,7 @@ def _api_dictionary_search(word, language):
 	return __send_request("search/", {"word": word, "language": language})
 
 def __send_request(url, data):
-	r = requests.get(api_url + url, params=data)
+	r = requests.get(api_url + url, params=data, timeout=30)
 	return r.json()
 
 def _get_dictionary(language, backend=TinyDictionary):
