@@ -33,7 +33,7 @@ class Cg3():
 		
 class Cg3Pipe():
 	def __init__(self, *args, **kwargs):
-		self.cg = Cg.from_files([a.path for a in *args]) 
+		self.cg = Cg.from_files([a.path for a in args]) 
 
 	def disambiguate(self, words, **kwargs):
 		return self.cg(words, **kwargs)
