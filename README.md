@@ -1,6 +1,6 @@
 <h1 align="center">UralicNLP</h1>
 <p align="center">Natural language processing for many languages</p>
-
+<!-- mcp-name: io.github.mikahama/uralicmcp -->
 [![Updates](https://pyup.io/repos/github/mikahama/uralicNLP/shield.svg)](https://pyup.io/repos/github/mikahama/uralicNLP/)  [![Downloads](https://static.pepy.tech/badge/uralicnlp)](https://pepy.tech/project/uralicnlp) [![DOI](https://joss.theoj.org/papers/10.21105/joss.01345/status.svg)](https://doi.org/10.21105/joss.01345)
 
 
