@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mikahama/uralicNLP",
+  "title": "UralicMCP",
+  "description": "Morphological analysis, generation, lemmatization and dictionary lookup for Uralic languages.",
+  "version": "2.1.3",
+  "repository": {
+    "url": "https://github.com/mikahama/uralicNLP",
+    "source": "github",
+    "id": "113453169"
+  },
+    "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://uralicmcp-rahti.rahtiapp.fi/mcp"
+    }
+  ]
+}
