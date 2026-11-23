@@ -10,7 +10,7 @@ from pycg3 import Cg
 class Cg3():
 	def __init__(self, language, morphology_languages=None):
 		if morphology_languages is None:
-			self.morphology_languages = language
+			self.morphology_languages = [language]
 		else:
 			if language not in morphology_languages:
 				morphology_languages.append(language)

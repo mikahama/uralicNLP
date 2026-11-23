@@ -1,14 +1,31 @@
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from . import uralicApi
 from . import string_processing
+from .cg3 import Cg3
+from . import tokenizer
 
 
-mcp = FastMCP("Uralic Language Processor (UralicMCP)")
+mcp = MCPServer("Uralic Language Processor (UralicMCP)")
+
+cg_cache = {}
 
 @mcp.tool()
 def analyze_word(word: str, language_iso_code: str) -> list:
 	"""Analyzes a word in a supported language and returns a list of analysis. Each analysis consists of a lemma and morphological tags such as kissa+N+Sg+Nom"""
 	return [x[0] for x in uralicApi.analyze(word, language_iso_code.lower())]
+
+
+@mcp.tool()
+def disambiguate(sentence: str, language_iso_code: str) -> list:
+	"""Takes in a sentence and runs a CG disambiguator. The end result is words and their contextually disambiguated morphological readings and lemmas (sometimes some words still end up having ambiguity). Note: not all languages have a CG grammar."""
+	tokens = tokenizer.words(sentence)
+	if language_iso_code in cg_cache:
+		cg = cg_cache[language_iso_code]
+	else:
+		cg = Cg3(language_iso_code)
+		cg_cache[language_iso_code] = cg
+	r = cg.disambiguate(tokens)
+	return [{"form": x[0], "readings": [ {"lemma": y.lemma, "morphology":  y.morphology} for y in x[1] ]} for x in r]
 
 
 @mcp.tool()
@@ -39,8 +56,8 @@ def dictionary_lookup(lemma:str, source_language_iso:str, target_language_iso:st
 def list_supported_languages() -> dict:
 	"""Lists supported languages, their names and ISO codes. Use this if you don't know the ISO code.  """
 	sup = {x: [(z, string_processing.iso_to_name(z)) for z in y ] for x, y in uralicApi.supported_languages().items() }
-	del sup["cg"]
 	return sup
 
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+	mcp.run(transport="streamable-http")
+
